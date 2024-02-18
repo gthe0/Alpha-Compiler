@@ -40,6 +40,7 @@ WS	{delims}+
 ID	{letters}({letters} | {digits} | [_] )*
 INT	{digits}+
 FLOAT   {digits}+\.{digits}+
+
 STRING	\"[^\n"]\"
 LINE_COMMENT 	"//".*
 
