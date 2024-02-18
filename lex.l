@@ -4,13 +4,12 @@
 *
 * =========================================================== */
 
-
 /* DEFINITION SECTION
 *
-* Anythin written in these brackets will be copied into the 
+* Anything written in these brackets will be copied into the 
 * generated .c file
-*
 */
+
 %{
     #if defined(WIN32) || defined(_WIN32_WCE)
     #define YY_NO_UNISTD_H
@@ -20,6 +19,7 @@
 
 %option noyywrap
 %option yylineno
+%option prefix="alpha_yy"
 
 /* Flex macros
 *
@@ -28,14 +28,20 @@
 *   will follow
 */
 
-digits [0-9]
-delims [ \t\n]
+digits  [0-9]
+delims  [ \t\n\r\v]
 letters [A-Za-z]
 
-ws	{delims}+
-id 	{letters}({letters} | {digits})*
-int	{digits}+
-real	{digits}+\.{digits}+
+/*
+* Leximes Grammars
+*/
+
+WS	{delims}+
+ID	{letters}({letters} | {digits} | [_] )*
+INT	{digits}+
+FLOAT   {digits}+\.{digits}+
+LINE_COMMENT 	"//".*
+
 
 /* RULES SECTION
 *   
@@ -47,3 +53,5 @@ real	{digits}+\.{digits}+
 %%
 
 %%
+
+int main(){return 0;}
