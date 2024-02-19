@@ -34,9 +34,9 @@ digits  [0-9]
 delims  [ \t\n\r\v]
 letters [A-Za-z]
 
-WS	{delims}+
-ID	{letters}({letters}|{digits}|[_])*
-INT	{digits}+
+WS	    {delims}+
+ID	    {letters}({letters}|{digits}|[_])*
+INT	    {digits}+
 FLOAT   {digits}+\.{digits}+
 
 /* RULES SECTION
