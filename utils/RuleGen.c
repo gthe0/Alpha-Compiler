@@ -19,22 +19,22 @@
 */
 int tokenize(char* buff,char* type)
 {
-	while(buff && !(isspace(*buff)))
+	while(*buff != '\0' && !isspace(*buff))
 	{
 		buff++;
 	}
 
 	*buff++ = '\0';
 
-	while(buff && isspace(*buff))
+	while(*buff != '\0' && isspace(*buff))
 	{
 		buff++;
 	}
 
-	if(!buff || isspace(*buff) || *buff == '\0')
+	if(*buff == '\0')
 		return 1;
 	
-	while(buff && !(isspace(*buff)))
+	while(*buff != '\0' && !isspace(*buff))
 		*type++ = *buff++;
 
 	*type = '\0';
