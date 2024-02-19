@@ -19,9 +19,9 @@
     #endif
 %}
 
-%option noyywrap 		    // Do not define yywrap function
-%option yylineno		    // Store the line number of the parsed lexime
-%option prefix="alpha_yy"	// Change the Prefix from yy to alpha_yy
+%option noyywrap
+%option yylineno		    
+%option prefix="alpha_yy"	
 
 /* Flex macros
 *
@@ -91,7 +91,7 @@ FLOAT   {digits}+\.{digits}+
 {INT}                   {return (INT);}
 {FLOAT}                 {return (FLOAT);}
 {ID}                    {return (ID);}
-{WS}                    {}
+{WS}                    /*DO NOTHING*/
 %%
 
 int main(){return 0;}
