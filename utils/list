@@ -1,0 +1,44 @@
+if  IF
+else ELSE
+while WHILE
+for FOR
+function FUNC
+return RET
+break BREAK
+continue CONTINUE
+and AND
+not NOT
+or OR
+local LOCAL 
+true TRUE
+false FALSE
+nil NIL
+INT
+FLOAT
+ID
+[   BRACKETS_OPEN
+]   BRACKETS_CLOSE
+{   BRACES_OPEN
+}   BRACES_CLOSE
+(   PARENT_OPEN
+)   PARENT_CLOSE
+,   COMMA
+;   SEMI_COL   
+:   COL
+::  DOUBLE_COL
+.   DOT
+..  DOUBLE_DOT
+=   ASSIGN_OP
++   PLUS_OP
+-   MINUS_OP
+*   MULT_OP
+/   DIV_OP
+%   MOD_OP
+==  EQ_OP
+!=  NE_OP
+++  INC_OP
+--  DEC_OP
+>   GT_OP
+<   LT_OP
+>=  GE_OP
+<=  LE_OP
