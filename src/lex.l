@@ -35,7 +35,7 @@ delims  [ \t\n\r\v]
 letters [A-Za-z]
 
 WS	{delims}+
-ID	{letters}({letters} | {digits} | [_] )*
+ID	{letters}({letters}|{digits}|[_])*
 INT	{digits}+
 FLOAT   {digits}+\.{digits}+
 
@@ -91,7 +91,8 @@ FLOAT   {digits}+\.{digits}+
 {INT}                   {return (INT);}
 {FLOAT}                 {return (FLOAT);}
 {ID}                    {return (ID);}
-{WS}                    /*DO NOTHING*/
+{WS}                    {/*Ignore White Spaces*/}
+.                       {/*Ignore Illegal Chars*/}
 %%
 
 int main(){return 0;}
