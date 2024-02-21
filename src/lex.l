@@ -15,6 +15,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <alpha_token.h>
+	#include <al.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
@@ -140,7 +141,7 @@ static int multi_line_comment()
 }	
 
 /*
-* main given in a lecture XD)
+* main given in a lecture XD
 */
 int main(int argc, char** argv) 
 {
@@ -155,8 +156,8 @@ int main(int argc, char** argv)
 		yyin = stdin;
 
 	alpha_yylex((void*) head);
-
-	AlphaToken_print_all(head);
+	
+	AL_print(head);
 	AlphaToken_free(head);
 	
 	return 0;
