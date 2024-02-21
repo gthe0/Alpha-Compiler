@@ -8,13 +8,13 @@
 /* DEFINITION SECTION
 *
 * Anything written inside the brackets will be copied 
-* in the generated .c file
+* at the top of the generated .c file
 */
 
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
-	#include "lib/alpha_token.h"
+	#include <alpha_token.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
@@ -23,6 +23,9 @@
 
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
 	#define YY_DECL int alpha_yylex(void * ylval)
+
+	/* Function definitions*/
+	static int multi_line_comment();
 %}
 
 %option noyywrap
@@ -45,7 +48,7 @@ INT	    {digits}+
 FLOAT   {digits}+\.{digits}+
 
 LINE_COMMENT "//".*
-MULTI_LINE_COMMENT "/\*"
+MULTI_LINE_COMMENT "/*"
 
 /* RULES SECTION
 *   
@@ -55,88 +58,106 @@ MULTI_LINE_COMMENT "/\*"
 */
 
 %%
-/* KEYWORDS */
-"if"				{AlphaToken_insert(head, yylineno, yytext, "IF", "KEYWORD");}
-"else"				{AlphaToken_insert(head, yylineno, yytext, "ELSE", "KEYWORD");}
-"while"				{AlphaToken_insert(head, yylineno, yytext, "WHILE", "KEYWORD");}
-"for"				{AlphaToken_insert(head, yylineno, yytext, "FOR", "KEYWORD");}
-"function"			{AlphaToken_insert(head, yylineno, yytext, "FUNC", "KEYWORD");}
-"return"			{AlphaToken_insert(head, yylineno, yytext, "RET", "KEYWORD");}
-"break"				{AlphaToken_insert(head, yylineno, yytext, "BREAK", "KEYWORD");}
-"continue"			{AlphaToken_insert(head, yylineno, yytext, "CONTINUE", "KEYWORD");}
-"and"				{AlphaToken_insert(head, yylineno, yytext, "AND", "KEYWORD");}
-"not"				{AlphaToken_insert(head, yylineno, yytext, "NOT", "KEYWORD");}
-"or"				{AlphaToken_insert(head, yylineno, yytext, "OR", "KEYWORD");}
-"local"				{AlphaToken_insert(head, yylineno, yytext, "LOCAL", "KEYWORD");}
-"true"				{AlphaToken_insert(head, yylineno, yytext, "TRUE", "KEYWORD");}
-"false"				{AlphaToken_insert(head, yylineno, yytext, "FALSE", "KEYWORD");}
-"nil"				{AlphaToken_insert(head, yylineno, yytext, "NIL", "KEYWORD");}
-/* PUNCTUATIONS */
-"["					{AlphaToken_insert(head, yylineno, yytext, "BRACKETS_OPEN", "PUNCT");}
-"]"					{AlphaToken_insert(head, yylineno, yytext, "BRACKETS_CLOSE", "PUNCT");}
-"{"					{AlphaToken_insert(head, yylineno, yytext, "BRACES_OPEN", "PUNCT");}
-"}"					{AlphaToken_insert(head, yylineno, yytext, "BRACES_CLOSE", "PUNCT");}
-"("					{AlphaToken_insert(head, yylineno, yytext, "PARENT_OPEN", "PUNCT");}
-")"					{AlphaToken_insert(head, yylineno, yytext, "PARENT_CLOSE", "PUNCT");}
-","					{AlphaToken_insert(head, yylineno, yytext, "COMMA", "PUNCT");}
-";"					{AlphaToken_insert(head, yylineno, yytext, "SEMI_COL", "PUNCT");}
-":"					{AlphaToken_insert(head, yylineno, yytext, "COL", "PUNCT");}
-"::"				{AlphaToken_insert(head, yylineno, yytext, "DOUBLE_COL", "PUNCT");}
-"."					{AlphaToken_insert(head, yylineno, yytext, "DOT", "PUNCT");}
-".."				{AlphaToken_insert(head, yylineno, yytext, "DOUBLE_DOT", "PUNCT");}
-"="					{AlphaToken_insert(head, yylineno, yytext, "ASSIGN_OP", "PUNCT");}
-"+"					{AlphaToken_insert(head, yylineno, yytext, "PLUS_OP", "PUNCT");}
-"-"					{AlphaToken_insert(head, yylineno, yytext, "MINUS_OP", "PUNCT");}
-"*"					{AlphaToken_insert(head, yylineno, yytext, "MULT_OP", "PUNCT");}
-"/"					{AlphaToken_insert(head, yylineno, yytext, "DIV_OP", "PUNCT");}
-"%"					{AlphaToken_insert(head, yylineno, yytext, "MOD_OP", "PUNCT");}
-"=="				{AlphaToken_insert(head, yylineno, yytext, "EQ_OP", "PUNCT");}
-"!="				{AlphaToken_insert(head, yylineno, yytext, "NE_OP", "PUNCT");}
-"++"				{AlphaToken_insert(head, yylineno, yytext, "INC_OP", "PUNCT");}
-"--"				{AlphaToken_insert(head, yylineno, yytext, "DEC_OP", "PUNCT");}
-">"					{AlphaToken_insert(head, yylineno, yytext, "GT_OP", "PUNCT");}
-"<"					{AlphaToken_insert(head, yylineno, yytext, "LT_OP", "PUNCT");}
-">="				{AlphaToken_insert(head, yylineno, yytext, "GE_OP", "PUNCT");}
-"<="				{AlphaToken_insert(head, yylineno, yytext, "LE_OP", "PUNCT");}
+"if"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "IF", "KEYWORD");}
+"else"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ELSE", "KEYWORD");}
+"while"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "WHILE", "KEYWORD");}
+"for"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FOR", "KEYWORD");}
+"function"			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FUNC", "KEYWORD");}
+"return"			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "RET", "KEYWORD");}
+"break"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BREAK", "KEYWORD");}
+"continue"			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "CONTINUE", "KEYWORD");}
+"and"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "AND", "KEYWORD");}
+"not"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NOT", "KEYWORD");}
+"or"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "OR", "KEYWORD");}
+"local"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LOCAL", "KEYWORD");}
+"true"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "TRUE", "KEYWORD");}
+"false"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FALSE", "KEYWORD");}
+"nil"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NIL", "KEYWORD");}
+"["					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_OPEN", "PUNCT");}
+"]"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_CLOSE", "PUNCT");}
+"{"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_OPEN", "PUNCT");}
+"}"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_CLOSE", "PUNCT");}
+"("					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_OPEN", "PUNCT");}
+")"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_CLOSE", "PUNCT");}
+","					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COMMA", "PUNCT");}
+";"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "SEMI_COL", "PUNCT");}
+":"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COL", "PUNCT");}
+"::"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_COL", "PUNCT");}
+"."					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOT", "PUNCT");}
+".."				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_DOT", "PUNCT");}
+"="					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ASSIGN_OP", "PUNCT");}
+"+"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PLUS_OP", "PUNCT");}
+"-"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MINUS_OP", "PUNCT");}
+"*"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MULT_OP", "PUNCT");}
+"/"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DIV_OP", "PUNCT");}
+"%"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MOD_OP", "PUNCT");}
+"=="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "EQ_OP", "PUNCT");}
+"!="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NE_OP", "PUNCT");}
+"++"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INC_OP", "PUNCT");}
+"--"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DEC_OP", "PUNCT");}
+">"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GT_OP", "PUNCT");}
+"<"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LT_OP", "PUNCT");}
+">="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GE_OP", "PUNCT");}
+"<="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LE_OP", "PUNCT");}
 
-/* IDENTIFIERS/NUMBERS */
-{INT}				{AlphaToken_insert(head, yylineno, yytext, "INT", "INTCONST");}
-{FLOAT}				{AlphaToken_insert(head, yylineno, yytext, "FLOAT", "REALCONST");}
-{ID}				{AlphaToken_insert(head, yylineno, yytext, "ID", "IDENTIFIER");}
+{INT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INT", "INTCONST");}
+{FLOAT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FLOAT", "REALCONST");}
+{ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ID", "IDENTIFIER");}
 
-/* COMMENTS */
-{LINE_COMMENT}  		{AlphaToken_insert(head, yylineno, yytext,"LINE_COMMENT","COMMENT");}
-{MULTI_LINE_COMMENT}  	{AlphaToken_insert(head, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");}
-
-/* STRINGS */
+{LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","COMMENT");}
+{MULTI_LINE_COMMENT}  	{multi_line_comment();AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");}
 
 
-/* IGNORED */
+
 {WS}				{/*Ignore White Spaces*/}
-.					{/*Ignore Illegal Chars*/}
+.					{return 0;}
 
 %%
 
+
 /*
 * A Function to check if the multiline comment ends
+*	Returns:	--EXIT_FAILURE (1) if the comment does not end
+*				--EXIT_SUCCESS (0) if the comment ends properly
 */
-static void multi_line_comment()
+static int multi_line_comment()
 {
 	int c; 
 	while ((c = input()) != EOF)
 	{
 	/* 
 	*  If * is followed by a char other than /
-	*  return it to input stream and continue parsing
+	*  return it to the input stream and continue parsing
 	*/
 		if(c == '*')
 			if((c = input()) == '/')
-				return ;
+				return EXIT_SUCCESS;
 			else
 				unput(c);
 	}
 	
-	lex_error("")
-}
+	return EXIT_FAILURE;
+}	
 
-int main(){return 0;}
+/*
+* main given in a lecture XD)
+*/
+int main(int argc, char** argv) 
+{
+	AlphaToken_T head = AlphaToken_new();
+	
+	if(argc > 1)
+		if(!(yyin = fopen(argv[1], "r"))){
+			fprintf(stderr, "Cannot read file: %s\n", argv[1]);
+			return 1;
+		}
+	else
+		yyin = stdin;
+
+	alpha_yylex((void*) head);
+
+	AlphaToken_print_all(head);
+	AlphaToken_free(head);
+	
+	return 0;
+}

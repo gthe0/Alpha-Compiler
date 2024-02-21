@@ -7,9 +7,10 @@
 /*  using single linked list                                */
 /*----------------------------------------------------------*/
 
-#include "alpha_token.h"
+#include <alpha_token.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * The type of the alpha_token_t
@@ -114,6 +115,8 @@ void AlphaToken_print_all(AlphaToken_T AlphaToken)
         printf("Line : %d,\t#%d\tToken: %s\tType: %s\tCategory: %s\n",\
         AlphaToken->numline, AlphaToken->numToken, AlphaToken->content,
         AlphaToken->type, AlphaToken->category);
+
+        AlphaToken=AlphaToken->alpha_yylex;
     }
     
     return ;
