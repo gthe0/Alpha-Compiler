@@ -13,6 +13,7 @@
 
 %{
 	#include <stdio.h>
+	#include <stdlib.h>
 	#include "lib/alpha_token.h"
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
@@ -21,7 +22,7 @@
 	#endif
 
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
-    #define YY_DECL int alpha_yylex(void * ylval)
+	#define YY_DECL int alpha_yylex(void * ylval)
 %}
 
 %option noyywrap
@@ -116,7 +117,26 @@ MULTI_LINE_COMMENT "/\*"
 
 %%
 
-
-
+/*
+* A Function to check if the multiline comment ends
+*/
+static void multi_line_comment()
+{
+	int c; 
+	while ((c = input()) != EOF)
+	{
+	/* 
+	*  If * is followed by a char other than /
+	*  return it to input stream and continue parsing
+	*/
+		if(c == '*')
+			if((c = input()) == '/')
+				return ;
+			else
+				unput(c);
+	}
+	
+	lex_error("")
+}
 
 int main(){return 0;}

@@ -77,20 +77,21 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline,
 {
     AlphaToken_T new    = NULL;
 
-    if (content == NULL || type == NULL || category == NULL)
+    if (content == NULL || type == NULL 
+    || category == NULL || AlphaToken == NULL)
         return EXIT_FAILURE;
     
     new = AlphaToken_new(); 
 
     new -> content  = strdup(content);
     new -> type     = strdup(type);
-    new -> category = strdup(type);
+    new -> category = strdup(category);
     new -> numline  = numline;
     new->alpha_yylex = NULL;
 
-    if(AlphaToken == NULL)
+    if(AlphaToken->content == NULL)
     {
-        AlphaToken = new;
+        *AlphaToken = *new;
         return EXIT_SUCCESS;
     } 
 
