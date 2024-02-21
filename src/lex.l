@@ -40,6 +40,8 @@ ID	    {letters}({letters}|{digits}|[_])*
 INT	    {digits}+
 FLOAT   {digits}+\.{digits}+
 
+LINE_COMMENT "//".*
+
 /* RULES SECTION
 *   
 *   The Rules section contains a series of rules in the form:

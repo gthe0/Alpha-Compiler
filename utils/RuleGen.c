@@ -31,7 +31,7 @@ int tokenize(char* buff,char* type)
 		buff++;
 	}
 
-	if(*buff == '\0')
+	if(*buff == '_')
 		return 1;
 	
 	while(*buff != '\0' && !isspace(*buff))
@@ -50,7 +50,7 @@ int tokenize(char* buff,char* type)
 */
 int main(void)
 {
-	char buffer[SZ],type[SZ];
+	char buffer[SZ],type[SZ],content[SZ];
 
 	while(fgets(buffer,SZ,stdin))
 	{	
