@@ -28,9 +28,7 @@
 
 	/* Function definitions*/
 	static int multi_line_comment();
-	static int str();
-
-	
+	static int string(char **s);
 %}
 
 %option noyywrap
@@ -113,8 +111,22 @@ MULTI_LINE_COMMENT "/*"
 
 {LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","COMMENT");}
 
-{STRING}
-{MULTI_LINE_COMMENT}  	{multi_line_comment();AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");}
+{STRING}				{
+							char* s;
+							string(&s);
+							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
+						}
+
+{MULTI_LINE_COMMENT}  	{
+							int start = yylineno;
+							if(multi_line_comment() == EXIT_FAILURE)
+							{
+								AlphaToken_free((AlphaToken_T) ylval);
+								fprintf(stderr,"LINE %d: ERROR, comment never ended\n",start,c);
+								exit(EXIT_FAILURE);
+							}
+							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
+						}
 
 
 {WS}				{/*Ignore White Spaces*/}
@@ -122,50 +134,59 @@ MULTI_LINE_COMMENT "/*"
 
 %%
 
-static int str(char* str)
+/*
+* A Function to check if the multiline comment ends
+*	Returns:	--EXIT_FAILURE (1) if the comment does not end
+*				--EXIT_SUCCESS (0) if the comment ends properly
+*/
+static int string(char **s)
 {
-	int c = 0, i = 0, errno = 0, resize = 1 ;
+	char *str; 
+	int c = 0, i = 0, resize = 1 ;
 	
-	str = malloc(SZ*resize);
-
+	str = malloc(SZ*resize*sizeof(char));
+	printf("%d hello",SZ*resize*sizeof(char));
 	while((c = input()) != EOF )
 	{
+
 		if(c == '\"')
+		{
+			str[i] = '\0';
 			break;
+		}
 
 		if(c == '\\')
 			if((c = input()) == 't')
 			{
-				str[i] = '\t'
+				str[i] = '\t';
 				unput(c);
 			}			
 			else if((c = input()) == 'n')
 			{
-				str[i] = '\n'
+				str[i] = '\n';
 				unput(c);
 			}
 			else if((c = input()) == '\"')
 			{
-				str[i] = '\"'
+				str[i] = '\"';
 				unput(c);
 			}
 			else
 			{
-				str[i] = '\\'
-				errno = 1;
+				str[i] = '\\';
+				fprintf(stderr,"LINE %d: WARNING, invalid escape sequence \\%c\n",yylineno,c);
 				unput(c);
 			}
-
 		i++;
 
-		if(i > SZ*resize)
+		if(i >= SZ*resize)
 		{
 			resize++;
 			str = realloc(str,SZ*resize);
 		}
 	}
-
-	return errno;
+	
+	return c == EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
 } 
 
 /*
