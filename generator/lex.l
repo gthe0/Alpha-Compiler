@@ -122,9 +122,8 @@ MULTI_LINE_COMMENT "/*"
 
 %%
 
-/* static int str()
+static int str(char* str)
 {
-	char* str;
 	int c = 0, i = 0, errno = 0, resize = 1 ;
 	
 	str = malloc(SZ*resize);
@@ -136,22 +135,38 @@ MULTI_LINE_COMMENT "/*"
 
 		if(c == '\\')
 			if((c = input()) == 't')
-			
+			{
+				str[i] = '\t'
+				unput(c);
+			}			
 			else if((c = input()) == 'n')
-
+			{
+				str[i] = '\n'
+				unput(c);
+			}
 			else if((c = input()) == '\"')
-
-			else
 			{
 				str[i] = '\"'
 				unput(c);
 			}
+			else
+			{
+				str[i] = '\\'
+				errno = 1;
+				unput(c);
+			}
 
 		i++;
+
+		if(i > SZ*resize)
+		{
+			resize++;
+			str = realloc(str,SZ*resize);
+		}
 	}
 
 	return errno;
-} */
+} 
 
 /*
 * A Function to check if the multiline comment ends
