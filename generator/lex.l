@@ -113,7 +113,13 @@ MULTI_LINE_COMMENT "/*"
 
 {STRING}				{
 							char* s = NULL;
-							string(&s);
+							int start = yylineno;
+							if(string(&s)== EXIT_FAILURE)
+							{
+								free(s);
+								fprintf(stderr,"LINE %d: ERROR, Unterminated STRING\n",start);
+								return 0;
+							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
 						}
 
@@ -121,9 +127,8 @@ MULTI_LINE_COMMENT "/*"
 							int start = yylineno;
 							if(multi_line_comment() == EXIT_FAILURE)
 							{
-								AlphaToken_free((AlphaToken_T) ylval);
-								fprintf(stderr,"LINE %d: ERROR, comment never ended\n",start);
-								exit(EXIT_FAILURE);
+								fprintf(stderr,"LINE %d: ERROR, Unterminated COMMENT\n",start);
+								return 0;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
 						}
@@ -135,26 +140,30 @@ MULTI_LINE_COMMENT "/*"
 %%
 
 /*
-* A Function to check if the multiline comment ends
-*	Returns:	--EXIT_FAILURE (1) if the comment does not end
-*				--EXIT_SUCCESS (0) if the comment ends properly
+* A Function to check if the strings are correct.
+* If there are any invalid escape sequences it prints some warnings.
+*
+*	Returns:	--EXIT_FAILURE (1) if the string does not end
+*				--EXIT_SUCCESS (0) if the string ends properly
 */
 static int string(char **s)
 {
 	char *str; 
 	int c = 0, i = 0, resize = 1 ;
 	
+	/* Allocate memory for string*/
 	str = malloc(SZ*resize*sizeof(char));
 	
 	while((c = input()) != EOF )
 	{
-		
+		/* Checks if the string ends with " */
 		if(c == '\"')
 		{
 			str[i] = '\0';
 			break;
 		}
 
+		/* Checks if the escape sequences are correct */
 		if(c == '\\')
 		{
 			c = input();
@@ -184,7 +193,8 @@ static int string(char **s)
 		}
 
 		i++;
-
+		
+		/* Allocate more memory if needed */
 		if(i >= SZ*resize)
 		{
 			resize++;
@@ -192,7 +202,7 @@ static int string(char **s)
 		}
 	}
 
-	*s = str;
+	*s = realloc(str,i*sizeof(char)+1);
 	return c == EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
 } 
 
