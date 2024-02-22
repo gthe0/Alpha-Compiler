@@ -112,7 +112,7 @@ MULTI_LINE_COMMENT "/*"
 {LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","COMMENT");}
 
 {STRING}				{
-							char* s;
+							char* s = NULL;
 							string(&s);
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
 						}
@@ -145,10 +145,10 @@ static int string(char **s)
 	int c = 0, i = 0, resize = 1 ;
 	
 	str = malloc(SZ*resize*sizeof(char));
-	printf("%d hello",SZ*resize*sizeof(char));
+	
 	while((c = input()) != EOF )
 	{
-
+		
 		if(c == '\"')
 		{
 			str[i] = '\0';
@@ -156,20 +156,20 @@ static int string(char **s)
 		}
 
 		if(c == '\\')
-			if((c = input()) == 't')
+		{
+			c = input();
+			
+			if(c == 't')
 			{
 				str[i] = '\t';
-				unput(c);
 			}			
-			else if((c = input()) == 'n')
+			else if(c == 'n')
 			{
 				str[i] = '\n';
-				unput(c);
 			}
-			else if((c = input()) == '\"')
+			else if(c == '\"')
 			{
 				str[i] = '\"';
-				unput(c);
 			}
 			else
 			{
@@ -177,6 +177,12 @@ static int string(char **s)
 				fprintf(stderr,"LINE %d: WARNING, invalid escape sequence \\%c\n",yylineno,c);
 				unput(c);
 			}
+		}
+		else
+		{
+			str[i] = c;
+		}
+
 		i++;
 
 		if(i >= SZ*resize)
@@ -185,7 +191,8 @@ static int string(char **s)
 			str = realloc(str,SZ*resize);
 		}
 	}
-	
+
+	*s = str;
 	return c == EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
 } 
 
