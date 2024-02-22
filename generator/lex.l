@@ -122,7 +122,7 @@ MULTI_LINE_COMMENT "/*"
 							if(multi_line_comment() == EXIT_FAILURE)
 							{
 								AlphaToken_free((AlphaToken_T) ylval);
-								fprintf(stderr,"LINE %d: ERROR, comment never ended\n",start,c);
+								fprintf(stderr,"LINE %d: ERROR, comment never ended\n",start);
 								exit(EXIT_FAILURE);
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
