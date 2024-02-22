@@ -11,7 +11,6 @@ SOURCE_FILES := $(wildcard $(SRC)/*.c)
 TMP_SOURCE_FILES := $(SOURCE_FILES:$(SRC)/%=%) # Remove the src/ prefix
 OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build/ and .o
 
-
 ###########################################################################################
 #	LEXICAL GENERATOR
 ###########################################################################################
@@ -21,12 +20,14 @@ object: ${SRC}/scanner.c $(OBJ_FILES)
 
 # Compile the scanner
 compile: ${SRC}/scanner.c $(BIN)
-	gcc -I $(INCLUDE) $(SOURCE_FILES) $(SRC)/scanner.c -o $(BIN)/scanner.exe
+	gcc -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.exe
 
 # Lexical analysis target
  ${SRC}/scanner.c: $(GENERATOR)/lex.l
 	flex $(GENERATOR)/lex.l
 	mv scanner.c $@
+	$(eval SOURCE_FILES +=  $@)
+
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
@@ -54,3 +55,4 @@ $(BUILD_DIR):
 
 $(BIN):
 	mkdir -p $(BIN)
+	
