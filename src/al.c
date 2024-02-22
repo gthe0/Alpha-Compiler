@@ -9,7 +9,7 @@
 #include <al.h>
 #include <stdio.h>
 
-void AL_print(AlphaToken_T AlphaToken)
+void al(AlphaToken_T AlphaToken)
 {
     printf("======================== LEXICAL ANALYSIS ========================\n");
     AlphaToken_print_all(AlphaToken);

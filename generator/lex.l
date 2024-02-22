@@ -24,13 +24,18 @@
 
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
 	#define YY_DECL int alpha_yylex(void * ylval)
+	#define SZ 0x80
 
 	/* Function definitions*/
 	static int multi_line_comment();
+	static int str();
+
+	
 %}
 
 %option noyywrap
-%option yylineno		    
+%option yylineno	
+%option	outfile = "scanner.c" 
 
 /* Flex macros
 *
@@ -46,8 +51,9 @@ letters [A-Za-z]
 WS	    {delims}+
 ID	    {letters}({letters}|{digits}|[_])*
 INT	    {digits}+
-FLOAT   {digits}+\.{digits}+
+FLOAT   {digits}"."{digits}+
 
+STRING	\"
 LINE_COMMENT "//".*
 MULTI_LINE_COMMENT "/*"
 
@@ -106,8 +112,9 @@ MULTI_LINE_COMMENT "/*"
 {ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ID", "IDENTIFIER");}
 
 {LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","COMMENT");}
-{MULTI_LINE_COMMENT}  	{multi_line_comment();AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");}
 
+{STRING}
+{MULTI_LINE_COMMENT}  	{multi_line_comment();AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");}
 
 
 {WS}				{/*Ignore White Spaces*/}
@@ -115,6 +122,36 @@ MULTI_LINE_COMMENT "/*"
 
 %%
 
+/* static int str()
+{
+	char* str;
+	int c = 0, i = 0, errno = 0, resize = 1 ;
+	
+	str = malloc(SZ*resize);
+
+	while((c = input()) != EOF )
+	{
+		if(c == '\"')
+			break;
+
+		if(c == '\\')
+			if((c = input()) == 't')
+			
+			else if((c = input()) == 'n')
+
+			else if((c = input()) == '\"')
+
+			else
+			{
+				str[i] = '\"'
+				unput(c);
+			}
+
+		i++;
+	}
+
+	return errno;
+} */
 
 /*
 * A Function to check if the multiline comment ends
@@ -157,7 +194,7 @@ int main(int argc, char** argv)
 
 	alpha_yylex((void*) head);
 	
-	AL_print(head);
+	al(head);
 	AlphaToken_free(head);
 	
 	return 0;

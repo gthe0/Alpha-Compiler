@@ -17,6 +17,6 @@
 *
 * @param AlphaToken --Head of the struct.
 */
-void AL_print(AlphaToken_T AlphaToken);
+void al(AlphaToken_T AlphaToken);
 
 #endif
