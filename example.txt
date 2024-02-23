@@ -1,0 +1,6 @@
+int i = 0;
+if (i == 0) {
+    printf("i is zero\n");
+} else {
+    printf("i is not zero\n");
+}
