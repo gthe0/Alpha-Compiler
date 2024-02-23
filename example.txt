@@ -4,4 +4,6 @@ if (i == 0) {
 } else {
     printf("i is not zero\n");
     int j = 0; //.* j=0
+    int k = 0; /* k
+     = 0 */
 }

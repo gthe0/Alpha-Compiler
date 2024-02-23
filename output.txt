@@ -83,16 +83,37 @@ OPERATOR
 #<23> 
 "0;" 
 UNKNOWN 
-#<24> 
-"//.*" 
-COMMENT 
-#<25> 
-"j=0" 
-UNKNOWN 
 
 
 <7> : 
+#<25> 
+"int" 
+IDENTIFIER 
 #<26> 
+"k" 
+IDENTIFIER 
+#<27> 
+"=" 
+OPERATOR 
+#<28> 
+"0;" 
+UNKNOWN 
+
+
+<8> : 
+#<30> 
+"=" 
+OPERATOR 
+#<31> 
+"0" 
+INT NUMBER 
+#<32> 
+"*/" 
+COMMENT 
+
+
+<9> : 
+#<33> 
 "}" 
 DELIMITER 
 

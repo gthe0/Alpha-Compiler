@@ -113,8 +113,23 @@
             char *token = strtok(line, " \t\n");
             while (token != NULL) {
                 token_counter++;
-                fprintf(output_file, "#<%d> \n\"%s\" \n%s \n", token_counter, token, getCategory(token));
-                token = strtok(NULL, " \t\n");
+                if (strcmp(token, "/*") == 0) {
+                    // Handle multi-line comments
+                    while (token != NULL && strcmp(token, "*/") != 0) {
+                        token = strtok(NULL, " \t\n");
+                    }
+                    if (token != NULL && strcmp(token, "*/") == 0) {
+                        fprintf(output_file, "#<%d> \n\"%s\" \n%s \n", token_counter, token, getCategory(token));
+                        token = strtok(NULL, " \t\n");
+                    }
+                } else if (strcmp(token, "//.*") == 0) {
+                    // Handle single-line comments
+                    break;
+                } else {
+                    // Handle regular tokens
+                    fprintf(output_file, "#<%d> \n\"%s\" \n%s \n", token_counter, token, getCategory(token));
+                    token = strtok(NULL, " \t\n");
+                }
             }
             fprintf(output_file, "\n\n");
         }
