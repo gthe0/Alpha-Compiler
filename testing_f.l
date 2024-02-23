@@ -86,42 +86,42 @@
 
 
 
-void al(const char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    if (fptr == NULL) {
-        printf("Error! Problem with opening the file\n");
-        exit(1);
-    }
-
-    FILE *output_file = fopen("output.txt", "w");
-    if (output_file == NULL) {
-        printf("Error! Problem with creating the output file\n");
-        fclose(fptr);
-        exit(1);
-    }
-
-    char line[1000];
-    int token_counter = 0;
-    int line_number = 0;
-    while (fgets(line, sizeof(line), fptr) != NULL) {
-        line_number++;
-        // Remove the newline character from the end of the line
-        line[strcspn(line, "\n")-1] = '\0';
-        
-        fprintf(output_file, "<%d> : \n", line_number);
-
-        char *token = strtok(line, " \t\n");
-        while (token != NULL) {
-            token_counter++;
-            fprintf(output_file, "#<%d> \n\"%s\" \n%s \n", token_counter, token, getCategory(token));
-            token = strtok(NULL, " \t\n");
+    void al(const char *filename) {
+        FILE *fptr = fopen(filename, "r");
+        if (fptr == NULL) {
+            printf("Error! Problem with opening the file\n");
+            exit(1);
         }
-        fprintf(output_file, "\n\n");
-    }
 
-    fclose(fptr);
-    fclose(output_file);
-}
+        FILE *output_file = fopen("output.txt", "w");
+        if (output_file == NULL) {
+            printf("Error! Problem with creating the output file\n");
+            fclose(fptr);
+            exit(1);
+        }
+
+        char line[1000];
+        int token_counter = 0;
+        int line_number = 0;
+        while (fgets(line, sizeof(line), fptr) != NULL) {
+            line_number++;
+            // Remove the newline character from the end of the line
+            line[strcspn(line, "\n")-1] = '\0';
+
+            fprintf(output_file, "<%d> : \n", line_number);
+
+            char *token = strtok(line, " \t\n");
+            while (token != NULL) {
+                token_counter++;
+                fprintf(output_file, "#<%d> \n\"%s\" \n%s \n", token_counter, token, getCategory(token));
+                token = strtok(NULL, " \t\n");
+            }
+            fprintf(output_file, "\n\n");
+        }
+
+        fclose(fptr);
+        fclose(output_file);
+    }
 %}
 
 
@@ -233,6 +233,21 @@ COMMENT_MULTI_LINE_CLOSE    "\*/"
 {REALNUM}    {L_Insert(&L, yytext, "REALNUM", yylineno, yyleng, "REAL NUMBER");}
 {ID}    {L_Insert(&L, yytext, "ID", yylineno, yyleng, "IDENTIFIER");}
 {DELIMS}    {L_Insert(&L, yytext, "DELIMS", yylineno, yyleng, "DELIMITER");}
+
+{CURLY_BRACE_OPEN}    {L_Insert(&L, yytext, "CURLY_BRACE_OPEN", yylineno, yyleng, "DELIMITER");}
+{CURLY_BRACE_CLOSE}    {L_Insert(&L, yytext, "CURLY_BRACE_CLOSE", yylineno, yyleng, "DELIMITER");}
+{SQUARE_BRACKET_OPEN}    {L_Insert(&L, yytext, "SQUARE_BRACKET_OPEN", yylineno, yyleng, "DELIMITER");}
+{SQUARE_BRACKET_CLOSE}    {L_Insert(&L, yytext, "SQUARE_BRACKET_CLOSE", yylineno, yyleng, "DELIMITER");}
+{PARENTHESIS_OPEN}    {L_Insert(&L, yytext, "PARENTHESIS_OPEN", yylineno, yyleng, "DELIMITER");}
+{PARENTHESIS_CLOSE}    {L_Insert(&L, yytext, "PARENTHESIS_CLOSE", yylineno, yyleng, "DELIMITER");}
+{COMMA}    {L_Insert(&L, yytext, "COMMA", yylineno, yyleng, "DELIMITER");}
+{COLON}    {L_Insert(&L, yytext, "COLON", yylineno, yyleng, "DELIMITER");}
+{DOUBLE_COLON}    {L_Insert(&L, yytext, "DOUBLE_COLON", yylineno, yyleng, "DELIMITER");}
+{DOT}    {L_Insert(&L, yytext, "DOT", yylineno, yyleng, "DELIMITER");}
+{DOUBLE_DOT}    {L_Insert(&L, yytext, "DOUBLE_DOT", yylineno, yyleng, "DELIMITER");}
+{COMMENT_SINGLE_LINE}    {L_Insert(&L, yytext, "COMMENT_SINGLE_LINE", yylineno, yyleng, "COMMENT");}
+{COMMENT_MULTI_LINE_OPEN}    {L_Insert(&L, yytext, "COMMENT_MULTI_LINE_OPEN", yylineno, yyleng, "COMMENT");}
+{COMMENT_MULTI_LINE_CLOSE}    {L_Insert(&L, yytext, "COMMENT_MULTI_LINE_CLOSE", yylineno, yyleng, "COMMENT");}
 
 %%
 int main(int argc, char** argv) 

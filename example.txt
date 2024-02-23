@@ -3,4 +3,5 @@ if (i == 0) {
     printf("i is zero\n");
 } else {
     printf("i is not zero\n");
+    int j = 0; //.* j=0
 }
