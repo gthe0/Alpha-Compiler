@@ -49,7 +49,7 @@ letters [A-Za-z]
 WS	    {delims}+
 ID	    {letters}({letters}|{digits}|[_])*
 INT	    {digits}+
-FLOAT   {digits}"."{digits}+
+FLOAT   {digits}+"."{digits}+
 
 STRING	\"
 LINE_COMMENT "//".*

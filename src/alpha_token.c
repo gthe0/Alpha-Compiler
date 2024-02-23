@@ -96,11 +96,12 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline,
         return EXIT_SUCCESS;
     } 
 
-    while (AlphaToken->alpha_yylex);
+    while (AlphaToken->alpha_yylex)
+        AlphaToken = AlphaToken->alpha_yylex;
 
     AlphaToken->alpha_yylex = new;    
     new->numToken    = AlphaToken->numToken + 1;
-    
+
     return EXIT_SUCCESS;
 }
 

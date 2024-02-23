@@ -20,7 +20,7 @@ object: ${SRC}/scanner.c $(OBJ_FILES)
 
 # Compile the scanner
 compile: ${SRC}/scanner.c $(BIN)
-	gcc -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.exe
+	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.exe
 
 # Lexical analysis target
  ${SRC}/scanner.c: $(GENERATOR)/lex.l
