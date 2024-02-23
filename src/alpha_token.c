@@ -113,7 +113,7 @@ void AlphaToken_print_all(AlphaToken_T AlphaToken)
 {
     while (AlphaToken)
     {
-        printf("Line : %d,\t#%d\tToken: %s\tType: %s\tCategory: %s\n",\
+        printf("Line : %d,\t#%d\tToken: %s\tType: %s\tCategory: %s\n",
         AlphaToken->numline, AlphaToken->numToken, AlphaToken->content,
         AlphaToken->type, AlphaToken->category);
 
