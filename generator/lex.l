@@ -14,6 +14,8 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <stdarg.h>
+	
 	#include <alpha_token.h>
 	#include <al.h>
 
@@ -26,9 +28,20 @@
 	#define YY_DECL int alpha_yylex(void * ylval)
 	#define SZ 0x80
 
+	enum LOG {
+		ERROR,
+		WARNING,
+	};
+
+	typedef enum LOG LOG;
+
 	/* Function definitions*/
 	static int multi_line_comment();
 	static int string(char **s);
+
+	/* FUNCTION TO PRINT ERRORS/WARNINGS */
+	static void LOG_ERROR(LOG error,const char* msg, ...);
+
 %}
 
 %option noyywrap
@@ -117,7 +130,7 @@ MULTI_LINE_COMMENT "/*"
 							if(string(&s)== EXIT_FAILURE)
 							{
 								free(s);
-								fprintf(stderr,"LINE %d: ERROR, Unterminated STRING\n",start);
+								LOG_ERROR(ERROR,"LINE %d, Unterminated COMMENT\n",start);
 								return 0;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
@@ -127,7 +140,7 @@ MULTI_LINE_COMMENT "/*"
 							int start = yylineno;
 							if(multi_line_comment() == EXIT_FAILURE)
 							{
-								fprintf(stderr,"LINE %d: ERROR, Unterminated COMMENT\n",start);
+								LOG_ERROR(ERROR,"LINE %d, Unterminated COMMENT\n",start);
 								return 0;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
@@ -138,6 +151,39 @@ MULTI_LINE_COMMENT "/*"
 .					{return 0;}
 
 %%
+
+/*
+*	A function to print the errors in stderr
+*/
+static void LOG_ERROR(LOG error_t ,const char* msg,...)
+{
+	/* If we are on linux machines, use ansi escape sequences */
+	#if ( __linux__)
+		char* warning = "\e[1;35mWARNING: \e[0m";
+		char* error  = "\e[1;31mERROR: \e[0m";
+	#else
+		char* warning = "WARNING: ";
+		char* error	  = "ERROR: ";
+	#endif
+	
+	fflush(stdout);
+
+	if(error_t == WARNING)
+		fprintf(stderr,warning);
+	else if(error_t == ERROR)
+		fprintf(stderr,error);
+
+	/* Initialize arguments */
+	va_list args;
+    va_start(args, msg);
+
+	vfprintf(stderr,msg,args);
+
+	/* Free them */
+	va_end(args);
+
+	return ;
+}
 
 /*
 * A Function to check if the strings are correct.
@@ -183,7 +229,7 @@ static int string(char **s)
 			else
 			{
 				str[i] = '\\';
-				fprintf(stderr,"LINE %d: WARNING, invalid escape sequence \\%c\n",yylineno,c);
+				LOG_ERROR(WARNING,"LINE %d, invalid escape sequence \\%c\n",yylineno,c);
 				unput(c);
 			}
 		}
