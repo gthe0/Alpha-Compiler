@@ -59,6 +59,48 @@
 *   will follow
 */
 
+IF    "if"
+ELSE    "else"
+WHILE    "while"
+FOR    "for"
+FUNC    "function"
+RETURN    "return"
+BREAK    "break"
+CONTINUE    "continue"
+AND    "and"
+NOT    "not"
+OR    "or"
+LOCAL    "local"
+TRUE    "true" 
+FALSE    "false"
+NIL    "nil"
+BRACKETS_OPEN "["					 
+BRACKETS_CLOSE "]"
+BRACES_OPEN "{"					
+BRACES_CLOSE "}"
+PARENT_OPEN "("
+PARENT_CLOSE ")"
+COMMA ","
+SEMI_COL ";"
+COL ":"
+DOUBLE_COL "::"
+DOT "."
+DOUBLE_DOT ".."
+ASSIGN_OP "="
+PLUS_OP "+"
+MINUS_OP "-"
+MULT_OP "*"
+DIV_OP "/"
+MOD_OP "%"
+EQ_OP "=="
+NE_OP "!="
+INC_OP "++"
+DEC_OP "--"
+GT_OP ">"
+LT_OP "<"
+GE_OP ">="
+LE_OP "<="
+
 digits  [0-9]
 delims  [ \t\n\r\v]
 letters [A-Za-z]
@@ -80,53 +122,53 @@ MULTI_LINE_COMMENT "/*"
 */
 
 %%
-"if"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "IF", "KEYWORD");}
-"else"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ELSE", "KEYWORD");}
-"while"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "WHILE", "KEYWORD");}
-"for"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FOR", "KEYWORD");}
-"function"			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FUNC", "KEYWORD");}
-"return"			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "RET", "KEYWORD");}
-"break"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BREAK", "KEYWORD");}
-"continue"			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "CONTINUE", "KEYWORD");}
-"and"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "AND", "KEYWORD");}
-"not"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NOT", "KEYWORD");}
-"or"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "OR", "KEYWORD");}
-"local"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LOCAL", "KEYWORD");}
-"true"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "TRUE", "KEYWORD");}
-"false"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FALSE", "KEYWORD");}
-"nil"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NIL", "KEYWORD");}
-"["					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_OPEN", "PUNCT");}
-"]"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_CLOSE", "PUNCT");}
-"{"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_OPEN", "PUNCT");}
-"}"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_CLOSE", "PUNCT");}
-"("					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_OPEN", "PUNCT");}
-")"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_CLOSE", "PUNCT");}
-","					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COMMA", "PUNCT");}
-";"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "SEMI_COL", "PUNCT");}
-":"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COL", "PUNCT");}
-"::"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_COL", "PUNCT");}
-"."					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOT", "PUNCT");}
-".."				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_DOT", "PUNCT");}
-"="					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ASSIGN_OP", "PUNCT");}
-"+"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PLUS_OP", "PUNCT");}
-"-"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MINUS_OP", "PUNCT");}
-"*"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MULT_OP", "PUNCT");}
-"/"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DIV_OP", "PUNCT");}
-"%"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MOD_OP", "PUNCT");}
-"=="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "EQ_OP", "PUNCT");}
-"!="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NE_OP", "PUNCT");}
-"++"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INC_OP", "PUNCT");}
-"--"				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DEC_OP", "PUNCT");}
-">"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GT_OP", "PUNCT");}
-"<"					{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LT_OP", "PUNCT");}
-">="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GE_OP", "PUNCT");}
-"<="				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LE_OP", "PUNCT");}
+{IF}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "IF", "enumarated", "KEYWORD");}
+{ELSE}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ELSE", "enumarated", "KEYWORD");}
+{WHILE}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "WHILE", "enumarated", "KEYWORD");}
+{FOR}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FOR", "enumarated", "KEYWORD");}
+{FUNC}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FUNC", "enumarated", "KEYWORD");}
+{RETURN}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "RET", "enumarated", "KEYWORD");}
+{BREAK}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BREAK", "enumarated", "KEYWORD");}
+{CONTINUE}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "CONTINUE", "enumarated", "KEYWORD");}
+{AND}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "AND", "enumarated", "KEYWORD");}
+{NOT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NOT", "enumarated", "KEYWORD");}
+{OR}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "OR", "enumarated", "KEYWORD");}
+{LOCAL}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LOCAL", "enumarated", "KEYWORD");}
+{TRUE}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "TRUE", "enumarated", "KEYWORD");}
+{FALSE}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FALSE", "enumarated", "KEYWORD");}
+{NIL}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NIL", "enumarated", "KEYWORD");}
 
-{INT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INT", "INTCONST");}
-{FLOAT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FLOAT", "REALCONST");}
-{ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ID", "IDENTIFIER");}
+{BRACKETS_OPEN}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_OPEN", "enumarated", "PUNCT");}
+{BRACKETS_CLOSE}	{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_CLOSE", "enumarated", "PUNCT");}
+{BRACES_OPEN}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_OPEN", "enumarated", "PUNCT");}
+{BRACES_CLOSE}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_CLOSE", "enumarated", "PUNCT");}
+{PARENT_OPEN}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_OPEN", "enumarated", "PUNCT");}
+{PARENT_CLOSE}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_CLOSE", "enumarated", "PUNCT");}
+{COMMA}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COMMA", "enumarated", "PUNCT");}
+{SEMI_COL}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "SEMI_COL", "enumarated", "PUNCT");}
+{COL}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COL", "enumarated", "PUNCT");}
+{DOUBLE_COL}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_COL", "enumarated", "PUNCT");}
+{DOT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOT", "enumarated", "PUNCT");}
+{DOUBLE_DOT}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_DOT", "enumarated", "PUNCT");}
+{ASSIGN_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ASSIGN_OP", "enumarated", "OPERATOR");}
+{PLUS_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PLUS_OP", "enumarated", "OPERATOR");}
+{MINUS_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MINUS_OP", "enumarated", "OPERATOR");}
+{MULT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MULT_OP", "enumarated", "OPERATOR");}
+{DIV_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DIV_OP", "enumarated", "OPERATOR");}
+{MOD_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MOD_OP", "enumarated", "OPERATOR");}
+{EQ_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "EQ_OP", "enumarated", "OPERATOR");}
+{NE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NE_OP", "enumarated", "OPERATOR");}
+{INC_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INC_OP", "enumarated", "OPERATOR");}
+{DEC_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DEC_OP", "enumarated", "OPERATOR");}
+{GT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GT_OP", "enumarated", "OPERATOR");}
+{LT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
+{GE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
+{LE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
+{INT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INT", "integer", "INTCONST");}
+{FLOAT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FLOAT", "double", "REALCONST");}
+{ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
 
-{LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","COMMENT");}
+{LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","enumarated", "COMMENT");}
 
 {STRING}				{
 							char* s = NULL;
@@ -137,7 +179,7 @@ MULTI_LINE_COMMENT "/*"
 								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
 								return EXIT_FAILURE;
 							}
-							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
+							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "char *", "STRING");	
 						}
 
 {MULTI_LINE_COMMENT}  	{
@@ -147,7 +189,7 @@ MULTI_LINE_COMMENT "/*"
 								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
 								return EXIT_FAILURE;
 							}
-							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
+							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT", "enumarated", "COMMENT");
 						}
 
 

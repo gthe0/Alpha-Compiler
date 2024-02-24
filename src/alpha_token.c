@@ -19,8 +19,9 @@ struct alpha_token_t
 {
   unsigned int      numline;
   unsigned int      numToken;
-  char              *content;
-  char              *type;
+  char              *content; // content
+  char              *macro_def; 
+  char              *type;  
   char              *category;
 
   AlphaToken_T      alpha_yylex; /* This is the next node of the list */
@@ -37,6 +38,7 @@ AlphaToken_T AlphaToken_new(void)
     new->numline     = 0;
     new->numToken    = 1;
     new->content     = NULL;
+    new->macro_def   = NULL;
     new->type        = NULL; 
     new->category    = NULL; 
     new->alpha_yylex = NULL;
@@ -58,6 +60,7 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
         temp = AlphaToken;
         AlphaToken = AlphaToken -> alpha_yylex;
         free(temp->category);
+        free(temp->macro_def);
         free(temp->content);
         free(temp->type);
         free(temp);  
@@ -73,19 +76,17 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
 *               1(EXIT_FAILURE) if content or type are NULL and it fails             
 *
 */
-int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline,
-                                char* content, char *type,
-                                char* category)
+int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* content, char * macro_def, char *type, char* category)
 {
     AlphaToken_T new    = NULL;
 
-    if (content == NULL || type == NULL 
-    || category == NULL || AlphaToken == NULL)
+    if (content == NULL || macro_def == NULL|| type == NULL || category == NULL || category == NULL || AlphaToken == NULL)
         return EXIT_FAILURE;
     
     new = AlphaToken_new(); 
 
     new -> content  = strdup(content);
+    new -> macro_def = strdup(macro_def);
     new -> type     = strdup(type);
     new -> category = strdup(category);
     new -> numline  = numline;
@@ -107,20 +108,24 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline,
     return EXIT_SUCCESS;
 }
 
-
 /*
-* It prints the contents of the AlphaToken list.
-*/
+ * This function returns the content of the AlphaToken
+ */
 void AlphaToken_print_all(AlphaToken_T AlphaToken)
-{
-    while (AlphaToken)
     {
-        printf("Line : %d,\t#%d\tToken: %s\tType: %s\tCategory: %s\n",
-        AlphaToken->numline, AlphaToken->numToken, AlphaToken->content,
-        AlphaToken->type, AlphaToken->category);
-
-        AlphaToken=AlphaToken->alpha_yylex;
+        while (AlphaToken)
+        {
+            if(strcmp(AlphaToken->category, "STRING") == 0)
+                printf("%d: #%d \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+            else if(strcmp(AlphaToken->category, "IDENTIFIER") == 0)
+                printf("%d: #%d \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+            else if(strcmp(AlphaToken->category, "INTCONST") == 0)
+                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+            else if(strcmp(AlphaToken->category, "REALCONST") == 0)
+                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+            else
+                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro_def, AlphaToken->type);
+            AlphaToken = AlphaToken->alpha_yylex;
+        }
+        printf("\n");
     }
-    
-    return ;
-}
