@@ -41,7 +41,7 @@
 
 	/* Function definitions*/
 	static int multi_line_comment();
-	static int string(char **s);
+	static int valid_string(char **s);
 
 	/* Function to print errors/warnings */
 	static void LOG_ERROR(LOG error,const char* msg, ...);
@@ -51,7 +51,6 @@
 %option noyywrap
 %option yylineno	
 %option	outfile = "scanner.c" 
-%option prefix = "alpha"
 
 /* Flex macros
 *
@@ -132,7 +131,7 @@ MULTI_LINE_COMMENT "/*"
 {STRING}				{
 							char* s = NULL;
 							int start = yylineno;
-							if(string(&s)== EXIT_FAILURE)
+							if(valid_string(&s)== EXIT_FAILURE)
 							{
 								free(s);
 								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
@@ -202,7 +201,7 @@ static void LOG_ERROR(LOG error_t ,const char* msg,...)
 *	Returns:	--EXIT_FAILURE (1) if the string does not end
 *				--EXIT_SUCCESS (0) if the string ends properly
 */
-static int string(char **s)
+static int valid_string(char **s)
 {
 	char *str; 
 	int c = 0, i = 0, resize = 1 ;

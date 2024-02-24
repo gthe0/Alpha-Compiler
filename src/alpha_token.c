@@ -57,6 +57,7 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
     {
         temp = AlphaToken;
         AlphaToken = AlphaToken -> alpha_yylex;
+        free(temp->category);
         free(temp->content);
         free(temp->type);
         free(temp);  
@@ -93,6 +94,7 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline,
     if(AlphaToken->content == NULL)
     {
         *AlphaToken = *new;
+        free(new);
         return EXIT_SUCCESS;
     } 
 
