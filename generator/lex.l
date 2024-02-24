@@ -1,8 +1,10 @@
 /* 
-*  Authors: 
-* 
+*  Authors: csd4881, csd4988, csd5038
+*			
+* 	lex.l
 *
-*
+*	This is a file with rules to generate
+*	a lexical analyzer's source code in c
 */
 
 /* DEFINITION SECTION
@@ -28,6 +30,7 @@
 	#define YY_DECL int alpha_yylex(void * ylval)
 	#define SZ 0x80
 
+	/* Enums for error levels*/
 	enum LOG {
 		ERROR,
 		WARNING,
@@ -39,7 +42,7 @@
 	static int multi_line_comment();
 	static int string(char **s);
 
-	/* FUNCTION TO PRINT ERRORS/WARNINGS */
+	/* Function to print errors/warnings */
 	static void LOG_ERROR(LOG error,const char* msg, ...);
 
 %}
@@ -130,7 +133,7 @@ MULTI_LINE_COMMENT "/*"
 							if(string(&s)== EXIT_FAILURE)
 							{
 								free(s);
-								LOG_ERROR(ERROR,"LINE %d, Unterminated COMMENT\n",start);
+								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
 								return 0;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
@@ -140,7 +143,7 @@ MULTI_LINE_COMMENT "/*"
 							int start = yylineno;
 							if(multi_line_comment() == EXIT_FAILURE)
 							{
-								LOG_ERROR(ERROR,"LINE %d, Unterminated COMMENT\n",start);
+								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
 								return 0;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
@@ -148,9 +151,14 @@ MULTI_LINE_COMMENT "/*"
 
 
 {WS}				{/*Ignore White Spaces*/}
-.					{return 0;}
+.					{LOG_ERROR(WARNING,"Illegal character %s in line %d\n",yytext,yylineno);}
 
 %%
+
+/* CODE SECTION
+*	Here we write the code/functions that will be 
+*	copied in the bottom of the generated file
+*/
 
 /*
 *	A function to print the errors in stderr
@@ -229,7 +237,7 @@ static int string(char **s)
 			else
 			{
 				str[i] = '\\';
-				LOG_ERROR(WARNING,"LINE %d, invalid escape sequence \\%c\n",yylineno,c);
+				LOG_ERROR(WARNING,"Invalid escape sequence \\%c in line %d\n",c,yylineno);
 				unput(c);
 			}
 		}
@@ -249,6 +257,7 @@ static int string(char **s)
 	}
 
 	*s = realloc(str,i*sizeof(char)+1);
+
 	return c == EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
 } 
 

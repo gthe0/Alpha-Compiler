@@ -15,7 +15,7 @@
 * @brief It prints all the alpha_token information stored in the struct
 *		 in the wanted fromat
 *
-* @param AlphaToken --Head of the struct.
+* @param AlphaToken Head of the struct.
 */
 void al(AlphaToken_T AlphaToken);
 
