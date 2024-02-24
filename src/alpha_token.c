@@ -35,7 +35,7 @@ AlphaToken_T AlphaToken_new(void)
     AlphaToken_T new = (AlphaToken_T)malloc(sizeof(alpha_token_t));
 
     new->numline     = 0;
-    new->numToken    = 0;
+    new->numToken    = 1;
     new->content     = NULL;
     new->type        = NULL; 
     new->category    = NULL; 

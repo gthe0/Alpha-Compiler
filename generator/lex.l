@@ -28,6 +28,7 @@
 
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
 	#define YY_DECL int alpha_yylex(void * ylval)
+	#define SCANNER_EOF YY_END_OF_BUFFER_CHAR
 	#define SZ 0x80
 
 	/* Enums for error levels*/
@@ -50,6 +51,7 @@
 %option noyywrap
 %option yylineno	
 %option	outfile = "scanner.c" 
+%option prefix = "alpha"
 
 /* Flex macros
 *
@@ -134,7 +136,7 @@ MULTI_LINE_COMMENT "/*"
 							{
 								free(s);
 								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
-								return 0;
+								return EXIT_FAILURE;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "STRING");	
 						}
@@ -144,7 +146,7 @@ MULTI_LINE_COMMENT "/*"
 							if(multi_line_comment() == EXIT_FAILURE)
 							{
 								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
-								return 0;
+								return EXIT_FAILURE;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT","COMMENT");
 						}
@@ -208,7 +210,7 @@ static int string(char **s)
 	/* Allocate memory for string*/
 	str = malloc(SZ*resize*sizeof(char));
 	
-	while((c = input()) != EOF )
+	while((c = input()) > SCANNER_EOF )
 	{
 		/* Checks if the string ends with " */
 		if(c == '\"')
@@ -258,7 +260,7 @@ static int string(char **s)
 
 	*s = realloc(str,i*sizeof(char)+1);
 
-	return c == EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
+	return c == SCANNER_EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
 } 
 
 /*
@@ -269,7 +271,7 @@ static int string(char **s)
 static int multi_line_comment()
 {
 	int c; 
-	while ((c = input()) != EOF)
+	while ((c = input()) > SCANNER_EOF)
 	{
 	/* 
 	*  If * is followed by a char other than /
@@ -281,7 +283,6 @@ static int multi_line_comment()
 			else
 				unput(c);
 	}
-	
 	return EXIT_FAILURE;
 }	
 
@@ -300,10 +301,14 @@ int main(int argc, char** argv)
 	else
 		yyin = stdin;
 
-	alpha_yylex((void*) head);
+	if(alpha_yylex((void*) head) == EXIT_FAILURE)
+	{
+		AlphaToken_free(head);
+		return EXIT_FAILURE;
+	}
 	
 	al(head);
 	AlphaToken_free(head);
 	
-	return 0;
+	return EXIT_SUCCESS;
 }
