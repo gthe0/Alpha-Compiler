@@ -178,9 +178,9 @@ static void LOG_ERROR(LOG error_t ,const char* msg,...)
 	fflush(stdout);
 
 	if(error_t == WARNING)
-		fprintf(stderr,warning);
+		fprintf(stderr,"%s",warning);
 	else if(error_t == ERROR)
-		fprintf(stderr,error);
+		fprintf(stderr,"%s",error);
 
 	/* Initialize arguments */
 	va_list args;
