@@ -290,6 +290,7 @@ static int multi_line_comment()
 */
 int main(int argc, char** argv) 
 {
+	int c;
 	AlphaToken_T head = AlphaToken_new();
 	
 	if(argc > 1)
@@ -300,14 +301,15 @@ int main(int argc, char** argv)
 	else
 		yyin = stdin;
 
-	if(alpha_yylex((void*) head) == EXIT_FAILURE)
+	if((c = alpha_yylex((void*) head)) == EXIT_SUCCESS)
 	{
-		AlphaToken_free(head);
-		return EXIT_FAILURE;
+		al(head);
 	}
 	
-	al(head);
 	AlphaToken_free(head);
+	yylex_destroy();
 	
-	return EXIT_SUCCESS;
+	return c == EXIT_FAILURE 
+			? 	EXIT_FAILURE
+			:	EXIT_SUCCESS;
 }
