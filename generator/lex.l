@@ -336,8 +336,7 @@ static int multi_line_comment(AlphaToken_T ylval)
 	printf("MAX: %d\n",MAX);
 	if(counter == 0)
 	{
-		int max = MAX;
-		for(int i = 0; i < max; i++)
+		for(int i = 0; i < ΜΑΧ; i++)
 		{
 			AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"NESTED_COMMENT", "enumarated", "COMMENT");
 		}
