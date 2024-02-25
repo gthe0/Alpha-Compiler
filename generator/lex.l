@@ -59,60 +59,61 @@
 *   will follow
 */
 
-IF    "if"
-ELSE    "else"
-WHILE    "while"
-FOR    "for"
-FUNC    "function"
-RETURN    "return"
-BREAK    "break"
+IF    		"if"
+ELSE    	"else"
+WHILE   	"while"
+FOR     	"for"
+FUNC    	"function"
+RETURN  	"return"
+BREAK   	"break"
 CONTINUE    "continue"
-AND    "and"
-NOT    "not"
-OR    "or"
-LOCAL    "local"
-TRUE    "true" 
-FALSE    "false"
-NIL    "nil"
-BRACKETS_OPEN "["					 
-BRACKETS_CLOSE "]"
-BRACES_OPEN "{"					
-BRACES_CLOSE "}"
-PARENT_OPEN "("
-PARENT_CLOSE ")"
-COMMA ","
-SEMI_COL ";"
-COL ":"
-DOUBLE_COL "::"
-DOT "."
-DOUBLE_DOT ".."
-ASSIGN_OP "="
-PLUS_OP "+"
-MINUS_OP "-"
-MULT_OP "*"
-DIV_OP "/"
-MOD_OP "%"
-EQ_OP "=="
-NE_OP "!="
-INC_OP "++"
-DEC_OP "--"
-GT_OP ">"
-LT_OP "<"
-GE_OP ">="
-LE_OP "<="
+AND    		"and"
+NOT    		"not"
+OR    		"or"
+LOCAL    	"local"
+TRUE    	"true" 
+FALSE   	"false"
+NIL    		"nil"
+BRACKETS_OPEN  "["					 
+BRACKETS_CLOSE  "]"
+BRACES_OPEN 	"{"					
+BRACES_CLOSE	"}"
+PARENT_OPEN 	"("
+PARENT_CLOSE    ")"
+COMMA			","
+SEMI_COL 		";"
+COL 			":"
+DOUBLE_COL 		"::"
+DOT				"."
+DOUBLE_DOT 		".."
+ASSIGN_OP 		"="
+PLUS_OP 		"+"
+MINUS_OP 		"-"
+MULT_OP 		"*"
+DIV_OP 			"/"
+MOD_OP 			"%"
+EQ_OP 			"=="
+NE_OP 			"!="
+INC_OP			"++"
+DEC_OP 			"--"
+GT_OP 			">"
+LT_OP 			"<"
+GE_OP			">="
+LE_OP			"<="
 
-digits  [0-9]
-delims  [ \t\n\r\v]
-letters [A-Za-z]
+digits  		[0-9]
+delims          [ \t\n\r\v]
+letters 		[A-Za-z]
 
-WS	    {delims}+
-ID	    {letters}({letters}|{digits}|[_])*
-INT	    {digits}+
-FLOAT   {digits}+"."{digits}+
+WS	    		{delims}+
+ID	    		{letters}({letters}|{digits}|[_])*
+INT	    		{digits}+
+FLOAT   		{digits}+"."{digits}+
 
-STRING	\"
-LINE_COMMENT "//".*
+STRING				\"
+LINE_COMMENT	 	"//".*
 MULTI_LINE_COMMENT "/*"
+
 
 /* RULES SECTION
 *   
@@ -164,6 +165,7 @@ MULTI_LINE_COMMENT "/*"
 {LT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
 {GE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
 {LE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
+
 {INT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INT", "integer", "INTCONST");}
 {FLOAT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FLOAT", "double", "REALCONST");}
 {ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
@@ -171,8 +173,8 @@ MULTI_LINE_COMMENT "/*"
 {LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","enumarated", "COMMENT");}
 
 {STRING}				{
-							char* s = NULL;
 							int start = yylineno;
+							char* s = NULL;
 							if(valid_string(&s)== EXIT_FAILURE)
 							{
 								free(s);
@@ -253,36 +255,27 @@ static int valid_string(char **s)
 	
 	while((c = input()) > SCANNER_EOF )
 	{
-		/* Checks if the string ends with " */
-		if(c == '\"')
+		if (c == '\"') 
 		{
-			str[i] = '\0';
-			break;
-		}
-
-		/* Checks if the escape sequences are correct */
-		if(c == '\\')
+            str[i] = '\0';
+            break;
+        } 
+		else if (c == '\\') 
 		{
-			c = input();
-			
-			if(c == 't')
+            c = input();
+            switch (c) 
 			{
-				str[i] = '\t';
-			}			
-			else if(c == 'n')
-			{
-				str[i] = '\n';
-			}
-			else if(c == '\"')
-			{
-				str[i] = '\"';
-			}
-			else
-			{
-				str[i] = '\\';
-				LOG_ERROR(WARNING,"Invalid escape sequence \\%c in line %d\n",c,yylineno);
-				unput(c);
-			}
+                case 't': str[i] = '\t'; break;
+                case 'n': str[i] = '\n'; break;
+                case '\"': str[i] = '\"'; break;
+                case '\'': str[i] = '\''; break;
+                case '\\': str[i] = '\\'; break;
+                default:
+                    str[i] = '\\';
+                    LOG_ERROR(WARNING, "Invalid escape sequence \\%c in line %d\n", c, yylineno);
+                    unput(c);
+                    break;
+            }
 		}
 		else
 		{
@@ -311,7 +304,8 @@ static int valid_string(char **s)
 */
 static int multi_line_comment()
 {
-	int c; 
+	static int counter = 0;
+	int c;
 	while ((c = input()) > SCANNER_EOF)
 	{
 	/* 
@@ -321,6 +315,13 @@ static int multi_line_comment()
 		if(c == '*')
 			if((c = input()) == '/')
 				return EXIT_SUCCESS;
+			else
+				unput(c);
+
+		else if(c == '//')
+			if((c = input()) == '*')
+				if(multi_line_comment() == EXIT_FAILURE)
+					return EXIT_FAILURE;
 			else
 				unput(c);
 	}

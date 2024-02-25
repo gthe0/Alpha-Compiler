@@ -537,7 +537,7 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lex.l"
+#line 1 "./generator/lex.l"
 /* 
 *  Authors: csd4881, csd4988, csd5038
 *			
@@ -551,7 +551,7 @@ char *yytext;
 * Anything written inside the brackets will be copied 
 * at the top of the generated .c file
 */
-#line 17 "lex.l"
+#line 17 "./generator/lex.l"
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <stdarg.h>
@@ -814,7 +814,7 @@ YY_DECL
 		}
 
 	{
-#line 124 "lex.l"
+#line 125 "./generator/lex.l"
 
 #line 820 "scanner.c"
 
@@ -885,239 +885,238 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 125 "lex.l"
+#line 126 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "IF", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 126 "lex.l"
+#line 127 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ELSE", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 127 "lex.l"
+#line 128 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "WHILE", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 128 "lex.l"
+#line 129 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FOR", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 129 "lex.l"
+#line 130 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FUNC", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 130 "lex.l"
+#line 131 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "RET", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 131 "lex.l"
+#line 132 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BREAK", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 132 "lex.l"
+#line 133 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "CONTINUE", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 133 "lex.l"
+#line 134 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "AND", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 134 "lex.l"
+#line 135 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NOT", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 135 "lex.l"
+#line 136 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "OR", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 136 "lex.l"
+#line 137 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LOCAL", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 137 "lex.l"
+#line 138 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "TRUE", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 138 "lex.l"
+#line 139 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FALSE", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 139 "lex.l"
+#line 140 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NIL", "enumarated", "KEYWORD");}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 141 "lex.l"
+#line 142 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_OPEN", "enumarated", "PUNCT");}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 142 "lex.l"
+#line 143 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACKETS_CLOSE", "enumarated", "PUNCT");}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 143 "lex.l"
+#line 144 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_OPEN", "enumarated", "PUNCT");}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 144 "lex.l"
+#line 145 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "BRACES_CLOSE", "enumarated", "PUNCT");}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 145 "lex.l"
+#line 146 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_OPEN", "enumarated", "PUNCT");}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 146 "lex.l"
+#line 147 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PARENT_CLOSE", "enumarated", "PUNCT");}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 147 "lex.l"
+#line 148 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COMMA", "enumarated", "PUNCT");}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 148 "lex.l"
+#line 149 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "SEMI_COL", "enumarated", "PUNCT");}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 149 "lex.l"
+#line 150 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "COL", "enumarated", "PUNCT");}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 150 "lex.l"
+#line 151 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_COL", "enumarated", "PUNCT");}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 151 "lex.l"
+#line 152 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOT", "enumarated", "PUNCT");}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 152 "lex.l"
+#line 153 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DOUBLE_DOT", "enumarated", "PUNCT");}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 153 "lex.l"
+#line 154 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ASSIGN_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 154 "lex.l"
+#line 155 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "PLUS_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 155 "lex.l"
+#line 156 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MINUS_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 156 "lex.l"
+#line 157 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MULT_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 157 "lex.l"
+#line 158 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DIV_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 158 "lex.l"
+#line 159 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "MOD_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 159 "lex.l"
+#line 160 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "EQ_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 160 "lex.l"
+#line 161 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "NE_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 161 "lex.l"
+#line 162 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INC_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 162 "lex.l"
+#line 163 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "DEC_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 163 "lex.l"
+#line 164 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GT_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 164 "lex.l"
+#line 165 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 165 "lex.l"
+#line 166 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 166 "lex.l"
+#line 167 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 167 "lex.l"
+#line 169 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "INT", "integer", "INTCONST");}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 168 "lex.l"
+#line 170 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "FLOAT", "double", "REALCONST");}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 169 "lex.l"
+#line 171 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 171 "lex.l"
+#line 173 "./generator/lex.l"
 {AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"LINE_COMMENT","enumarated", "COMMENT");}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 173 "lex.l"
+#line 175 "./generator/lex.l"
 {
 							char* s = NULL;
-							int start = yylineno;
 							if(valid_string(&s)== EXIT_FAILURE)
 							{
 								free(s);
-								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
+								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",yylineno);
 								return EXIT_FAILURE;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "char *", "STRING");	
@@ -1125,12 +1124,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 185 "lex.l"
+#line 186 "./generator/lex.l"
 {
-							int start = yylineno;
 							if(multi_line_comment() == EXIT_FAILURE)
 							{
-								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
+								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",yylineno);
 								return EXIT_FAILURE;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT", "enumarated", "COMMENT");
@@ -1139,20 +1137,20 @@ YY_RULE_SETUP
 case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
-#line 196 "lex.l"
+#line 196 "./generator/lex.l"
 {/*Ignore White Spaces*/}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 197 "lex.l"
+#line 197 "./generator/lex.l"
 {LOG_ERROR(WARNING,"Illegal character %s in line %d\n",yytext,yylineno);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 199 "lex.l"
+#line 199 "./generator/lex.l"
 ECHO;
 	YY_BREAK
-#line 1156 "scanner.c"
+#line 1154 "scanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2169,7 +2167,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 199 "lex.l"
+#line 199 "./generator/lex.l"
 
 
 /* CODE SECTION
@@ -2227,36 +2225,27 @@ static int valid_string(char **s)
 	
 	while((c = input()) > SCANNER_EOF )
 	{
-		/* Checks if the string ends with " */
-		if(c == '\"')
+		if (c == '\"') 
 		{
-			str[i] = '\0';
-			break;
-		}
-
-		/* Checks if the escape sequences are correct */
-		if(c == '\\')
+            str[i] = '\0';
+            break;
+        } 
+		else if (c == '\\') 
 		{
-			c = input();
-			
-			if(c == 't')
+            c = input();
+            switch (c) 
 			{
-				str[i] = '\t';
-			}			
-			else if(c == 'n')
-			{
-				str[i] = '\n';
-			}
-			else if(c == '\"')
-			{
-				str[i] = '\"';
-			}
-			else
-			{
-				str[i] = '\\';
-				LOG_ERROR(WARNING,"Invalid escape sequence \\%c in line %d\n",c,yylineno);
-				unput(c);
-			}
+                case 't': str[i] = '\t'; break;
+                case 'n': str[i] = '\n'; break;
+                case '\"': str[i] = '\"'; break;
+                case '\'': str[i] = '\''; break;
+                case '\\': str[i] = '\\'; break;
+                default:
+                    str[i] = '\\';
+                    LOG_ERROR(WARNING, "Invalid escape sequence \\%c in line %d\n", c, yylineno);
+                    unput(c);
+                    break;
+            }
 		}
 		else
 		{
@@ -2285,7 +2274,7 @@ static int valid_string(char **s)
 */
 static int multi_line_comment()
 {
-	int c; 
+	int c;
 	while ((c = input()) > SCANNER_EOF)
 	{
 	/* 
@@ -2295,6 +2284,13 @@ static int multi_line_comment()
 		if(c == '*')
 			if((c = input()) == '/')
 				return EXIT_SUCCESS;
+			else
+				unput(c);
+
+		else if(c == '//')
+			if((c = input()) == '*')
+				if(multi_line_comment() == EXIT_FAILURE)
+					return EXIT_FAILURE;
 			else
 				unput(c);
 	}
