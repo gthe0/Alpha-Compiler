@@ -7,3 +7,6 @@
 
 # Ignore text files
 *.txt
+
+# Ignore flex output
+src/scanner.c

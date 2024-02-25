@@ -29,22 +29,22 @@
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
 	#define YY_DECL int alpha_yylex(void * ylval)
 	#define SCANNER_EOF YY_END_OF_BUFFER_CHAR
-	#define SZ 0x80
+	#define SZ 0x40
 
 	/* Enums for error levels*/
-	enum LOG {
+	enum ERROR_TYPE {
 		ERROR,
 		WARNING,
 	};
 
-	typedef enum LOG LOG;
+	typedef enum ERROR_TYPE ERROR_TYPE;
 
 	/* Function definitions*/
 	static int multi_line_comment(AlphaToken_T ylval);
 	static int valid_string(char **s);
 
 	/* Function to print errors/warnings */
-	static void LOG_ERROR(LOG error,const char* msg, ...);
+	static void LOG_ERROR(ERROR_TYPE error,const char* msg, ...);
 
 %}
 
@@ -59,22 +59,22 @@
 *   will follow
 */
 
-IF    		"if"
-ELSE    	"else"
-WHILE   	"while"
-FOR     	"for"
-FUNC    	"function"
-RETURN  	"return"
-BREAK   	"break"
-CONTINUE    "continue"
-AND    		"and"
-NOT    		"not"
-OR    		"or"
-LOCAL    	"local"
-TRUE    	"true" 
-FALSE   	"false"
-NIL    		"nil"
-BRACKETS_OPEN  "["					 
+IF    			"if"
+ELSE    		"else"
+WHILE   		"while"
+FOR     		"for"
+FUNC    		"function"
+RETURN  		"return"
+BREAK   		"break"
+CONTINUE    	"continue"
+AND    			"and"
+NOT    			"not"
+OR    			"or"
+LOCAL    		"local"
+TRUE    		"true" 
+FALSE   		"false"
+NIL    			"nil"
+BRACKETS_OPEN	"["					 
 BRACKETS_CLOSE  "]"
 BRACES_OPEN 	"{"					
 BRACES_CLOSE	"}"
@@ -208,7 +208,7 @@ MULTI_LINE_COMMENT "/*"
 /*
 *	A function to print the errors in stderr
 */
-static void LOG_ERROR(LOG error_t ,const char* msg,...)
+static void LOG_ERROR(ERROR_TYPE error_t ,const char* msg,...)
 {
 	/* If we are on linux machines, use ansi escape sequences */
 	#if ( __linux__)
@@ -298,16 +298,15 @@ static int valid_string(char **s)
 } 
 
 /*
-* A Function to check if the multiline comment ends
+* A Function to check if the multiline comment and the nested comments end
 *	Returns:	--EXIT_FAILURE (1) if the comment does not end
 *				--EXIT_SUCCESS (0) if the comment ends properly
 */
 static int multi_line_comment(AlphaToken_T ylval)
 {
-	static int MAX = 1;
 	static int counter = 1;
 	int c;
-	while ((c = input()) > SCANNER_EOF && counter != 0)
+	while ((c = input()) > SCANNER_EOF && counter)
 	{
 	/* 
 	*  If * is followed by a char other than /
@@ -317,49 +316,34 @@ static int multi_line_comment(AlphaToken_T ylval)
 			if((c = input()) == '/')
 			{
 				counter--;
-				//return EXIT_SUCCESS;
 			}
 			else
 				unput(c);
-
+	/* 
+	*  If / is followed by a char other than *
+	*  return it to the input stream same as before
+	*/
 		else if(c == '/')
 			if((c = input()) == '*')
 			{
-				MAX++;
+				AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"NESTED_COMMENT", "enumarated", "COMMENT");
 				counter++;
 			}
 			else
 				unput(c);
 	}
-
-	printf("Counter: %d\n",counter);\
-	printf("MAX: %d\n",MAX);
-	if(counter == 0)
-	{
-		for(int i = 0; i < ΜΑΧ; i++)
-		{
-			AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"NESTED_COMMENT", "enumarated", "COMMENT");
-		}
-	}
-	else return EXIT_FAILURE;
-}	
+	
+	return counter == 0 ? EXIT_SUCCESS :EXIT_FAILURE;
+}
 
 /*
-* main given in a lecture XD
+* main
 */
-int main(int argc, char** argv) 
+int main(void) 
 {
 	int c;
 	AlphaToken_T head = AlphaToken_new();
 	
-	if(argc > 1)
-		if(!(yyin = fopen(argv[1], "r"))){
-			fprintf(stderr, "Cannot read file: %s\n", argv[1]);
-			return 1;
-		}
-	else
-		yyin = stdin;
-
 	if((c = alpha_yylex((void*) head)) == EXIT_SUCCESS)
 	{
 		al(head);
