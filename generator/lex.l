@@ -40,7 +40,7 @@
 	typedef enum LOG LOG;
 
 	/* Function definitions*/
-	static int multi_line_comment();
+	static int multi_line_comment(AlphaToken_T ylval);
 	static int valid_string(char **s);
 
 	/* Function to print errors/warnings */
@@ -186,7 +186,7 @@ MULTI_LINE_COMMENT "/*"
 
 {MULTI_LINE_COMMENT}  	{
 							int start = yylineno;
-							if(multi_line_comment() == EXIT_FAILURE)
+							if(multi_line_comment(ylval) == EXIT_FAILURE)
 							{
 								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
 								return EXIT_FAILURE;
@@ -302,11 +302,12 @@ static int valid_string(char **s)
 *	Returns:	--EXIT_FAILURE (1) if the comment does not end
 *				--EXIT_SUCCESS (0) if the comment ends properly
 */
-static int multi_line_comment()
+static int multi_line_comment(AlphaToken_T ylval)
 {
-	static int counter = 0;
+	static int MAX = 1;
+	static int counter = 1;
 	int c;
-	while ((c = input()) > SCANNER_EOF)
+	while ((c = input()) > SCANNER_EOF && counter != 0)
 	{
 	/* 
 	*  If * is followed by a char other than /
@@ -314,18 +315,34 @@ static int multi_line_comment()
 	*/
 		if(c == '*')
 			if((c = input()) == '/')
-				return EXIT_SUCCESS;
+			{
+				counter--;
+				//return EXIT_SUCCESS;
+			}
 			else
 				unput(c);
 
-		else if(c == '//')
+		else if(c == '/')
 			if((c = input()) == '*')
-				if(multi_line_comment() == EXIT_FAILURE)
-					return EXIT_FAILURE;
+			{
+				MAX++;
+				counter++;
+			}
 			else
 				unput(c);
 	}
-	return EXIT_FAILURE;
+
+	printf("Counter: %d\n",counter);\
+	printf("MAX: %d\n",MAX);
+	if(counter == 0)
+	{
+		int max = MAX;
+		for(int i = 0; i < max; i++)
+		{
+			AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"NESTED_COMMENT", "enumarated", "COMMENT");
+		}
+	}
+	else return EXIT_FAILURE;
 }	
 
 /*

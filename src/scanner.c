@@ -578,7 +578,7 @@ char *yytext;
 	typedef enum LOG LOG;
 
 	/* Function definitions*/
-	static int multi_line_comment();
+	static int multi_line_comment(AlphaToken_T ylval);
 	static int valid_string(char **s);
 
 	/* Function to print errors/warnings */
@@ -1112,11 +1112,12 @@ case 46:
 YY_RULE_SETUP
 #line 175 "./generator/lex.l"
 {
+							int start = yylineno;
 							char* s = NULL;
 							if(valid_string(&s)== EXIT_FAILURE)
 							{
 								free(s);
-								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",yylineno);
+								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
 								return EXIT_FAILURE;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, s, "STRING", "char *", "STRING");	
@@ -1124,11 +1125,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 186 "./generator/lex.l"
+#line 187 "./generator/lex.l"
 {
-							if(multi_line_comment() == EXIT_FAILURE)
+							int start = yylineno;
+							if(multi_line_comment(ylval) == EXIT_FAILURE)
 							{
-								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",yylineno);
+								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
 								return EXIT_FAILURE;
 							}
 							AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"MULTI_LINE_COMMENT", "enumarated", "COMMENT");
@@ -1137,20 +1139,20 @@ YY_RULE_SETUP
 case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
-#line 196 "./generator/lex.l"
+#line 198 "./generator/lex.l"
 {/*Ignore White Spaces*/}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 197 "./generator/lex.l"
+#line 199 "./generator/lex.l"
 {LOG_ERROR(WARNING,"Illegal character %s in line %d\n",yytext,yylineno);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 199 "./generator/lex.l"
+#line 201 "./generator/lex.l"
 ECHO;
 	YY_BREAK
-#line 1154 "scanner.c"
+#line 1156 "scanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2167,7 +2169,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 199 "./generator/lex.l"
+#line 201 "./generator/lex.l"
 
 
 /* CODE SECTION
@@ -2272,10 +2274,12 @@ static int valid_string(char **s)
 *	Returns:	--EXIT_FAILURE (1) if the comment does not end
 *				--EXIT_SUCCESS (0) if the comment ends properly
 */
-static int multi_line_comment()
+static int multi_line_comment(AlphaToken_T ylval)
 {
+	static int MAX = 1;
+	static int counter = 1;
 	int c;
-	while ((c = input()) > SCANNER_EOF)
+	while ((c = input()) > SCANNER_EOF && counter != 0)
 	{
 	/* 
 	*  If * is followed by a char other than /
@@ -2283,18 +2287,34 @@ static int multi_line_comment()
 	*/
 		if(c == '*')
 			if((c = input()) == '/')
-				return EXIT_SUCCESS;
+			{
+				counter--;
+				//return EXIT_SUCCESS;
+			}
 			else
 				unput(c);
 
-		else if(c == '//')
+		else if(c == '/')
 			if((c = input()) == '*')
-				if(multi_line_comment() == EXIT_FAILURE)
-					return EXIT_FAILURE;
+			{
+				MAX++;
+				counter++;
+			}
 			else
 				unput(c);
 	}
-	return EXIT_FAILURE;
+
+	printf("Counter: %d\n",counter);\
+	printf("MAX: %d\n",MAX);
+	if(counter == 0)
+	{
+		int max = MAX;
+		for(int i = 0; i < max; i++)
+		{
+			AlphaToken_insert((AlphaToken_T) ylval, yylineno, yytext,"NESTED_COMMENT", "enumarated", "COMMENT");
+		}
+	}
+	else return EXIT_FAILURE;
 }	
 
 /*
