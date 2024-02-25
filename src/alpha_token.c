@@ -76,11 +76,13 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
 *               1(EXIT_FAILURE) if content or type are NULL and it fails             
 *
 */
-int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* content, char * macro_def, char *type, char* category)
+int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* content,
+                             char * macro_def, char *type, char* category)
 {
     AlphaToken_T new    = NULL;
 
-    if (content == NULL || macro_def == NULL|| type == NULL || category == NULL || category == NULL || AlphaToken == NULL)
+    if (content == NULL  || macro_def == NULL
+        || type == NULL  ||  category == NULL || AlphaToken == NULL)
         return EXIT_FAILURE;
     
     new = AlphaToken_new(); 

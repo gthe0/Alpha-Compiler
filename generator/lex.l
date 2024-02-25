@@ -304,7 +304,7 @@ static int valid_string(char **s)
 */
 static int multi_line_comment(AlphaToken_T ylval)
 {
-	static int counter = 1;
+	int counter = 1;
 	int c;
 	while ((c = input()) > SCANNER_EOF && counter)
 	{
@@ -333,7 +333,7 @@ static int multi_line_comment(AlphaToken_T ylval)
 				unput(c);
 	}
 	
-	return counter == 0 ? EXIT_SUCCESS :EXIT_FAILURE;
+	return counter == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 /*
