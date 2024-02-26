@@ -356,12 +356,14 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
+	/* Open the input file */
 	if(!(yyin = fopen(argv[1],"r")))
 	{
 		LOG_ERROR(ERROR, "Cannot read Input file %s\n", argv[1]);
 		return EXIT_FAILURE;
 	}
 	
+	/* If the output file is not provided use ost */
 	if(argc > 2)
 	{
 		if(!(ost = fopen(argv[2],"w")))
@@ -372,11 +374,13 @@ int main(int argc, char** argv)
 	}
 	else ost = stdout;
 
+	/* If there are no errors print list */
 	if((c = alpha_yylex((void*) head)) == EXIT_SUCCESS)
 	{
 		al(head,ost);
 	}
 
+	/* Close output stream and clean up */
 	fclose(ost);
 
 	AlphaToken_free(head);

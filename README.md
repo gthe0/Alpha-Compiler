@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a simple implementation of a lexical analyzer using LEX.
+This project is a simple implementation of a lexical analyzer using FLEX.
 
 ## Contributors
 
@@ -29,8 +29,11 @@ To run the lexical analyzer on an input file, use the following command:
 
 INPUT_FILE: File containing the input (It's self explanatory). If no input file is specified, the program will terminate.
 
-If you want to generate an output file, please use redirection as in the following example:
+If you want to generate an output file, please use either command:
+- ./bin/scanner.out INPUT_FILE OUT_FILE
 - ./bin/scanner.out INPUT_FILE > OUT_FILE
+
+OUT_FILE: File where the output will be written
 
 ## Cleaning
 
