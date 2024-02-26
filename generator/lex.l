@@ -40,7 +40,7 @@
 	typedef enum ERROR_TYPE ERROR_TYPE;
 
 	/* Function definitions*/
-	static int multi_line_comment(AlphaToken_T ylval);
+	static int multi_line_comment(AlphaToken_T ylval, int count);
 	static int valid_string(char **s);
 
 	/* Function to print errors/warnings */
@@ -187,12 +187,11 @@ BLOCK_COMMENT	"/*"
 
 {BLOCK_COMMENT}  	{
 							int start = yylineno;
-							if(multi_line_comment(ylval) == EXIT_FAILURE)
+							if(multi_line_comment(ylval,0) == EXIT_FAILURE)
 							{
 								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
 								return EXIT_FAILURE;
 							}
-							AlphaToken_insert((AlphaToken_T) ylval, start, yylineno, yytext,"BLOCK_COMMENT", "enumarated", "COMMENT");
 						}
 
 
@@ -304,11 +303,11 @@ static int valid_string(char **s)
 *	Returns:	--EXIT_FAILURE (1) if the comment does not end
 *				--EXIT_SUCCESS (0) if the comment ends properly
 */
-static int multi_line_comment(AlphaToken_T ylval)
+static int multi_line_comment(AlphaToken_T ylval, int count)
 {
-	int counter = 1;
 	int c;
-	while ((c = input()) > SCANNER_EOF && counter)
+	int start = yylineno;
+	while ((c = input()) > SCANNER_EOF)
 	{
 	/* 
 	*  If * is followed by a char other than /
@@ -316,26 +315,26 @@ static int multi_line_comment(AlphaToken_T ylval)
 	*/
 		if(c == '*')
 			if((c = input()) == '/')
-			{
-				counter--;
-			}
+				{
+					AlphaToken_insert(ylval, start, yylineno, yytext
+									,count == 0 ? "BLOCK_COMMENT":"NESTED_COMMENT"
+									, "enumarated", "COMMENT");
+					
+					return EXIT_SUCCESS;
+				}
 			else
 				unput(c);
-	/* 
-	*  If / is followed by a char other than *
-	*  return it to the input stream same as before
-	*/
+		/* 
+		*  Else / is followed by * start processing 
+		*  nested comment
+		*/
 		else if(c == '/')
 			if((c = input()) == '*')
-			{
-				AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext,"NESTED_COMMENT", "enumarated", "COMMENT");
-				counter++;
-			}
+					multi_line_comment(ylval,count+1);
 			else
 				unput(c);
 	}
-	
-	return counter == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+	return EXIT_FAILURE;
 }
 
 /*
