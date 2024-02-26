@@ -182,7 +182,8 @@ BLOCK_COMMENT	"/*"
 								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
 								return EXIT_FAILURE;
 							}
-							AlphaToken_insert((AlphaToken_T) ylval, start, yylineno, s, "STRING", "char *", "STRING");	
+							AlphaToken_insert((AlphaToken_T) ylval, start, yylineno, s, "STRING", "char *", "STRING");
+							free(s);
 						}
 
 {BLOCK_COMMENT}  	{
@@ -248,10 +249,10 @@ static void LOG_ERROR(ERROR_TYPE error_t ,const char* msg,...)
 static int valid_string(char **s)
 {
 	char *str; 
-	int c = 0, i = 0, resize = 1 ;
+	int c = 0, i = 0,size = SZ*sizeof(char);
 	
 	/* Allocate memory for string*/
-	str = malloc(SZ*resize*sizeof(char));
+	str = malloc(size);
 	
 	while((c = input()) > SCANNER_EOF )
 	{
@@ -286,13 +287,15 @@ static int valid_string(char **s)
 		i++;
 		
 		/* Allocate more memory if needed */
-		if(i >= SZ*resize)
+		if(i >= size)
 		{
-			resize++;
-			str = realloc(str,SZ*resize);
+			size += SZ;
+			str = realloc(str,(size)*sizeof(char));
 		}
+
 	}
 
+	/* Resize it to not take more space than needed */
 	*s = realloc(str,i*sizeof(char)+1);
 
 	return c == SCANNER_EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
