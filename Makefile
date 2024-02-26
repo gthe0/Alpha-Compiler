@@ -23,11 +23,9 @@ compile: ${SRC}/scanner.c $(BIN)
 	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.exe
 
 # Lexical analysis target
- ${SRC}/scanner.c: $(GENERATOR)/lex.l
+flex: $(GENERATOR)/lex.l
 	flex $(GENERATOR)/lex.l
 	mv scanner.c $@
-	$(eval SOURCE_FILES +=  $@)
-
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
