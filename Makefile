@@ -20,12 +20,12 @@ object: ${SRC}/scanner.c $(OBJ_FILES)
 
 # Compile the scanner
 compile: ${SRC}/scanner.c $(BIN)
-	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.exe
+	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.out
 
 # Lexical analysis target
 flex: $(GENERATOR)/lex.l
 	flex $(GENERATOR)/lex.l
-	mv scanner.c $@
+	mv scanner.c $(SRC)/scanner.c
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)

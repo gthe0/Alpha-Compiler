@@ -40,7 +40,7 @@
 	typedef enum ERROR_TYPE ERROR_TYPE;
 
 	/* Function definitions*/
-	static int multi_line_comment(AlphaToken_T ylval, int count);
+	static int multi_line_comment(AlphaToken_T ylval, int );
 	static int valid_string(char **s);
 
 	/* Function to print errors/warnings */
@@ -306,7 +306,7 @@ static int valid_string(char **s)
 *	Returns:	--EXIT_FAILURE (1) if the comment does not end
 *				--EXIT_SUCCESS (0) if the comment ends properly
 */
-static int multi_line_comment(AlphaToken_T ylval, int count)
+static int multi_line_comment(AlphaToken_T ylval, int iteration)
 {
 	int c;
 	int start = yylineno;
@@ -320,7 +320,7 @@ static int multi_line_comment(AlphaToken_T ylval, int count)
 			if((c = input()) == '/')
 				{
 					AlphaToken_insert(ylval, start, yylineno, yytext
-									,count == 0 ? "BLOCK_COMMENT":"NESTED_COMMENT"
+									, iteration == 0 ? "BLOCK_COMMENT":"NESTED_COMMENT"
 									, "enumarated", "COMMENT");
 					
 					return EXIT_SUCCESS;
@@ -333,7 +333,7 @@ static int multi_line_comment(AlphaToken_T ylval, int count)
 		*/
 		else if(c == '/')
 			if((c = input()) == '*')
-					multi_line_comment(ylval,count+1);
+					multi_line_comment(ylval,iteration+1);
 			else
 				unput(c);
 	}
@@ -343,11 +343,23 @@ static int multi_line_comment(AlphaToken_T ylval, int count)
 /*
 * main
 */
-int main(void) 
+int main(int argc, char** argv) 
 {
 	int c;
 	AlphaToken_T head = AlphaToken_new();
-	
+
+	if(argc == 1)
+	{
+		fprintf(stderr,"Usage: %s INPUT_FILE\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	if(!(yyin = fopen(argv[1],"r")))
+	{
+		LOG_ERROR(ERROR, "Cannot read Input file %s\n", argv[1]);
+		return EXIT_FAILURE;
+	}
+
 	if((c = alpha_yylex((void*) head)) == EXIT_SUCCESS)
 	{
 		al(head);
