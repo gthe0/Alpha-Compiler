@@ -9,10 +9,10 @@
 #include <al.h>
 #include <stdio.h>
 
-void al(AlphaToken_T AlphaToken)
+void al(AlphaToken_T AlphaToken,FILE* ost)
 {
-    printf("======================== LEXICAL ANALYSIS ========================\n");
-    AlphaToken_print_all(AlphaToken);
+    fprintf(ost,"======================== LEXICAL ANALYSIS ========================\n");
+    AlphaToken_print_all(AlphaToken,ost);
 
     return ;
 }

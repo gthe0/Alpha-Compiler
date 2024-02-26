@@ -10,6 +10,8 @@
 #ifndef __ALPHA_TOKEN__
 #define __ALPHA_TOKEN__
 
+#include <stdio.h>
+
 typedef struct alpha_token_t alpha_token_t, *AlphaToken_T;
 
 /** 
@@ -43,6 +45,6 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, unsigned in
 *
 * @param AlphaToken --Head of the struct that will be printed.
 */
-void AlphaToken_print_all(AlphaToken_T AlphaToken);
+void AlphaToken_print_all(AlphaToken_T AlphaToken,FILE* ost);
 
 #endif /*alpha token ADT*/

@@ -345,7 +345,9 @@ static int multi_line_comment(AlphaToken_T ylval, int iteration)
 */
 int main(int argc, char** argv) 
 {
+	FILE* ost;
 	int c;
+
 	AlphaToken_T head = AlphaToken_new();
 
 	if(argc == 1)
@@ -359,12 +361,24 @@ int main(int argc, char** argv)
 		LOG_ERROR(ERROR, "Cannot read Input file %s\n", argv[1]);
 		return EXIT_FAILURE;
 	}
+	
+	if(argc > 2)
+	{
+		if(!(ost = fopen(argv[2],"w")))
+		{
+			LOG_ERROR(ERROR, "Cannot write to specified file %s\n", argv[1]);
+			return EXIT_FAILURE;
+		}
+	}
+	else ost = stdout;
 
 	if((c = alpha_yylex((void*) head)) == EXIT_SUCCESS)
 	{
-		al(head);
+		al(head,ost);
 	}
-	
+
+	fclose(ost);
+
 	AlphaToken_free(head);
 	yylex_destroy();
 	

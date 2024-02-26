@@ -116,18 +116,18 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, unsigned in
 /*
  * This function returns the content of the AlphaToken
  */
-void AlphaToken_print_all(AlphaToken_T AlphaToken)
+void AlphaToken_print_all(AlphaToken_T AlphaToken,FILE* ost)
 {
     while (AlphaToken)
     {
         if(strcmp(AlphaToken->category, "STRING") == 0 || strcmp(AlphaToken->category, "IDENTIFIER") == 0)
-            printf("%u: #%u \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+           fprintf(ost, "%u: #%u \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
         else if(strcmp(AlphaToken->category, "INTCONST") == 0 || strcmp(AlphaToken->category, "REALCONST") == 0)
-            printf("%u: #%u \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+           fprintf(ost, "%u: #%u \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
         else if(strcmp(AlphaToken->category, "COMMENT") == 0)
-            printf("%u: #%u \"%u - %u\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->numline, AlphaToken->endline , AlphaToken->category, AlphaToken->macro, AlphaToken->type);
+           fprintf(ost, "%u: #%u \"%u - %u\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->numline, AlphaToken->endline , AlphaToken->category, AlphaToken->macro, AlphaToken->type);
         else
-            printf("%u: #%u \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro, AlphaToken->type);
+           fprintf(ost, "%u: #%u \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro, AlphaToken->type);
         AlphaToken = AlphaToken->alpha_yylex;
     }
 }
