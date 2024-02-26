@@ -272,7 +272,6 @@ static int valid_string(char **s)
                 case 't': str[i] = '\t'; break;
                 case 'n': str[i] = '\n'; break;
                 case '\"': str[i] = '\"'; break;
-                case '\'': str[i] = '\''; break;
                 case '\\': str[i] = '\\'; break;
                 default:
                     str[i] = '\\';
