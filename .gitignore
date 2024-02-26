@@ -10,3 +10,5 @@
 
 # Ignore flex output
 src/scanner.c
+
+phase1_tests
