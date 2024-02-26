@@ -348,8 +348,6 @@ int main(int argc, char** argv)
 	FILE* ost;
 	int c;
 
-	AlphaToken_T head = AlphaToken_new();
-
 	if(argc == 1)
 	{
 		fprintf(stderr,"Usage: %s INPUT_FILE\n", argv[0]);
@@ -374,14 +372,17 @@ int main(int argc, char** argv)
 	}
 	else ost = stdout;
 
+	AlphaToken_T head = AlphaToken_new();
+
 	/* If there are no errors print list */
 	if((c = alpha_yylex((void*) head)) == EXIT_SUCCESS)
 	{
 		al(head,ost);
 	}
 
-	/* Close output stream and clean up */
+	/* Close streams and clean up */
 	fclose(ost);
+	fclose(yyin);
 
 	AlphaToken_free(head);
 	yylex_destroy();

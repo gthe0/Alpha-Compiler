@@ -118,6 +118,10 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, unsigned in
  */
 void AlphaToken_print_all(AlphaToken_T AlphaToken,FILE* ost)
 {
+    if (AlphaToken->content == NULL || AlphaToken-> macro == NULL
+        ||AlphaToken->type == NULL  || AlphaToken-> category == NULL || AlphaToken == NULL)
+        return;
+    
     while (AlphaToken)
     {
         if(strcmp(AlphaToken->category, "STRING") == 0 || strcmp(AlphaToken->category, "IDENTIFIER") == 0)
