@@ -18,6 +18,7 @@
 struct alpha_token_t 
 {
   unsigned int      numline;
+  unsigned int      endline;
   unsigned int      numToken;
   char              *content; // content
   char              *macro; 
@@ -36,6 +37,7 @@ AlphaToken_T AlphaToken_new(void)
     AlphaToken_T new = (AlphaToken_T)malloc(sizeof(alpha_token_t));
 
     new->numline     = 0;
+    new->endline     = 0;
     new->numToken    = 1;
     new->content     = NULL;
     new->macro       = NULL;
@@ -76,8 +78,8 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
 *               1(EXIT_FAILURE) if content or type are NULL and it fails             
 *
 */
-int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* content,
-                             char * macro, char *type, char* category)
+int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, unsigned int endline,
+                                char* content, char * macro, char *type, char* category)
 {
     AlphaToken_T new    = NULL;
 
@@ -92,6 +94,7 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* conte
     new -> type     = strdup(type);
     new -> category = strdup(category);
     new -> numline  = numline;
+    new -> endline  = endline;
     new->alpha_yylex = NULL;
 
     if(AlphaToken->content == NULL)
@@ -114,20 +117,17 @@ int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* conte
  * This function returns the content of the AlphaToken
  */
 void AlphaToken_print_all(AlphaToken_T AlphaToken)
+{
+    while (AlphaToken)
     {
-        while (AlphaToken)
-        {
-            if(strcmp(AlphaToken->category, "STRING") == 0)
-                printf("%d: #%d \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
-            else if(strcmp(AlphaToken->category, "IDENTIFIER") == 0)
-                printf("%d: #%d \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
-            else if(strcmp(AlphaToken->category, "INTCONST") == 0)
-                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
-            else if(strcmp(AlphaToken->category, "REALCONST") == 0)
-                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
-            else
-                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro, AlphaToken->type);
-            AlphaToken = AlphaToken->alpha_yylex;
-        }
-        printf("\n");
+        if(strcmp(AlphaToken->category, "STRING") == 0 || strcmp(AlphaToken->category, "IDENTIFIER") == 0)
+            printf("%u: #%u \"%s\" %s \"%s\" <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+        else if(strcmp(AlphaToken->category, "INTCONST") == 0 || strcmp(AlphaToken->category, "REALCONST") == 0)
+            printf("%u: #%u \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
+        else if(strcmp(AlphaToken->category, "COMMENT") == 0)
+            printf("%u: #%u \"%u - %u\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->numline, AlphaToken->endline , AlphaToken->category, AlphaToken->macro, AlphaToken->type);
+        else
+            printf("%u: #%u \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro, AlphaToken->type);
+        AlphaToken = AlphaToken->alpha_yylex;
     }
+}
