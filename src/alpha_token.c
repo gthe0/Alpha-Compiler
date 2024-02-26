@@ -20,7 +20,7 @@ struct alpha_token_t
   unsigned int      numline;
   unsigned int      numToken;
   char              *content; // content
-  char              *macro_def; 
+  char              *macro; 
   char              *type;  
   char              *category;
 
@@ -38,7 +38,7 @@ AlphaToken_T AlphaToken_new(void)
     new->numline     = 0;
     new->numToken    = 1;
     new->content     = NULL;
-    new->macro_def   = NULL;
+    new->macro       = NULL;
     new->type        = NULL; 
     new->category    = NULL; 
     new->alpha_yylex = NULL;
@@ -60,7 +60,7 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
         temp = AlphaToken;
         AlphaToken = AlphaToken -> alpha_yylex;
         free(temp->category);
-        free(temp->macro_def);
+        free(temp->macro);
         free(temp->content);
         free(temp->type);
         free(temp);  
@@ -77,18 +77,18 @@ void AlphaToken_free(AlphaToken_T AlphaToken)
 *
 */
 int AlphaToken_insert(AlphaToken_T AlphaToken, unsigned int numline, char* content,
-                             char * macro_def, char *type, char* category)
+                             char * macro, char *type, char* category)
 {
     AlphaToken_T new    = NULL;
 
-    if (content == NULL  || macro_def == NULL
+    if (content == NULL  || macro == NULL
         || type == NULL  ||  category == NULL || AlphaToken == NULL)
         return EXIT_FAILURE;
     
     new = AlphaToken_new(); 
 
     new -> content  = strdup(content);
-    new -> macro_def = strdup(macro_def);
+    new -> macro    = strdup(macro);
     new -> type     = strdup(type);
     new -> category = strdup(category);
     new -> numline  = numline;
@@ -126,7 +126,7 @@ void AlphaToken_print_all(AlphaToken_T AlphaToken)
             else if(strcmp(AlphaToken->category, "REALCONST") == 0)
                 printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->content, AlphaToken->type);
             else
-                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro_def, AlphaToken->type);
+                printf("%d: #%d \"%s\" %s %s <- %s\n", AlphaToken->numline, AlphaToken->numToken, AlphaToken->content, AlphaToken->category, AlphaToken->macro, AlphaToken->type);
             AlphaToken = AlphaToken->alpha_yylex;
         }
         printf("\n");
