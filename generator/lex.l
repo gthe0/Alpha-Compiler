@@ -114,7 +114,6 @@ STRING			\"
 LINE_COMMENT	"//".*
 BLOCK_COMMENT	"/*"
 
-
 /* RULES SECTION
 *   
 *   The Rules section contains a series of rules in the form:
@@ -197,7 +196,10 @@ BLOCK_COMMENT	"/*"
 
 
 {WS}				{/*Ignore White Spaces*/}
-.					{LOG_ERROR(WARNING,"Illegal character %s in line %d\n",yytext,yylineno);}
+.					{
+						LOG_ERROR(ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
+						return EXIT_FAILURE;	
+					}
 
 %%
 
