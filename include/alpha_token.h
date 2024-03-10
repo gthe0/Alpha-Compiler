@@ -33,7 +33,7 @@ void AlphaToken_free(AlphaToken_T AlphaToken);
 * @param numline    -- Number of the line that the token was parsed
 * @param endline    -- Number of the line that the token ended
 * @param content    -- Content of the Token
-* @param macro  -- Macro definition of the token
+* @param macro      -- Macro definition of the token
 * @param type       -- Type of the content (e.g. ID, INT, FLOAT etc)
 * @param category   -- Category of the content (e.g. Keyword, Punct etc)
 */

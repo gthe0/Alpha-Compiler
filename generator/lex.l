@@ -16,10 +16,10 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
-	#include <stdarg.h>
 	
 	#include <alpha_token.h>
 	#include <al.h>
+	#include <log.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
@@ -31,26 +31,15 @@
 	#define SCANNER_EOF YY_END_OF_BUFFER_CHAR
 	#define SZ 0x40
 
-	/* Enums for error levels*/
-	enum ERROR_TYPE {
-		ERROR,
-		WARNING,
-	};
-
-	typedef enum ERROR_TYPE ERROR_TYPE;
-
 	/* Function definitions*/
 	static int multi_line_comment(AlphaToken_T ylval, int );
 	static int valid_string(char **s);
-
-	/* Function to print errors/warnings */
-	static void LOG_ERROR(ERROR_TYPE error,const char* msg, ...);
-
 %}
 
 %option noyywrap
 %option yylineno	
 %option	outfile = "scanner.c" 
+%option header-file = "scanner.h"
 
 /* Flex macros
 *
@@ -59,58 +48,58 @@
 *   will follow
 */
 
-IF    			"if"
-ELSE    		"else"
-WHILE   		"while"
-FOR     		"for"
-FUNC    		"function"
-RETURN  		"return"
-BREAK   		"break"
+IF    		"if"
+ELSE    	"else"
+WHILE   	"while"
+FOR     	"for"
+FUNC    	"function"
+RETURN  	"return"
+BREAK   	"break"
 CONTINUE    	"continue"
-AND    			"and"
-NOT    			"not"
-OR    			"or"
-LOCAL    		"local"
-TRUE    		"true" 
-FALSE   		"false"
-NIL    			"nil"
+AND    		"and"
+NOT    		"not"
+OR    		"or"
+LOCAL   	"local"
+TRUE    	"true" 
+FALSE   	"false"
+NIL    		"nil"
 BRACKETS_OPEN	"["					 
 BRACKETS_CLOSE  "]"
 BRACES_OPEN 	"{"					
 BRACES_CLOSE	"}"
 PARENT_OPEN 	"("
 PARENT_CLOSE    ")"
-COMMA			","
-SEMI_COL 		";"
-COL 			":"
-DOUBLE_COL 		"::"
-DOT				"."
-DOUBLE_DOT 		".."
-ASSIGN_OP 		"="
-PLUS_OP 		"+"
-MINUS_OP 		"-"
-MULT_OP 		"*"
-DIV_OP 			"/"
-MOD_OP 			"%"
-EQ_OP 			"=="
-NE_OP 			"!="
-INC_OP			"++"
-DEC_OP 			"--"
-GT_OP 			">"
-LT_OP 			"<"
-GE_OP			">="
-LE_OP			"<="
+COMMA		","
+SEMI_COL 	";"
+COL 		":"
+DOUBLE_COL 	"::"
+DOT		"."
+DOUBLE_DOT 	".."
+ASSIGN_OP 	"="
+PLUS_OP 	"+"
+MINUS_OP	"-"
+MULT_OP 	"*"
+DIV_OP 		"/"
+MOD_OP 		"%"
+EQ_OP 		"=="
+NE_OP 		"!="
+INC_OP		"++"
+DEC_OP 		"--"
+GT_OP 		">"
+LT_OP 		"<"
+GE_OP		">="
+LE_OP		"<="
 
-digits  		[0-9]
-delims          [ \t\n\r\v]
-letters 		[A-Za-z]
+digits  	[0-9]
+delims         	[ \t\n\r\v]
+letters 	[A-Za-z]
 
-WS	    		{delims}+
-ID	    		{letters}({letters}|{digits}|[_])*
-INT	    		{digits}+
-FLOAT   		{digits}+"."{digits}+
+WS	    	{delims}+
+ID	    	{letters}({letters}|{digits}|[_])*
+INT	    	{digits}+
+FLOAT   	{digits}+"."{digits}+
 
-STRING			\"
+STRING		\"
 LINE_COMMENT	"//".*
 BLOCK_COMMENT	"/*"
 
@@ -144,62 +133,62 @@ BLOCK_COMMENT	"/*"
 {BRACES_CLOSE}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "BRACES_CLOSE", "enumarated", "PUNCT");}
 {PARENT_OPEN}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PARENT_OPEN", "enumarated", "PUNCT");}
 {PARENT_CLOSE}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PARENT_CLOSE", "enumarated", "PUNCT");}
-{COMMA}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COMMA", "enumarated", "PUNCT");}
-{SEMI_COL}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "SEMI_COL", "enumarated", "PUNCT");}
-{COL}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COL", "enumarated", "PUNCT");}
+{COMMA}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COMMA", "enumarated", "PUNCT");}
+{SEMI_COL}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "SEMI_COL", "enumarated", "PUNCT");}
+{COL}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COL", "enumarated", "PUNCT");}
 {DOUBLE_COL}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOUBLE_COL", "enumarated", "PUNCT");}
-{DOT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOT", "enumarated", "PUNCT");}
+{DOT}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOT", "enumarated", "PUNCT");}
 {DOUBLE_DOT}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOUBLE_DOT", "enumarated", "PUNCT");}
 
-{ASSIGN_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ASSIGN_OP", "enumarated", "OPERATOR");}
-{PLUS_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PLUS_OP", "enumarated", "OPERATOR");}
-{MINUS_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MINUS_OP", "enumarated", "OPERATOR");}
-{MULT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MULT_OP", "enumarated", "OPERATOR");}
-{DIV_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DIV_OP", "enumarated", "OPERATOR");}
-{MOD_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MOD_OP", "enumarated", "OPERATOR");}
-{EQ_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "EQ_OP", "enumarated", "OPERATOR");}
-{NE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "NE_OP", "enumarated", "OPERATOR");}
-{INC_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INC_OP", "enumarated", "OPERATOR");}
-{DEC_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DEC_OP", "enumarated", "OPERATOR");}
-{GT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GT_OP", "enumarated", "OPERATOR");}
-{LT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
-{GE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
-{LE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
+{ASSIGN_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ASSIGN_OP", "enumarated", "OPERATOR");}
+{PLUS_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PLUS_OP", "enumarated", "OPERATOR");}
+{MINUS_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MINUS_OP", "enumarated", "OPERATOR");}
+{MULT_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MULT_OP", "enumarated", "OPERATOR");}
+{DIV_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DIV_OP", "enumarated", "OPERATOR");}
+{MOD_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MOD_OP", "enumarated", "OPERATOR");}
+{EQ_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "EQ_OP", "enumarated", "OPERATOR");}
+{NE_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "NE_OP", "enumarated", "OPERATOR");}
+{INC_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INC_OP", "enumarated", "OPERATOR");}
+{DEC_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DEC_OP", "enumarated", "OPERATOR");}
+{GT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GT_OP", "enumarated", "OPERATOR");}
+{LT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
+{GE_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
+{LE_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
 
-{INT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INT", "integer", "INTCONST");}
-{FLOAT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "FLOAT", "double", "REALCONST");}
-{ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
+{INT}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INT", "integer", "INTCONST");}
+{FLOAT}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "FLOAT", "double", "REALCONST");}
+{ID}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
 
-{LINE_COMMENT}  		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext,"LINE_COMMENT","enumarated", "COMMENT");}
+{LINE_COMMENT}  	{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext,"LINE_COMMENT","enumarated", "COMMENT");}
 
-{STRING}				{
-							int start = yylineno;
-							char* s = NULL;
-							if(valid_string(&s)== EXIT_FAILURE)
-							{
-								free(s);
-								LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
-								return EXIT_FAILURE;
-							}
-							AlphaToken_insert((AlphaToken_T) ylval, start, yylineno, s, "STRING", "char *", "STRING");
-							free(s);
-						}
-
-{BLOCK_COMMENT}  	{
-							int start = yylineno;
-							if(multi_line_comment(ylval,0) == EXIT_FAILURE)
-							{
-								LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
-								return EXIT_FAILURE;
-							}
-						}
-
-
-{WS}				{/*Ignore White Spaces*/}
-.					{
-						LOG_ERROR(ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
-						return EXIT_FAILURE;	
+{STRING}		{
+					int start = yylineno;
+					char* s = NULL;
+					if(valid_string(&s)== EXIT_FAILURE)
+					{
+						free(s);
+						LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
+						return EXIT_FAILURE;
 					}
+					AlphaToken_insert((AlphaToken_T) ylval, start, yylineno, s, "STRING", "char *", "STRING");
+					free(s);
+			}
+
+{BLOCK_COMMENT}		{
+						int start = yylineno;
+						if(multi_line_comment(ylval,0) == EXIT_FAILURE)
+						{
+							LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
+							return EXIT_FAILURE;
+						}
+			}
+
+
+{WS}			{/*Ignore White Spaces*/}
+.			{
+				LOG_ERROR(ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
+				return EXIT_FAILURE;	
+			}
 
 %%
 
@@ -208,38 +197,6 @@ BLOCK_COMMENT	"/*"
 *	copied in the bottom of the generated file
 */
 
-/*
-*	A function to print the errors in stderr
-*/
-static void LOG_ERROR(ERROR_TYPE error_t ,const char* msg,...)
-{
-	/* If we are on linux machines, use ansi escape sequences */
-	#if ( __linux__)
-		char* warning = "\e[1;35mWARNING: \e[0m";
-		char* error  = "\e[1;31mERROR: \e[0m";
-	#else
-		char* warning = "WARNING: ";
-		char* error	  = "ERROR: ";
-	#endif
-	
-	fflush(stdout);
-
-	if(error_t == WARNING)
-		fprintf(stderr,"%s",warning);
-	else if(error_t == ERROR)
-		fprintf(stderr,"%s",error);
-
-	/* Initialize arguments */
-	va_list args;
-    va_start(args, msg);
-
-	vfprintf(stderr,msg,args);
-
-	/* Free them */
-	va_end(args);
-
-	return ;
-}
 
 /*
 * A Function to check if the strings are correct.
@@ -260,25 +217,25 @@ static int valid_string(char **s)
 	{
 		if (c == '\"') 
 		{
-            str[i] = '\0';
-            break;
-        } 
+			str[i] = '\0';
+			break;
+		} 
 		
 		if (c == '\\') 
 		{
-            c = input();
-            switch (c) 
+			c = input();
+			switch (c) 
 			{
-                case 't': str[i] = '\t'; break;
-                case 'n': str[i] = '\n'; break;
-                case '\"': str[i] = '\"'; break;
-                case '\\': str[i] = '\\'; break;
-                default:
-                    str[i] = '\\';
-                    LOG_ERROR(WARNING, "Invalid escape sequence \\%c in line %d\n", c, yylineno);
-                    unput(c);
-                    break;
-            }
+				case 't': str[i] = '\t'; break;
+				case 'n': str[i] = '\n'; break;
+				case '\"': str[i] = '\"'; break;
+				case '\\': str[i] = '\\'; break;
+				default:
+					str[i] = '\\';
+					LOG_ERROR(WARNING, "Invalid escape sequence \\%c in line %d\n", c, yylineno);
+					unput(c);
+					break;
+			}
 		}
 		else
 		{

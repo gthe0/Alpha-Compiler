@@ -4,7 +4,7 @@ BIN         := ./bin
 BUILD_DIR   := ./build
 SCRIPTS     := ./scripts
 INCLUDE     := ./include
-GENERATOR	:= ./generator
+GENERATOR   := ./generator
 
 # Collect all C source files in the directory
 SOURCE_FILES := $(wildcard $(SRC)/*.c)

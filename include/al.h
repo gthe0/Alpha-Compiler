@@ -19,4 +19,4 @@
 */
 void al(AlphaToken_T AlphaToken,FILE* ost);
 
-#endif
+#endif /*AL interface*/
