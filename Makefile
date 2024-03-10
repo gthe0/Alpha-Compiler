@@ -26,6 +26,9 @@ compile: ${SRC}/scanner.c $(BIN)
 flex: $(GENERATOR)/lex.l
 	flex $(GENERATOR)/lex.l
 	mv scanner.c $(SRC)/scanner.c
+	$(eval SOURCE_FILES += ${SRC}/scanner.c)
+
+${SRC}/scanner.c: flex
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
@@ -45,7 +48,7 @@ RULEGEN: scripts/RuleGen.py scripts/misc/list
 
 # Clean up build artifacts
 clean:
-	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c output.txt
+	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt
 
 # Ensure that the build and bin directories exist
 $(BUILD_DIR):

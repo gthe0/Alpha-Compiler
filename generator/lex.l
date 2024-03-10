@@ -27,7 +27,7 @@
 	#endif
 
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
-	#define YY_DECL int alpha_yylex(void * ylval)
+	#define YY_DECL int alpha_yylex(void * ylval)	
 	#define SCANNER_EOF YY_END_OF_BUFFER_CHAR
 	#define SZ 0x40
 
@@ -39,7 +39,6 @@
 %option noyywrap
 %option yylineno	
 %option	outfile = "scanner.c" 
-%option header-file = "scanner.h"
 
 /* Flex macros
 *
@@ -298,6 +297,7 @@ static int multi_line_comment(AlphaToken_T ylval, int iteration)
 	return EXIT_FAILURE;
 }
 
+
 /*
 * main
 */
@@ -308,7 +308,7 @@ int main(int argc, char** argv)
 
 	if(argc == 1)
 	{
-		fprintf(stderr,"Usage: %s INPUT_FILE\n", argv[0]);
+		LOG_ERROR(USAGE,"%s INPUT_FILE\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
