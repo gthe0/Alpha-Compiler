@@ -7,9 +7,13 @@ def gen_output(tokens):
     """
     content, identifier, category = tokens[0], tokens[1], tokens[2]
     if identifier == "_":
-        print(f'{{{content}}}\t\t\t\t{{AlphaToken_insert(head, yylineno, yytext, "{content}", "{category}");}}')
-    else:
-        print(f'"{content}"\t\t\t\t{{AlphaToken_insert(head, yylineno, yytext, "{identifier}", "{category}");}}')
+        print(f'"{content}"\t\t\t\t{{return ({content});}}')
+    elif category == "KEYWORD":
+        print(f'"{content}"\t\t\t\t{{return ({identifier});}}')
+    elif category == "PUNCT":
+        print(f'"{content}"\t\t\t\t{{return (\'{content}\');}}')
+    else :
+        print(f'"{content}"\t\t\t\t{{return ({identifier});}}')
 
 
 def tokenize(line):

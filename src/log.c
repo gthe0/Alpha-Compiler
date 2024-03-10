@@ -21,7 +21,7 @@ void LOG_ERROR(LOG_TYPE error_t ,const char* msg,...)
 		char* warning 	= "\e[1;35mWARNING: \e[0m"; /*Warning == MAG*/
 		char* error		= "\e[1;31mERROR: \e[0m";	/*Error == RED*/
 		char* usage		= "\e[1;33mUsage: \e[0m";	/*Usage == YEL*/
-		char* note		= "\e[1;34mNote: \e[0m";	/*Note == BLU*/
+		char* note		= "\e[1;36mNote: \e[0m";	/*Note == CYN*/
 	#else
 		char* warning	= "WARNING: ";
 		char* usage		= "Usage: ";
