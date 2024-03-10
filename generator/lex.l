@@ -72,7 +72,7 @@ COMMA		","
 SEMI_COL 	";"
 COL 		":"
 DOUBLE_COL 	"::"
-DOT		"."
+DOT			"."
 DOUBLE_DOT 	".."
 ASSIGN_OP 	"="
 PLUS_OP 	"+"
@@ -132,31 +132,31 @@ BLOCK_COMMENT	"/*"
 {BRACES_CLOSE}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "BRACES_CLOSE", "enumarated", "PUNCT");}
 {PARENT_OPEN}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PARENT_OPEN", "enumarated", "PUNCT");}
 {PARENT_CLOSE}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PARENT_CLOSE", "enumarated", "PUNCT");}
-{COMMA}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COMMA", "enumarated", "PUNCT");}
-{SEMI_COL}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "SEMI_COL", "enumarated", "PUNCT");}
-{COL}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COL", "enumarated", "PUNCT");}
+{COMMA}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COMMA", "enumarated", "PUNCT");}
+{SEMI_COL}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "SEMI_COL", "enumarated", "PUNCT");}
+{COL}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "COL", "enumarated", "PUNCT");}
 {DOUBLE_COL}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOUBLE_COL", "enumarated", "PUNCT");}
-{DOT}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOT", "enumarated", "PUNCT");}
+{DOT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOT", "enumarated", "PUNCT");}
 {DOUBLE_DOT}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DOUBLE_DOT", "enumarated", "PUNCT");}
 
-{ASSIGN_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ASSIGN_OP", "enumarated", "OPERATOR");}
-{PLUS_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PLUS_OP", "enumarated", "OPERATOR");}
-{MINUS_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MINUS_OP", "enumarated", "OPERATOR");}
-{MULT_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MULT_OP", "enumarated", "OPERATOR");}
-{DIV_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DIV_OP", "enumarated", "OPERATOR");}
-{MOD_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MOD_OP", "enumarated", "OPERATOR");}
-{EQ_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "EQ_OP", "enumarated", "OPERATOR");}
-{NE_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "NE_OP", "enumarated", "OPERATOR");}
-{INC_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INC_OP", "enumarated", "OPERATOR");}
-{DEC_OP}		{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DEC_OP", "enumarated", "OPERATOR");}
-{GT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GT_OP", "enumarated", "OPERATOR");}
-{LT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
-{GE_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
-{LE_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
-
-{INT}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INT", "integer", "INTCONST");}
-{FLOAT}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "FLOAT", "double", "REALCONST");}
-{ID}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
+{ASSIGN_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ASSIGN_OP", "enumarated", "OPERATOR");}
+{PLUS_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "PLUS_OP", "enumarated", "OPERATOR");}
+{MINUS_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MINUS_OP", "enumarated", "OPERATOR");}
+{MULT_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MULT_OP", "enumarated", "OPERATOR");}
+{DIV_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DIV_OP", "enumarated", "OPERATOR");}
+{MOD_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "MOD_OP", "enumarated", "OPERATOR");}
+{EQ_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "EQ_OP", "enumarated", "OPERATOR");}
+{NE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "NE_OP", "enumarated", "OPERATOR");}
+{INC_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INC_OP", "enumarated", "OPERATOR");}
+{DEC_OP}			{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "DEC_OP", "enumarated", "OPERATOR");}
+{GT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GT_OP", "enumarated", "OPERATOR");}
+{LT_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LT_OP", "enumarated", "OPERATOR");}
+{GE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "GE_OP", "enumarated", "OPERATOR");}
+{LE_OP}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "LE_OP", "enumarated", "OPERATOR");}
+	
+{INT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "INT", "integer", "INTCONST");}
+{FLOAT}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "FLOAT", "double", "REALCONST");}
+{ID}				{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext, "ID", "char *", "IDENTIFIER");}
 
 {LINE_COMMENT}  	{AlphaToken_insert((AlphaToken_T) ylval, yylineno, yylineno, yytext,"LINE_COMMENT","enumarated", "COMMENT");}
 
@@ -171,7 +171,7 @@ BLOCK_COMMENT	"/*"
 					}
 					AlphaToken_insert((AlphaToken_T) ylval, start, yylineno, s, "STRING", "char *", "STRING");
 					free(s);
-			}
+				}
 
 {BLOCK_COMMENT}		{
 						int start = yylineno;
@@ -184,10 +184,10 @@ BLOCK_COMMENT	"/*"
 
 
 {WS}			{/*Ignore White Spaces*/}
-.			{
-				LOG_ERROR(ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
-				return EXIT_FAILURE;	
-			}
+.				{
+					LOG_ERROR(ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
+					return EXIT_FAILURE;	
+				}
 
 %%
 
@@ -308,7 +308,7 @@ int main(int argc, char** argv)
 
 	if(argc == 1)
 	{
-		LOG_ERROR(USAGE,"%s INPUT_FILE\n", argv[0]);
+		LOG_ERROR(USAGE,"%s <INPUT_FILE>\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
