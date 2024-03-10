@@ -17,7 +17,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	
-	#include <alpha_token.h>
+	#include <parser.h>
 	#include <log.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
@@ -111,9 +111,9 @@ BLOCK_COMMENT	"/*"
 "*"					{return ('*');}
 "/"					{return ('/');}
 
-{INT}				{return (INT);}
-{FLOAT}				{return (FLOAT);}
-{ID}				{return (ID);}
+{ID}				{yylval.string  = strdup(yytext); return (ID);}
+{INT}				{yylval.int_val	= atoi(yytext);	return (INT);}
+{FLOAT}				{yylval.float_val = atof(yytext); return (FLOAT);}
 
 {LINE_COMMENT}  	{/* COMMENT */}
 
@@ -121,7 +121,7 @@ BLOCK_COMMENT	"/*"
 						int start = yylineno;
 						if(multi_line_comment() == EXIT_FAILURE)
 						{
-							LOG_ERROR(ERROR,"Unterminated COMMENT in line %d\n",start);
+							LOG_ERROR(LEXER,ERROR,"Unterminated COMMENT in line %d\n",start);
 							return EXIT_FAILURE;
 						}
 					}
@@ -130,7 +130,7 @@ BLOCK_COMMENT	"/*"
 						int start = yylineno;
 						if(valid_string()== EXIT_FAILURE)
 						{
-							LOG_ERROR(ERROR,"Unterminated STRING in line %d\n",start);
+							LOG_ERROR(LEXER,ERROR,"Unterminated STRING in line %d\n",start);
 							return EXIT_FAILURE;
 						}
 
@@ -138,11 +138,11 @@ BLOCK_COMMENT	"/*"
 					}
 
 
-{WS}			{/*Ignore White Spaces*/}
-.				{
-					LOG_ERROR(ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
-					return EXIT_FAILURE;	
-				}
+{WS}				{/*Ignore White Spaces*/}
+.					{
+						LOG_ERROR(LEXER,ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
+						return EXIT_FAILURE;	
+					}
 
 %%
 
@@ -186,7 +186,7 @@ static int valid_string(void)
 				case '\\': str[i] = '\\'; break;
 				default:
 					str[i] = '\\';
-					LOG_ERROR(WARNING, "Invalid escape sequence \\%c in line %d\n", c, yylineno);
+					LOG_ERROR(LEXER, WARNING, "Invalid escape sequence \\%c in line %d\n", c, yylineno);
 					unput(c);
 					break;
 			}
@@ -209,10 +209,12 @@ static int valid_string(void)
 
 	/* Resize it to not take more space than needed */
 	if(c == SCANNER_EOF)
-		yylval.string_value = realloc(str,i*sizeof(char)+1);
+		yylval.string = strdup("");
 	else
-		free(str);
+		yylval.string = strdup(str);
 
+	free(str);
+	
 	return c == SCANNER_EOF ? EXIT_FAILURE : EXIT_SUCCESS ;
 } 
 

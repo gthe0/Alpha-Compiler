@@ -14,29 +14,40 @@
 /*
 * A function to print the errors in stderr
 */
-void LOG_ERROR(LOG_TYPE error_t ,const char* msg,...)
+void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 {
 	/* If we are on linux machines, use ansi escape sequences */
 	#if ( __linux__)
-		char* warning 	= "\e[1;35mWARNING: \e[0m"; /*Warning == MAG*/
-		char* error		= "\e[1;31mERROR: \e[0m";	/*Error == RED*/
-		char* usage		= "\e[1;33mUsage: \e[0m";	/*Usage == YEL*/
-		char* note		= "\e[1;36mNote: \e[0m";	/*Note == CYN*/
+		char* MAG 		= "\e[1;35m"; 	/*Warning == MAG*/
+		char* RED		= "\e[1;31m";	/*Error == RED*/
+		char* YEL		= "\e[1;33m";	/*Usage == YEL*/
+		char* CYAN		= "\e[1;36m";	/*Note == CYN*/
+		char* reset		= "\e[0m";		/*RESET*/
 	#else
-		char* warning	= "WARNING: ";
-		char* usage		= "Usage: ";
-		char* error		= "ERROR: ";
-		char* note		= "Note: ";
+		char* MAG 		= ""
+		char* RED		= ""
+		char* YEL		= ""
+		char* CYAN		= ""
+		char* reset		= ""
 	#endif
 	
 	fflush(stdout);
 
-	switch (error_t) 
+	char o_name[OWNER_SIZE] = "";
+
+	switch (owner)
 	{
-		case WARNING: fprintf(stderr,"%s",warning); break;
-		case ERROR: fprintf(stderr,"%s",error); break;
-		case USAGE: fprintf(stderr,"%s",usage); break;
-		case NOTE: fprintf(stderr,"%s",note); break;
+		case LEXER: strcpy(o_name,"LEXER"); break;
+		case PARSER: strcpy(o_name,"PARSER"); break;
+		default:
+	}
+
+	switch (log_t) 
+	{
+		case WARNING: fprintf(stderr,"%s[%s] > WARNING: %s",MAG,o_name,reset); break;
+		case ERROR: fprintf(stderr,"%s[%s] > ERROR: %s",RED,o_name,reset); break;
+		case USAGE: fprintf(stderr,"%s[%s] > Usage: %s",YEL,o_name,reset); break;
+		case NOTE: fprintf(stderr,"%s[%s] > note: %s",CYAN,o_name,reset); break;
 		default:
 	}
 

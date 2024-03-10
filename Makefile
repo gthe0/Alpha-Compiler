@@ -19,16 +19,18 @@ OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build
 object: ${SRC}/scanner.c $(OBJ_FILES)
 
 # Compile the scanner
-compile: ${SRC}/scanner.c $(BIN)
-	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/scanner.out
+compile: $(INCLUDE) ${SRC}/scanner.c ${SRC}/parser.c $(BIN)
+	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/parser.out
 
 # Lexical analysis target
 flex: $(GENERATOR)/lex.l
 	flex $(GENERATOR)/lex.l
 	mv scanner.c $(SRC)/scanner.c
-	$(eval SOURCE_FILES += ${SRC}/scanner.c)
 
-${SRC}/scanner.c: flex
+parser: $(GENERATOR)/parser.y
+	yacc -v -d -t --output=parser.c $(GENERATOR)/parser.y
+	mv parser.h $(INCLUDE)/parser.h
+	mv parser.c $(SRC)/parser.c
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
