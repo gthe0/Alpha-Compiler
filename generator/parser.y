@@ -11,38 +11,53 @@
 *  will be copied on top of the generated c file
 */
 %{
+	#include <stdlib.h>
+
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
 	static int isatty(int i) {return 0;}
 	#endif
 
 	#include <log.h>
+	extern int yylineno;
+	
+	int yylex(void);
+	int yyerror(char* s);
 %}
 
 %union
 {
     int int_val;
     char* string;
-    float float_value;
+    float float_val;
 }
 
-%token <string> 		ID STRING
-%token <int_val> 		INT
-%token <float_value> 	FLOAT
+%token <string> 	ID STRING
+%token <int_val> 	INT
+%token <float_val> 	FLOAT
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR  LOCAL  TRUE  FALSE  NIL 
 %token EQ_OP  NE_OP  INC_OP  DEC_OP  GE_OP  LE_OP
 %token DOUBLE_COL  DOUBLE_DOT
 
-%start parser
-%%
-
 
 %%
+primary_expression
+:	ID
+;
+%%
+/* Same as lex */
 
-yyerror(char* s)
+int yyerror(char* s)
 {
 	LOG_ERROR(PARSER,ERROR,"%s, line %d",s ,yylineno);
+
+	return EXIT_FAILURE;
 }
 
+/* main */
+int main()
+{
+ return(yyparse());
+}

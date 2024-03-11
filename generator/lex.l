@@ -23,7 +23,6 @@
 	#endif
 
 	/* Customize the default function name 'yylex' to 'alpha_yylex' */
-	#define YY_DECL int alpha_yylex(void * ylval)	
 	#define SCANNER_EOF YY_END_OF_BUFFER_CHAR
 	#define SZ 0x40
 
@@ -241,7 +240,7 @@ static int multi_line_comment(void)
 	*/
 		else if(c == '/')
 			if((c = input()) == '*')
-					multi_line_comment(ylval,iteration+1);
+					multi_line_comment();
 			else
 				unput(c);
 	}

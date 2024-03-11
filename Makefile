@@ -19,18 +19,21 @@ OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build
 object: ${SRC}/scanner.c $(OBJ_FILES)
 
 # Compile the scanner
-compile: $(INCLUDE) ${SRC}/scanner.c ${SRC}/parser.c $(BIN)
+compile:clean $(INCLUDE) $(SRC)/scanner.c $(SRC)/parser.c $(BIN)
 	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/parser.out
 
 # Lexical analysis target
-flex: $(GENERATOR)/lex.l
+$(SRC)/scanner.c: $(GENERATOR)/lex.l
 	flex $(GENERATOR)/lex.l
-	mv scanner.c $(SRC)/scanner.c
+	mv scanner.c $@
+	$(eval SRC += $@)
 
-parser: $(GENERATOR)/parser.y
+# parser target
+$(SRC)/parser.c: $(GENERATOR)/parser.y
 	bison -v -t --yacc --defines --output=parser.c $(GENERATOR)/parser.y
 	mv parser.h $(INCLUDE)/parser.h
-	mv parser.c $(SRC)/parser.c
+	mv parser.c $@
+	$(eval SRC += $@)
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
@@ -50,7 +53,9 @@ RULEGEN: scripts/RuleGen.py scripts/misc/list
 
 # Clean up build artifacts
 clean:
-	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt
+	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt\
+		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output
+
 
 # Ensure that the build and bin directories exist
 $(BUILD_DIR):
