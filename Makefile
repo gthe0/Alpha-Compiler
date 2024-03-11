@@ -28,7 +28,7 @@ flex: $(GENERATOR)/lex.l
 	mv scanner.c $(SRC)/scanner.c
 
 parser: $(GENERATOR)/parser.y
-	yacc -v -d -t --output=parser.c $(GENERATOR)/parser.y
+	bison -v -t --yacc --defines --output=parser.c $(GENERATOR)/parser.y
 	mv parser.h $(INCLUDE)/parser.h
 	mv parser.c $(SRC)/parser.c
 
