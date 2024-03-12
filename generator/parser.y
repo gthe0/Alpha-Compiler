@@ -12,13 +12,13 @@
 */
 %{
 	#include <stdlib.h>
+	#include <log.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
 	static int isatty(int i) {return 0;}
 	#endif
 
-	#include <log.h>
 	extern int yylineno;
 	
 	int yylex(void);

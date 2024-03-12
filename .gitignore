@@ -1,14 +1,17 @@
 # Ignore compiled object files
 *.o
 
-# Ignore executables
-*.out
-*.exe
+# Ignore executables and objects
+bin
+build
 
 # Ignore text files
 *.txt
 
-# Ignore flex output
+# Ignore Generators output
 src/scanner.c
+src/parser.c
+include/parser.h
+parser.output
 
 phase1_tests

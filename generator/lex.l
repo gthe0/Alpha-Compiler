@@ -33,7 +33,6 @@
 
 %option noyywrap
 %option yylineno	
-%option	outfile = "scanner.c" 
 
 /* Flex macros
 *

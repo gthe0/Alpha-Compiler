@@ -18,22 +18,23 @@ OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build
 # Compile object files
 object: ${SRC}/scanner.c $(OBJ_FILES)
 
-# Compile the scanner
-compile:clean $(INCLUDE) $(SRC)/scanner.c $(SRC)/parser.c $(BIN)
+# Compile the parser
+compile: $(INCLUDE) $(SRC)/scanner.c $(SRC)/parser.c $(BIN)
 	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/parser.out
 
-# Lexical analysis target
-$(SRC)/scanner.c: $(GENERATOR)/lex.l
-	flex $(GENERATOR)/lex.l
-	mv scanner.c $@
-	$(eval SRC += $@)
+# Generate the scanner and parser
+generate: flex bison
 
-# parser target
-$(SRC)/parser.c: $(GENERATOR)/parser.y
+# Lexical analysis target
+flex: $(GENERATOR)/lex.l
+	flex --outfile=scanner.c $(GENERATOR)/lex.l
+	mv scanner.c $(SRC)/scanner.c
+
+# Syntax analysis target
+bison: $(GENERATOR)/parser.y
 	bison -v -t --yacc --defines --output=parser.c $(GENERATOR)/parser.y
 	mv parser.h $(INCLUDE)/parser.h
-	mv parser.c $@
-	$(eval SRC += $@)
+	mv parser.c $(SRC)/parser.c
 
 # Compile each source file into its object file individually
 $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
@@ -45,7 +46,6 @@ $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
 
 RULEGEN: scripts/RuleGen.py scripts/misc/list
 	python3 scripts/RuleGen.py < scripts/misc/list_path > output.txt
-
 
 ###########################################################################################
 #	UTILITIES
