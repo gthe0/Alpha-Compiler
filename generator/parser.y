@@ -27,14 +27,14 @@
 
 %union
 {
-    int int_val;
+    int intVal;
     char* string;
-    float float_val;
+    float floatVal;
 }
 
 %token <string> 	ID STRING
-%token <int_val> 	INT
-%token <float_val> 	FLOAT
+%token <intVal> 	INT
+%token <floatVal> 	FLOAT
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR  LOCAL  TRUE  FALSE  NIL 
@@ -43,15 +43,11 @@
 
 %nonassoc EQ_OP  NE_OP  GE_OP  LE_OP '<' '>'
 %right NOT INC_OP DEC_OP '-' '='
+%left '+' ':' '.' '*' '/' '%'
 
 %start program
 %%
 program:
-|stmt
-;
-
-stmt:
-|
 ;
 %%
 /* Same as lex */
@@ -66,5 +62,5 @@ int yyerror(char* s)
 /* main */
 int main()
 {
- return(yyparse());
+	return(yyparse());
 }

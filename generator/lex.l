@@ -106,9 +106,9 @@ BLOCK_COMMENT	"/*"
 "*"					{return ('*');}
 "/"					{return ('/');}
 
-{ID}				{yylval.string  = strdup(yytext); return (ID);}
-{INT}				{yylval.int_val	= atoi(yytext);	return (INT);}
-{FLOAT}				{yylval.float_val = atof(yytext); return (FLOAT);}
+{ID}				{yylval.string = strdup(yytext); return (ID);}
+{INT}				{yylval.intVal	 = atoi(yytext); return (INT);}
+{FLOAT}				{yylval.floatVal = atof(yytext); return (FLOAT);}
 
 {LINE_COMMENT}  	{/* COMMENT */}
 
