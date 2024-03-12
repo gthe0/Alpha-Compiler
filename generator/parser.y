@@ -41,10 +41,17 @@
 %token EQ_OP  NE_OP  INC_OP  DEC_OP  GE_OP  LE_OP
 %token DOUBLE_COL  DOUBLE_DOT
 
+%nonassoc EQ_OP  NE_OP  GE_OP  LE_OP '<' '>'
+%right NOT INC_OP DEC_OP '-' '='
 
+%start program
 %%
-primary_expression
-:	ID
+program:
+|stmt
+;
+
+stmt:
+|
 ;
 %%
 /* Same as lex */
