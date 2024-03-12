@@ -16,7 +16,7 @@ OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build
 ###########################################################################################
 
 # Compile object files
-object: ${SRC}/scanner.c $(OBJ_FILES)
+object: $(OBJ_FILES)
 
 # Compile the parser
 compile: $(INCLUDE) $(SRC)/scanner.c $(SRC)/parser.c $(BIN)
