@@ -7,7 +7,8 @@
 *  and generate the syntactical analyzer.
 */
 
-/* Same as lex. Anything written inside 
+/* 
+* Same as lex. Anything written inside 
 *  will be copied on top of the generated c file
 */
 %{
@@ -28,9 +29,9 @@
 
 %union
 {
-    int intVal;
-    char* string;
-    float floatVal;
+	int	intVal;
+	char* string;
+	float floatVal;
 }
 
 %token <string> 	ID STRING
@@ -38,18 +39,179 @@
 %token <floatVal> 	FLOAT
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
-%token AND  NOT  OR  LOCAL  TRUE  FALSE  NIL 
+%token AND  NOT  OR
+%token LOCAL  TRUE  FALSE  NIL 
 %token EQ_OP  NE_OP  INC_OP  DEC_OP  GE_OP  LE_OP
 %token DOUBLE_COL  DOUBLE_DOT
+%token ',' ';' ':' '.' '=' '+' '-' '%' '*' '/'
+%token '[' ']' '(' ')' '{' '}' '<' '>'
 
 %nonassoc EQ_OP  NE_OP  GE_OP  LE_OP '<' '>'
-%right NOT INC_OP DEC_OP '-' '='
-%left '+' ':' '.' '*' '/' '%'
+%right NOT INC_OP DEC_OP  '='
+%left DOUBLE_DOT DOUBLE_COL AND OR
+%left '+' '-' ':' '.' '*' '/' '%'
 
 %start program
 %%
-program:
-;
+program
+	: stmt_list /* stmt* means zero or more stmt */
+	;
+
+stmt_list
+	: /* empty production, making stmt_list optional */
+	| stmt_list stmt 
+	;
+	
+stmt: expr ';'
+	| ifstmt
+	| whilestmt
+	| forstmt
+	| returnstmt
+	| BREAK ';'
+	| CONTINUE ';'
+	| block
+	| funcdef
+	| ';'
+	;
+
+expr: assginexpr
+	| expr '+' expr
+	| expr '-' expr
+	| expr '*' expr
+	| expr '/' expr
+	| expr '%' expr
+	| expr '>' expr
+	| expr '<' expr
+	| expr GE_OP expr
+	| expr LE_OP expr
+	| expr EQ_OP expr
+	| expr NE_OP expr
+	| expr AND expr
+	| expr OR expr
+	| term
+	;
+
+term: '(' expr ')'
+	| '-' expr
+	| NOT expr
+	| INC_OP lvalue
+	| lvalue INC_OP
+	| DEC_OP lvalue
+	| lvalue DEC_OP
+	| primary
+	;
+
+assginexpr
+	: lvalue '=' expr 
+	;
+
+primary
+	: lvalue
+	| call
+	| objectdef
+	| '(' funcdef ')'
+	| const
+	;
+
+lvalue
+	: ID
+	| LOCAL ID
+	| DOUBLE_COL ID
+	| member
+	;
+
+member
+	: call '.' ID
+	| lvalue '.' ID
+	| call '[' expr ']'
+	| lvalue '[' expr ']'
+	;
+
+call: call '(' elist ')'
+	| lvalue callsuffix
+	| '(' funcdef ')' '(' elist ')'
+	;
+
+callsuffix
+	: normcall
+	| methodcall 
+	;
+
+normcall
+	: '(' elist ')' 
+	;
+
+methodcall
+	: DOUBLE_DOT ID '(' elist ')' 
+	; // equivalent to lvalue.id(lvalue, elist)
+
+elist
+	: expr 
+	| elist ',' expr
+	;
+
+objectdef:  '[' object_list ']' ;
+
+object_list
+	: elist
+	| indexed
+	;
+
+indexed
+	:   
+	| indexed ',' indexedelem
+	| indexedelem
+	;
+
+indexedelem
+	: '{' expr ':' expr '}'
+	;
+
+block
+	: '{' stmt_list '}' 
+	;
+
+funcdef
+	: FUNC id_option '(' idlist ')' block
+	;
+
+id_option
+	: /* empty production, making id_option optional */
+	| ID
+	;
+
+const
+	: INT 
+	| NIL 
+	| TRUE 
+	| FALSE 
+	| FLOAT 
+	| STRING 
+	;
+
+idlist
+	: 
+	| ID
+	| idlist ',' ID
+	;
+
+ifstmt
+	: IF '(' expr ')' stmt
+	| IF '(' expr ')' stmt ELSE stmt
+	;
+
+whilestmt
+	: WHILE '(' expr ')' stmt 
+	;
+
+forstmt
+	: FOR '(' elist ';' expr ';' elist ')' stmt
+	;
+
+returnstmt
+	: RET expr ';'
+	| RET ';'
+	;
 %%
 /* Same as lex */
 
