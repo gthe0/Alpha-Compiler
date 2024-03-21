@@ -61,10 +61,35 @@ struct SymbolTableEntry
 	SymbolType type;
 };
 
+/**
+* @brief It frees the binded memory of a Symbol Entry.
+*
+* @param oSymEntry Symbol Entry to be freed.
+*/
+void freeEntry(SymbolTableEntry_T oSymEntry);
+
+/**
+* @brief Sets the Entry's varVariable.
+* 
+* @param name	Name of the Variable.
+* @param scope	Scope of the Variable.
+* @param line	The line where the Variable was found.
+*
+* @return	A Variable type pointer or NULL.
+*/
 Variable* setVariable(const char* name, 
 						unsigned int scope,
 						 unsigned int line);
 
+/**
+* @brief Sets the Entry's varFunction.
+* 
+* @param name	Name of the Function.
+* @param scope	Scope of the Function.
+* @param line	The line where the Function was found.
+*
+* @return	A Function type pointer or NULL.
+*/
 Function* setFunction(const char* name, 
 						unsigned int scope,
 						 unsigned int line);
@@ -73,7 +98,5 @@ SymbolTableEntry_T setEntry(
 
 
 );
-
-void freeEntry(SymbolTableEntry_T oSymEntry);
 
 #endif  /* Symbol Table Entry */
