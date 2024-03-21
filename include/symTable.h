@@ -41,4 +41,6 @@ void SymTable_free(SymTable_T oSymTable);
 int SymTable_insert(SymTable_T oSymTable,
 					SymEntry_t oSymEntry);
 
+
+
 #endif  /* symTable ADT*/

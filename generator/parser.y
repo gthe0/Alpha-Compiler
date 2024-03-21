@@ -19,6 +19,7 @@
 	static int isatty(int i) {return 0;}
 	#endif
 
+	static int scope = 0;
 	extern int yylineno;
 	
 	int yylex(void);
