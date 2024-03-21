@@ -11,18 +11,21 @@
 
 #include <symTable.h>
 
+/* It returns a new Empty SymTable or NULL if it fails*/
 SymTable_T SymTable_new(void)
 {
 	return NULL;
 }
 
+/* It frees the SymTable */
 void SymTable_free(SymTable_T oSymTable)
 {
 	return;
 }
 
+/* It Inserts an Entry in the SymTable */
 int SymTable_insert(SymTable_T oSymTable,
-					SymEntry_t eSymTable)
+					SymEntry_t oSymEntry)
 {
 	return EXIT_FAILURE;
 }

@@ -65,7 +65,7 @@ Function* setFunction(const char* name,
 /*
 * Free Entry
 */
-void freeEntry(SymbolTableEntry_T oSymEntry)
+void SymEntry_free(SymEntry_T oSymEntry)
 {
 	free(oSymEntry->value.varVal->name);
 	free(oSymEntry->value.funcVal->name);
@@ -81,13 +81,13 @@ void freeEntry(SymbolTableEntry_T oSymEntry)
 /*
 * Set Entry for the table
 */
-SymbolTableEntry_T setEntry(
+SymEntry_T SymEntry_create(
 	SymbolType type,
 	const char* name, 
 	unsigned int scope,
 	unsigned int line)
 {
-	SymbolTableEntry_T oSymEntry = malloc(sizeof(SymbolTableEntry));
+	SymEntry_T oSymEntry = malloc(sizeof(SymEntry_T));
 
 	/* If malloc fails return NULL */	
 	if(!oSymEntry)
