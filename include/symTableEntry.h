@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 /* Module struct */
-typedef struct 	SymbolTableEntry *SymbolTableEntry_T;
+typedef struct 	SymbolTableEntry SymbolTableEntry, *SymbolTableEntry_T;
 
 /* Type definitions */
 typedef enum	SymbolType SymbolType;
@@ -94,9 +94,21 @@ Function* setFunction(const char* name,
 						unsigned int scope,
 						 unsigned int line);
 
+/**
+* @brief Sets the Entry of the SymTable.
+* 
+* @param type	type of the value.
+* @param name	Name of the value.
+* @param scope	Scope of the value.
+* @param line	The line where the value was found.
+*
+* @return	A Symbol Table Entry pointer or NULL.
+*/
 SymbolTableEntry_T setEntry(
-
-
+	SymbolType type,
+	const char* name, 
+	unsigned int scope,
+	unsigned int line
 );
 
 #endif  /* Symbol Table Entry */

@@ -15,3 +15,6 @@ include/parser.h
 parser.output
 
 phase1_tests
+
+# Ignore vscode build settings
+.vscode
