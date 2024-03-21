@@ -1,15 +1,18 @@
 /*----------------------------------------------------------*/
 /* Author: George Theodorakis, AM: csd4881                  */
 /* 														    */
-/* symTable.h		            							*/
+/* symTableEntry.h	            							*/
 /* 														    */
-/* Type definitions for the Symbol Table Entries 			*/
+/* Type definitions and module for the Symbol Table Entries	*/
 /*----------------------------------------------------------*/
 
 #ifndef __SYMBOL_TABLE_ENTRY__
 #define __SYMBOL_TABLE_ENTRY__ 
 
 #include <stdbool.h>
+
+/* Module struct */
+typedef struct 	SymbolTableEntry *SymbolTableEntry_T;
 
 /* Type definitions */
 typedef enum	SymbolType SymbolType;
@@ -57,5 +60,20 @@ struct SymbolTableEntry
 	
 	SymbolType type;
 };
+
+Variable* setVariable(const char* name, 
+						unsigned int scope,
+						 unsigned int line);
+
+Function* setFunction(const char* name, 
+						unsigned int scope,
+						 unsigned int line);
+
+SymbolTableEntry_T setEntry(
+
+
+);
+
+void freeEntry(SymbolTableEntry_T oSymEntry);
 
 #endif  /* Symbol Table Entry */
