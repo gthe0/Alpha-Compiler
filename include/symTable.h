@@ -14,7 +14,10 @@
 
 typedef struct 	SymbolTableEntry SymEntry_t;
 
-typedef struct 	SymTable SymTable, *SymTable_T;
+typedef struct 	SymTable {
+	SymEntry_t *entry;
+	struct SymTable *next;
+}SymTable, *SymTable_T;
 
 /** 
 * @brief Return a new empty SymTable_T
