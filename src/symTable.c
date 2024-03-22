@@ -29,3 +29,11 @@ int SymTable_insert(SymTable_T oSymTable,
 {
 	return EXIT_FAILURE;
 }
+
+
+/* It searches for a specific entry in the SymTable */
+int SymTable_lookup(SymTable_T oSymTable,
+					const char *pcKey)
+{
+	return EXIT_FAILURE;
+}

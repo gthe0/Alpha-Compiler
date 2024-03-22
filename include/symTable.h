@@ -42,5 +42,17 @@ int SymTable_insert(SymTable_T oSymTable,
 					SymEntry_t oSymEntry);
 
 
+/**
+ * @brief Searches for a specific entry in the Symbol Table
+ * 
+ * @param oSymTable	Pointer to the SymTable
+ * @param pcKey		Key to be searched
+ * 
+ * @return	Whether the key was found or not
+*/
+
+int SymTable_lookup(SymTable_T oSymTable,
+					const char *pcKey);
+
 
 #endif  /* symTable ADT*/
