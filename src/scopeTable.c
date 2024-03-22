@@ -19,7 +19,6 @@ typedef struct binding ScopeBind;
 /* Binding used for the table */
 struct binding
 {
-	unsigned int curr_scope;
 	SymEntry_T oSymEntry;
 	ScopeBind* next;
 };
@@ -38,6 +37,7 @@ ScopeTable_T ScopeTable_new(void)
 	assert(new);
 
 	new->max_scope = INIT_SIZE - 1;
+	
 	new->table = malloc(sizeof(ScopeBind*)*INIT_SIZE);
 	assert(new->table);
 
