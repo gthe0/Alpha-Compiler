@@ -1,5 +1,5 @@
 /*----------------------------------------------------------*/
-/* Author: George Theodorakis, AM: csd4881                  */
+/* Authors: csd4881, csd4988, csd5038						*/
 /* 														    */
 /* scopeTable.h		            							*/
 /* 														    */
@@ -8,6 +8,8 @@
 
 #ifndef __SCOPE_TABLE__
 #define __SCOPE_TABLE__ 
+
+typedef struct scopeTable scopeTable, *ScopeTable_T;
 
 
 
