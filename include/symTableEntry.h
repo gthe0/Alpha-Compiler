@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 /* Module struct */
-typedef struct 	SymbolTableEntry SymEntry_T, *SymEntry_T;
+typedef struct 	SymbolTableEntry SymEntry, *SymEntry_T;
 
 /* Type definitions */
 typedef enum	SymbolType SymbolType;

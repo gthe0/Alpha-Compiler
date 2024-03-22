@@ -31,7 +31,7 @@ Variable* setVariable(const char* name,
 		return (new);
 	}
 
-	new->name = strdup(name);
+	new->name = name;
 	new->line = line;
 	new->scope = scope;
 
@@ -55,7 +55,7 @@ Function* setFunction(const char* name,
 		return (new);
 	}
 
-	new->name = strdup(name);
+	new->name = name;
 	new->line = line;
 	new->scope = scope;
 
@@ -67,9 +67,6 @@ Function* setFunction(const char* name,
 */
 void SymEntry_free(SymEntry_T oSymEntry)
 {
-	free(oSymEntry->value.varVal->name);
-	free(oSymEntry->value.funcVal->name);
-
 	free(oSymEntry->value.varVal);
 	free(oSymEntry->value.funcVal);
 
