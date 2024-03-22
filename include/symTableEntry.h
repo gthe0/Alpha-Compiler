@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 /* Module struct */
-typedef struct 	SymbolTableEntry SymEntry_T, *SymEntry_T;
+typedef struct 	SymbolTableEntry SymEntry, *SymEntry_T;
 
 /* Type definitions */
 typedef enum	SymbolType SymbolType;
@@ -67,32 +67,6 @@ struct SymbolTableEntry
 * @param oSymEntry Symbol Entry to be freed.
 */
 void SymEntry_free(SymEntry_T oSymEntry);
-
-/**
-* @brief Sets the Entry's varVariable.
-* 
-* @param name	Name of the Variable.
-* @param scope	Scope of the Variable.
-* @param line	The line where the Variable was found.
-*
-* @return	A Variable type pointer or NULL.
-*/
-Variable* setVariable(const char* name, 
-						unsigned int scope,
-						 unsigned int line);
-
-/**
-* @brief Sets the Entry's varFunction.
-* 
-* @param name	Name of the Function.
-* @param scope	Scope of the Function.
-* @param line	The line where the Function was found.
-*
-* @return	A Function type pointer or NULL.
-*/
-Function* setFunction(const char* name, 
-						unsigned int scope,
-						 unsigned int line);
 
 /**
 * @brief Sets the Entry of the SymTable.

@@ -17,9 +17,9 @@
 /*
 * Set Variable Value in the union
 */
-Variable* setVariable(const char* name, 
-						unsigned int scope,
-						 unsigned int line)
+static Variable* setVariable(const char* name, 
+							unsigned int scope,
+						 	unsigned int line)
 {
 	Variable* new = malloc(sizeof(Variable));
 
@@ -31,7 +31,7 @@ Variable* setVariable(const char* name,
 		return (new);
 	}
 
-	new->name = strdup(name);
+	new->name = name;
 	new->line = line;
 	new->scope = scope;
 
@@ -41,9 +41,9 @@ Variable* setVariable(const char* name,
 /*
 * Set Function Value in the union
 */
-Function* setFunction(const char* name, 
-						unsigned int scope,
-						 unsigned int line)
+static Function* setFunction(const char* name, 
+							unsigned int scope,
+						 	unsigned int line)
 {
 	Function* new = malloc(sizeof(Function));
 
@@ -55,7 +55,7 @@ Function* setFunction(const char* name,
 		return (new);
 	}
 
-	new->name = strdup(name);
+	new->name = name;
 	new->line = line;
 	new->scope = scope;
 
@@ -67,8 +67,6 @@ Function* setFunction(const char* name,
 */
 void SymEntry_free(SymEntry_T oSymEntry)
 {
-	free(oSymEntry->value.varVal->name);
-	free(oSymEntry->value.funcVal->name);
 
 	free(oSymEntry->value.varVal);
 	free(oSymEntry->value.funcVal);
