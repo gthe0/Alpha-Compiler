@@ -12,8 +12,6 @@
 
 #include <symTableEntry.h>
 
-typedef struct 	SymbolTableEntry SymEntry_t;
-
 typedef struct 	SymTable SymTable, *SymTable_T;
 
 /** 
@@ -39,7 +37,7 @@ void SymTable_free(SymTable_T oSymTable);
 * @return	Whether the insertion was a SUCCESS or a FAILURE
 */
 int SymTable_insert(SymTable_T oSymTable,
-					SymEntry_t oSymEntry);
+					SymEntry_T oSymEntry);
 
 
 

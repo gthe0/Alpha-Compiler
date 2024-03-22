@@ -25,7 +25,7 @@ void SymTable_free(SymTable_T oSymTable)
 
 /* It Inserts an Entry in the SymTable */
 int SymTable_insert(SymTable_T oSymTable,
-					SymEntry_t oSymEntry)
+					SymEntry_T oSymEntry)
 {
 	return EXIT_FAILURE;
 }

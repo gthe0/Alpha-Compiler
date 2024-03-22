@@ -38,6 +38,7 @@ void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 
 	switch (owner)
 	{
+		case OTHER: strcpy(o_name,"OTHER"); break;
 		case LEXER: strcpy(o_name,"LEXER"); break;
 		case PARSER: strcpy(o_name,"PARSER"); break;
 		default:

@@ -22,7 +22,8 @@ enum LOG_TYPE {
 /* Enums for Owner of the Log*/
 enum OWNER{
 	LEXER,
-	PARSER
+	PARSER,
+	OTHER
 };
 
 typedef enum OWNER OWNER;
