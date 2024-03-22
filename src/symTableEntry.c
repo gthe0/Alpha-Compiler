@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -23,13 +24,8 @@ static Variable* setVariable(const char* name,
 {
 	Variable* new = malloc(sizeof(Variable));
 
-	/* If malloc fails return NULL */	
-	if(!new)
-	{
-		fprintf(stderr,"%s: Malloc Failed in %s in line %d",
-				strerror(errno),__FILE__ ,__LINE__);
-		return (new);
-	}
+	/* If malloc fails abort */	
+	assert(new);
 
 	new->name = name;
 	new->line = line;
@@ -47,13 +43,8 @@ static Function* setFunction(const char* name,
 {
 	Function* new = malloc(sizeof(Function));
 
-	/* If malloc fails return NULL */	
-	if(!new)
-	{
-		fprintf(stderr,"%s: Malloc Failed in %s in line %d",
-				strerror(errno),__FILE__ ,__LINE__);
-		return (new);
-	}
+	/* If malloc fails abort */	
+	assert(new);
 
 	new->name = name;
 	new->line = line;
@@ -87,14 +78,8 @@ SymEntry_T SymEntry_create(
 {
 	SymEntry_T oSymEntry = malloc(sizeof(SymEntry_T));
 
-	/* If malloc fails return NULL */	
-	if(!oSymEntry)
-	{
-		fprintf(stderr,"%s: Malloc Failed in %s in line %d",
-				strerror(errno),__FILE__ ,__LINE__);
-		
-		return (oSymEntry);
-	}
+	/* If malloc fails abort */	
+	assert(oSymEntry);
 
 	oSymEntry->isActive = true;
 	oSymEntry->type		= type;
