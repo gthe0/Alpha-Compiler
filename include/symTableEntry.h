@@ -85,4 +85,18 @@ SymEntry_T SymEntry_create(
 	unsigned int line
 );
 
+/**
+* @brief Getter of Symbol name.
+*
+* @param oSymEntry Symbol Entry.
+*/
+const char* getName(SymEntry_T oSymEntry);
+
+/**
+* @brief Getter of Symbol scope.
+*
+* @param oSymEntry Symbol Entry.
+*/
+unsigned int getScope(SymEntry_T oSymEntry);
+
 #endif  /* Symbol Table Entry */
