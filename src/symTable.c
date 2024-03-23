@@ -63,7 +63,7 @@ int SymTable_insert(SymTable_T oSymTable,
 		return EXIT_FAILURE;
 	}
 
-	oSymTable->next->entry = &oSymEntry;
+	oSymTable->next->entry = oSymEntry;
 	oSymTable->next->next = NULL;
 	return EXIT_SUCCESS;
 }
