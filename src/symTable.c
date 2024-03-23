@@ -83,3 +83,18 @@ int SymTable_lookup(SymTable_T oSymTable,
 
 	return EXIT_FAILURE;
 }
+
+/* It hides all Entries in the table */
+void SymTable_hide(SymTable_T oSymTable, unsigned int scope) 
+{
+	SymEntry_T temp = NULL ;
+
+    while (oSymTable) 
+    {
+		temp = oSymTable->entry;
+        if (temp->isActive && getScope(temp) == scope) 
+            temp->isActive = false;
+
+        oSymTable = oSymTable->next;
+    }
+}
