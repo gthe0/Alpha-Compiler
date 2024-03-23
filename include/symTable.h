@@ -52,12 +52,25 @@ int SymTable_lookup(SymTable_T oSymTable,
 					const char *pcKey);
 
 /**
+ * @brief Searches for a specific entry in the Symbol Table in a specific scope
+ * 
+ * @param oSymTable	Pointer to the SymTable
+ * @param pcKey		Key to be searched
+ * @param scope		Scope of the key to be searched
+ * 
+ * @return	Whether the key was found or not
+*/
+int SymTable_lookup_scope(SymTable_T oSymTable,
+					const char *pcKey, unsigned int scope);
+
+/**
 * @brief It hides all Symbol Entries with the same scope.
 *
 * @param oSymTable Symbol Table.
 * @param scope scope of Entries to be hiden.
 */
 void SymTable_hide(SymTable_T oSymTable, unsigned int scope);
+
 
 
 #endif  /* symTable ADT*/

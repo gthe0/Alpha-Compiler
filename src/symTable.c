@@ -84,6 +84,20 @@ int SymTable_lookup(SymTable_T oSymTable,
 	return EXIT_FAILURE;
 }
 
+int SymTable_lookup_scope(SymTable_T oSymTable,
+					const char *pcKey, unsigned int scope)
+{
+	while (oSymTable != NULL)
+	{
+		if (!str_cmp(getName(oSymTable),pcKey) && getScope(oSymTable) == scope)
+			return EXIT_SUCCESS;
+
+		oSymTable = oSymTable->next;
+	}
+
+	return EXIT_FAILURE;
+}
+
 /* It hides all Entries in the table */
 void SymTable_hide(SymTable_T oSymTable, unsigned int scope) 
 {
