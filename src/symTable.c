@@ -3,13 +3,19 @@
 /* 														    */
 /* symTable.h		            							*/
 /* 														    */
-/* A Hash Map implementation of the symTable interface 		*/
+/* A Linked List implementation of the symTable interface 	*/
 /*----------------------------------------------------------*/
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <symTable.h>
+
+struct SymTable{
+	SymEntry_T entry;
+	SymTable_T next;
+};
+
 
 /* It returns a new Empty SymTable or NULL if it fails*/
 SymTable_T SymTable_new(void)
