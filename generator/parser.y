@@ -56,6 +56,8 @@
 %nonassoc EQ_OP  NE_OP  GE_OP  LE_OP
 %left DOUBLE_DOT DOUBLE_COL AND OR
 
+%precedence ELSE
+
 %start program
 %%
 program
@@ -97,7 +99,7 @@ expr: assginexpr
 	;
 
 term: '(' expr ')'
-	| '-' expr
+	| '-' expr	%prec UNARY_MINUS
 	| NOT expr
 	| INC_OP lvalue
 	| lvalue INC_OP
@@ -201,8 +203,8 @@ idlist
 	;
 
 ifstmt
-	: IF '(' expr ')' stmt
-	| IF '(' expr ')' stmt ELSE stmt
+	:  IF '(' expr ')' stmt
+	|  IF '(' expr ')' stmt ELSE stmt
 	;
 
 whilestmt

@@ -32,7 +32,7 @@ flex: $(GENERATOR)/lex.l
 
 # Syntax analysis target
 bison: $(GENERATOR)/parser.y
-	bison -v -t --yacc --defines -Wconflicts-sr -Wcounterexamples --output=parser.c $(GENERATOR)/parser.y
+	bison -v -t --defines -Wconflicts-sr -Wcounterexamples --output=parser.c $(GENERATOR)/parser.y
 	mv parser.h $(INCLUDE)/parser.h
 	mv parser.c $(SRC)/parser.c
 
