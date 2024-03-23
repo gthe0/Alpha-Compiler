@@ -28,6 +28,7 @@ static Variable* setVariable(const char* name,
 	assert(new);
 
 	new->name = name;
+	new->name = name;
 	new->line = line;
 	new->scope = scope;
 
@@ -46,6 +47,7 @@ static Function* setFunction(const char* name,
 	/* If malloc fails abort */	
 	assert(new);
 
+	new->name = name;
 	new->name = name;
 	new->line = line;
 	new->scope = scope;
