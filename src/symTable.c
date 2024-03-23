@@ -11,6 +11,7 @@
 
 #include <symTable.h>
 
+/* Type of the SymTable */
 struct SymTable{
 	SymEntry_T entry;
 	SymTable_T next;
@@ -74,10 +75,9 @@ int SymTable_lookup(SymTable_T oSymTable,
 {
 	while (oSymTable != NULL)
 	{
-		if (oSymTable->entry->value.varVal->name == pcKey || oSymTable->entry->value.funcVal->name == pcKey)
-		{
+		if (!str_cmp(getName(oSymTable),pcKey))
 			return EXIT_SUCCESS;
-		}
+
 		oSymTable = oSymTable->next;
 	}
 
