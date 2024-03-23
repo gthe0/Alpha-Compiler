@@ -48,10 +48,13 @@
 %token ',' ';' ':' '.' '=' '+' '-' '%' '*' '/'
 %token '[' ']' '(' ')' '{' '}' '<' '>'
 
-%nonassoc EQ_OP  NE_OP  GE_OP  LE_OP '<' '>'
-%right NOT INC_OP DEC_OP  '='
+%right '='
+%nonassoc '<' '>'
+%left '+' '-' ':' '.' '*' '/' '%' '[' ']' '(' ')'
+
+%right NOT INC_OP DEC_OP UNARY_MINUS
+%nonassoc EQ_OP  NE_OP  GE_OP  LE_OP
 %left DOUBLE_DOT DOUBLE_COL AND OR
-%left '+' '-' ':' '.' '*' '/' '%'
 
 %start program
 %%
