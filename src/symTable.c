@@ -24,7 +24,7 @@ typedef struct SymTableList{
 
 /* Type of the SymTable */
 struct SymTable{
-	SymList** List;
+	SymList* List[BUCKET_SIZE];
 };
 
 /*---------------------------- UTILITIES --------------------------------*/
@@ -78,13 +78,9 @@ static SymEntry_T List_contains(SymList* List, const char* name, unsigned int sc
 SymTable_T SymTable_new(void)
 {
 	SymTable_T new = malloc(sizeof(SymTable));
-	SymList** List = malloc(sizeof(SymList*));
 	
 	/* If malloc fails abort */	
 	assert(new);
-	assert(List);
-
-	new->List = List;
 
 	for (int i = 0; i < BUCKET_SIZE; i++)
 	{
@@ -117,7 +113,6 @@ void SymTable_free(SymTable_T oSymTable)
 		}
 	}
 	
-	free(oSymTable->List);
 	free(oSymTable);
 }
 
