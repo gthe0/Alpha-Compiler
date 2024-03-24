@@ -235,12 +235,45 @@ int yyerror(char* s)
 }
 
 /* main */
-int main()
+int main(int argc,char** argv)
 {
+	FILE* ost;
+
+	if(argc == 1)
+	{
+		LOG_ERROR(PARSER, USAGE,"%s <INPUT_FILE>\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	/* Open the input file */
+	if(!(yyin = fopen(argv[1],"r")))
+	{
+		LOG_ERROR(PARSER, ERROR, "Cannot read Input file %s\n", argv[1]);
+		return EXIT_FAILURE;
+	}
+	
+	/* If the output file is not provided use ost */
+	if(argc > 2)
+	{
+		if(!(ost = fopen(argv[2],"w")))
+		{
+			LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n", argv[1]);
+			return EXIT_FAILURE;
+		}
+	}
+	else ost = stdout;
+
+	/* Initializes tables and stack */
 	oScopeStack = ScopeStack_init();
 	Tables_init(&oSymTable,&oScopeTable);
 	
 	yyparse();
+	
+	/* Close streams and clean up */
+	Tables_free(oSymTable,oScopeTable);
+
+	fclose(ost);
+	fclose(yyin);
 	
 	return 0;
 }
