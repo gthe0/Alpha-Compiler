@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <scopeTable.h>
 
@@ -48,7 +49,7 @@ static SymEntry_T List_contains(ScopeList_T List, const char* name, unsigned int
 	while (List != NULL)
 	{
 		if (List->oSymEntry->isActive
-			&& !str_cmp(getName(List->oSymEntry),name) 
+			&& !strcmp(getName(List->oSymEntry),name) 
 			&& getScope(List->oSymEntry) == scope)
 			return List->oSymEntry;
 

@@ -73,7 +73,7 @@ BLOCK_COMMENT	"/*"
 "and"				{return (AND);}
 "not"				{return (NOT);}
 "or"				{return (OR);}
-"local"				{return (LOCAL);}
+"local"				{return (LOC);}
 "true"				{return (TRUE);}
 "false"				{return (FALSE);}
 "nil"				{return (NIL);}

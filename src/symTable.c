@@ -6,8 +6,10 @@
 /* A Linked List implementation of the symTable interface 	*/
 /*----------------------------------------------------------*/
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <symTable.h>
 
@@ -60,7 +62,7 @@ static SymEntry_T List_contains(SymList* List, const char* name, unsigned int sc
 	while (List != NULL)
 	{
 		if (List->entry->isActive
-			&& !str_cmp(getName(List->entry),name) 
+			&& !strcmp(getName(List->entry),name) 
 			&& getScope(List->entry) == scope)
 			return List->entry;
 
@@ -160,7 +162,7 @@ SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
 {
 	if(!name || !oSymTable)
 	{
-		return EXIT_FAILURE;
+		return NULL;
 	}
 
 	int hash = SymTable_hash(name);
@@ -178,7 +180,7 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 	SymEntry_T Entry = NULL;
 
 	if(oSymTable == NULL || name == NULL || ToScope < 0) 
-		return EXIT_FAILURE;
+		return NULL;
 	
 	while(FromScope >= ToScope && Entry == NULL)
 		Entry = SymTable_lookup_scope(oSymTable,name,FromScope--);

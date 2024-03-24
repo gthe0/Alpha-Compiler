@@ -42,7 +42,7 @@
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR
-%token LOCAL  TRUE  FALSE  NIL 
+%token LOC  TRUE  FALSE  NIL 
 %token EQ_OP  NE_OP  INC_OP  DEC_OP  GE_OP  LE_OP
 %token DOUBLE_COL  DOUBLE_DOT
 %token ',' ';' ':' '.' '=' '+' '-' '%' '*' '/'
@@ -122,7 +122,7 @@ primary
 
 lvalue
 	: ID
-	| LOCAL ID
+	| LOC ID
 	| DOUBLE_COL ID
 	| member
 	;
