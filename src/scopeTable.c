@@ -82,7 +82,7 @@ ScopeTable_T ScopeTable_new(void)
 	assert(new->table);
 
 	for (int i = 0; i < SIZE; i++)
-        new->table[i] = ScopeList_alloc();
+        new->table[i] = NULL;
 
 	return new;
 }
@@ -92,12 +92,7 @@ ScopeTable_T ScopeTable_new(void)
 */
 int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 {
-
-	/* Get the current scope of the Entry */
-	int scope = oSymEntry->type > FORMAL
-			  ? oSymEntry->value.funcVal->scope
-			  : oSymEntry->value.varVal->scope;
-
+	int scope = getScope(oSymEntry);
 	/* Resize if scope is bigger than no of buckets */
 	if(oScopeTable->max_scope < scope )
 	{
@@ -109,16 +104,12 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 		for (int i = oScopeTable->max_scope + 1 ;
 				 i <= oScopeTable->max_scope + SIZE;
 				 i++)
-        	oScopeTable->table[i] = ScopeList_alloc();
+        	oScopeTable->table[i] = NULL;
 
 		oScopeTable->max_scope += SIZE;
 	}
 
-	if(!oScopeTable->table[scope]->oSymEntry)
-		oScopeTable->table[scope]->oSymEntry = oSymEntry;
-	else
-		oScopeTable->table[scope]->oSymEntry = oSymEntry;
-
+	ScopeList_T sl = oScopeTable->table[scope];
 
 	return EXIT_FAILURE;
 }
