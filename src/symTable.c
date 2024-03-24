@@ -185,22 +185,3 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 
 	return Entry;
 }
-
-/* Hides one entry only in the SymTable*/
-int SymTable_hide(SymTable_T oSymTable,
-					const char* name,
-					unsigned int scope) 
-{
-	
-	if(oSymTable == NULL || name == NULL) 
-		return EXIT_FAILURE;
-
-	SymEntry_T Entry = SymTable_lookup_scope(oSymTable, name, scope);
-	
-	if(Entry == NULL)
-	return EXIT_FAILURE;
-
-	Entry->isActive = false;
-
-	return EXIT_SUCCESS;
-}

@@ -67,16 +67,4 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
 					const char *name, unsigned int scope);
 
-/**
-* @brief It hides a specific Entry.
-*
-* @param oSymTable Symbol Table.
-* @param name name of Entry.
-* @param scope scope of Entry to be hiden.
-*/
-int SymTable_hide(SymTable_T oSymTable,
-					const char* name,
-					unsigned int scope);
-
-
 #endif  /* symTable ADT*/
