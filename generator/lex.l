@@ -117,7 +117,7 @@ BLOCK_COMMENT	"/*"
 						if(multi_line_comment() == EXIT_FAILURE)
 						{
 							LOG_ERROR(LEXER,ERROR,"Unterminated COMMENT in line %d\n",start);
-							return EXIT_FAILURE;
+							exit(EXIT_FAILURE);
 						}
 					}
 
@@ -126,7 +126,7 @@ BLOCK_COMMENT	"/*"
 						if(valid_string()== EXIT_FAILURE)
 						{
 							LOG_ERROR(LEXER,ERROR,"Unterminated STRING in line %d\n",start);
-							return EXIT_FAILURE;
+							exit(EXIT_FAILURE);
 						}
 
 						return (STRING);
@@ -136,7 +136,7 @@ BLOCK_COMMENT	"/*"
 {WS}				{/*Ignore White Spaces*/}
 .					{
 						LOG_ERROR(LEXER,ERROR,"Illegal character %s in line %d\n",yytext,yylineno);
-						return EXIT_FAILURE;	
+						exit(EXIT_FAILURE);
 					}
 
 %%
@@ -239,7 +239,7 @@ static int multi_line_comment(void)
 	*/
 		else if(c == '/')
 			if((c = input()) == '*')
-					multi_line_comment();
+				multi_line_comment();
 			else
 				unput(c);
 	}

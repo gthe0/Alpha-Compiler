@@ -10,6 +10,7 @@
 #include <tables.h>
 #include <log.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #define NO_OF_LIBFUNCTS 12

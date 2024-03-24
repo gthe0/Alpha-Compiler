@@ -93,12 +93,10 @@ SymEntry_T SymEntry_create(
 	if (type > FORMAL)
 	{
 		oSymEntry->value.funcVal 	= setFunction(name, scope, line);
-		oSymEntry->value.varVal		= NULL;
 	}
 	else
 	{
 		oSymEntry->value.varVal 	= setVariable(name, scope, line);
-		oSymEntry->value.funcVal 	= NULL;
 	}
 
 	return (oSymEntry);
@@ -109,7 +107,6 @@ const char* getName(SymEntry_T oSymEntry)
 {
 	/* If oSymEntry is NULL or both enties in value are NULL then abort */	
 	assert(oSymEntry);
-	assert(oSymEntry->value.funcVal && oSymEntry->value.varVal);
 
 	/* Return the name */
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->name : oSymEntry->value.varVal->name ;
@@ -120,7 +117,6 @@ unsigned int getScope(SymEntry_T oSymEntry)
 {
 	/* If oSymEntry is NULL or both enties in value are NULL then abort */	
 	assert(oSymEntry);
-	assert(oSymEntry->value.funcVal && oSymEntry->value.varVal);
 
 	/* Return the scope */
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->scope : oSymEntry->value.varVal->scope ;

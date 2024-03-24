@@ -12,6 +12,7 @@
 *  will be copied on top of the generated c file
 */
 %{
+	#include <stdio.h>
 	#include <stdlib.h>
 
 	#include <ScopeStack.h>
@@ -23,12 +24,17 @@
 	static int isatty(int i) {return 0;}
 	#endif
 
+	/* The various tables that we will use */
 	static ScopeStack_T  oScopeStack = NULL;
 	static ScopeTable_T oScopeTable = NULL;
 	static SymTable_T oSymTable = NULL;
 
 	static unsigned int scope = 0;
-	extern int yylineno;
+	
+	/* Flex variables */
+	extern FILE* 	yyin;
+	extern char*	yytext;
+	extern int 		yylineno;
 	
 	int yylex(void);
 	int yyerror(char* s);
@@ -229,8 +235,7 @@ returnstmt
 
 int yyerror(char* s)
 {
-	LOG_ERROR(PARSER,ERROR,"%s, line %d",s ,yylineno);
-
+	LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s",s ,yylineno, yytext);
 	return EXIT_FAILURE;
 }
 
