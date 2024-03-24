@@ -6,10 +6,30 @@
 /* Wrapper Functions/APIs for the scope and symbol tables	*/
 /*----------------------------------------------------------*/
 
+
 #include <tables.h>
+#include <log.h>
+
 #include <stdlib.h>
 
 #define NO_OF_LIBFUNCTS 12
+
+/* Library Functions. We Insert them in the initialization of the Tables*/
+static char* LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
+{
+	"print",
+	"input",
+	"objectmemberkeys",
+	"objecttotalmembers",
+	"objectcopy",
+	"totalarguments",
+	"argument",
+	"typeof",
+	"strtonum",
+	"sqrt",
+	"cos",
+	"sin",
+};
 
 /* Insert Entries in both tables */
 int Tables_insert(	SymTable_T oSymTable,
@@ -43,23 +63,6 @@ int Tables_init(SymTable_T* oSymTable,
 
 	*oSymTable = SymTable_new();
 	*oScopeTable = ScopeTable_new();
-	
-	/* Library Functions. We Insert them in the initialization of the Tables*/
-	char* LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
-	{
-		"print",
-		"input",
-		"objectmemberkeys",
-		"objecttotalmembers",
-		"objectcopy",
-		"totalarguments",
-		"argument",
-		"typeof",
-		"strtonum",
-		"sqrt",
-		"cos",
-		"sin",
-	};
 
 	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
 	{

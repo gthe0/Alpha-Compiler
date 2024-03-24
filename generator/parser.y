@@ -14,7 +14,8 @@
 %{
 	#include <stdlib.h>
 
-	#include <symTable.h>
+	#include <ScopeStack.h>
+	#include <tables.h>
 	#include <log.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
@@ -22,7 +23,10 @@
 	static int isatty(int i) {return 0;}
 	#endif
 
-	
+	static ScopeStack_T  oScopeStack = NULL;
+	static ScopeTable_T oScopeTable = NULL;
+	static SymTable_T oSymTable = NULL;
+
 	static unsigned int scope = 0;
 	extern int yylineno;
 	
@@ -233,5 +237,10 @@ int yyerror(char* s)
 /* main */
 int main()
 {
-	return(yyparse());
+	oScopeStack = ScopeStack_init();
+	Tables_init(&oSymTable,&oScopeTable);
+	
+	yyparse();
+	
+	return 0;
 }
