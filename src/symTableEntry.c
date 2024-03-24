@@ -27,7 +27,7 @@ static Variable* setVariable(const char* name,
 	/* If malloc fails abort */	
 	assert(new);
 
-	new->name = name;
+	new->name = strdup(name);
 	new->line = line;
 	new->scope = scope;
 
@@ -46,7 +46,7 @@ static Function* setFunction(const char* name,
 	/* If malloc fails abort */	
 	assert(new);
 
-	new->name = name;
+	new->name = strdup(name);
 	new->line = line;
 	new->scope = scope;
 
@@ -58,6 +58,11 @@ static Function* setFunction(const char* name,
 */
 void SymEntry_free(SymEntry_T oSymEntry)
 {
+	if(oSymEntry->value.varVal)
+		free((char*)oSymEntry->value.varVal->name);
+
+	if(oSymEntry->value.funcVal)
+		free((char*)oSymEntry->value.funcVal->name);
 
 	free(oSymEntry->value.varVal);
 	free(oSymEntry->value.funcVal);
