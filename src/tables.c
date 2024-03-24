@@ -41,9 +41,8 @@ int Tables_insert(	SymTable_T oSymTable,
 					unsigned int yylineno)
 {
 	SymEntry_T entry = SymEntry_create(type,name,scope,yylineno);
-
-	return SymTable_insert(oSymTable,entry) &&
-			ScopeTable_insert(oScopeTable,entry);
+ 	
+	return (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry));
 }
 
 /* Free both tables */
@@ -51,7 +50,7 @@ void Tables_free(SymTable_T oSymTable,
 				ScopeTable_T oScopeTable)
 {
 	SymTable_free(oSymTable);
-	ScopeTable_free(oScopeTable);
+	ScopeTable_free(oScopeTable,0);
 }
 
 /* Initialize both tables */

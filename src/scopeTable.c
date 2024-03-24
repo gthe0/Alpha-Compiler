@@ -59,6 +59,20 @@ static SymEntry_T List_contains(ScopeList_T List, const char* name, unsigned int
 	return NULL;
 }
 
+/**
+* @brief A function to Print list from the end to the begining
+* @param head the List that we will print.
+*
+*/
+static void In_Order_Print(ScopeList_T head)
+{
+	if(head == NULL)
+		return;
+	
+	In_Order_Print(head->next);
+	SymEntry_print(head->oSymEntry);
+}
+
 /*---------------------------------------------------------------------*/
 
 /* 
@@ -83,7 +97,8 @@ ScopeTable_T ScopeTable_new(void)
 	return new;
 }
 
-void ScopeTable_free(ScopeTable_T oScopeTable)
+/* Free the scope table */
+void ScopeTable_free(ScopeTable_T oScopeTable, int free_entries)
 {
 	if(oScopeTable == NULL)
 		return;
@@ -100,7 +115,9 @@ void ScopeTable_free(ScopeTable_T oScopeTable)
 			temp = head ;
 			head = head->next;
 
-			SymEntry_free(temp->oSymEntry);
+			if(free_entries)
+				SymEntry_free(temp->oSymEntry);
+			
 			free(temp);
 		}
 	}
@@ -165,4 +182,20 @@ int ScopeTable_hide(ScopeTable_T oScopeTable, unsigned int scope)
 	}
 
 	return EXIT_SUCCESS;
+}
+
+/* Prints the contents of the Symbol Table per scope and order */
+void ScopeTable_print(ScopeTable_T oScopeTable) 
+{
+	if(!oScopeTable)
+		return ;
+	
+   	ScopeList_T head = NULL ;
+
+	for (int i = 0; i < oScopeTable->max_scope; i++)
+	{
+		head = oScopeTable->table[i];
+		In_Order_Print(head);
+	}
+
 }

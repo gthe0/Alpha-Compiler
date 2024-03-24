@@ -186,6 +186,9 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 /* Prints the contents of Symbol Table in random order */
 void SymTable_print(SymTable_T oSymTable) 
 {
+	if(!oSymTable)
+		return ;
+
    	SymList	* head = NULL ;
 
 	for (int i = 0; i < BUCKET_SIZE; i++)

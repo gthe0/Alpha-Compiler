@@ -24,8 +24,9 @@ ScopeTable_T ScopeTable_new(void);
 * @brief It frees the binded memory of the ScopeTable.
 *
 * @param oScopeTable Symbol Table to be freed.
+* @param free_entries Whether the entries will be freed.
 */
-void ScopeTable_free(ScopeTable_T oScopeTable);
+void ScopeTable_free(ScopeTable_T oScopeTable,int free_entries);
 
 /**
 * @brief Inserts information to the Scope Table.
@@ -48,5 +49,13 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,
 */
 int ScopeTable_hide(ScopeTable_T oScopeTable,
 					 unsigned int scope);
+
+/**
+* @brief Prints all nodes of the Symbol table in order of scope and insertion.
+* 
+* @param oSymTable	Pointer to the SymTable 
+*
+*/
+void ScopeTable_print(ScopeTable_T oScopeTable); 
 
 #endif /* scope table ADT*/

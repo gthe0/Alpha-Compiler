@@ -273,7 +273,8 @@ int main(int argc,char** argv)
 	Tables_init(&oSymTable,&oScopeTable);
 	
 	SymTable_print(oSymTable);
-	
+	printf("\n=========================\n");
+	ScopeTable_print(oScopeTable);
 	/* Close streams and clean up */
 	Tables_free(oSymTable,oScopeTable);
 	ScopeFree(oScopeStack);
