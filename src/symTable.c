@@ -17,7 +17,7 @@
 /* Type of the SymTable */
 typedef struct SymTableList{
 	SymEntry_T entry;
-	SymTable_T next;
+	struct SymTableList* next;
 }SymList;
 
 /* Type of the SymTable */
@@ -25,7 +25,7 @@ struct SymTable{
 	SymList** List;
 };
 
-/*---------------------------- UTILITY --------------------------------*/
+/*---------------------------- UTILITIES --------------------------------*/
 
 /**
 * @brief The hash function used 
@@ -47,19 +47,27 @@ static unsigned int SymTable_hash(const char *name)
 /**
 * @brief A function that checks if a SymEntry is within a List 
 * @param List the List that we will parse.
-* @param oSymEntry the Entry that we want to see if it is there.
+* @param name the name of the Entry.
+* @param scope the scope of the Entry
 *
-* @return EXIT_SUCCESS if it does, EXIT_FAILURE if it does not
+* @return Entry if it does, NULL if it does not
 */
-static int List_contains(SymList* List, SymEntry_T oSymEntry)
+static SymEntry_T List_contains(SymList* List, const char* name, unsigned int scope )
 {
-	if(List == NULL || oSymEntry == NULL) 
-		return EXIT_FAILURE;
+	if(List == NULL || name == NULL) 
+		return NULL;
 	
-	/* Get scope and name */
-	const char* name = getName(oSymEntry);
-	unsigned int scope = getScope(oSymEntry);
-	
+	while (List != NULL)
+	{
+		if (List->entry->isActive
+			&& !str_cmp(getName(List->entry),name) 
+			&& getScope(List->entry) == scope)
+			return List->entry;
+
+		List = List->next;
+	}
+
+	return NULL;
 }
 
 /*---------------------------------------------------------------------*/
@@ -87,6 +95,28 @@ SymTable_T SymTable_new(void)
 /* It frees the SymTable */
 void SymTable_free(SymTable_T oSymTable)
 {
+	if(oSymTable == NULL)
+		return;
+
+	SymList* temp = NULL,
+		   * head = NULL ;
+	
+	for (int i = 0; i < BUCKET_SIZE; i++)
+	{
+		head = oSymTable->List[i];
+
+		while (head)
+		{
+			temp = head ;
+			head = head->next;
+
+			SymEntry_free(temp->entry);
+			free(temp);
+		}
+	}
+	
+	free(oSymTable->List);
+	free(oSymTable);
 }
 
 /* It Inserts an Entry in the SymTable */
@@ -107,7 +137,7 @@ int SymTable_insert(SymTable_T oSymTable,
 	SymList* node = NULL;
 
 	/* Check if there is an Active instance of the Entry */
-	if(List_contains(head,oSymEntry) == EXIT_FAILURE)
+	if(List_contains(head,name,getScope(oSymEntry)) != NULL)
 		return EXIT_FAILURE;
 
 	node = malloc(sizeof(SymList));
@@ -125,20 +155,52 @@ int SymTable_insert(SymTable_T oSymTable,
 
 
 /* It searches for a specific entry in the SymTable */
-int SymTable_lookup(SymTable_T oSymTable,
-					const char *pcKey)
+SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
+					const char *name, unsigned int scope)
+{
+	if(!name || !oSymTable)
+	{
+		return EXIT_FAILURE;
+	}
+
+	int hash = SymTable_hash(name);
+	SymList* head = oSymTable->List[hash];
+
+	return List_contains(head,name,scope);
+}
+
+/* It searches for an entry in the SymTable between 2 scopes */
+SymEntry_T SymTable_lookup(SymTable_T oSymTable,
+					const char *name, 
+					unsigned int FromScope,
+					unsigned int ToScope)
+{
+	SymEntry_T Entry = NULL;
+
+	if(oSymTable == NULL || name == NULL || ToScope < 0) 
+		return EXIT_FAILURE;
+	
+	while(FromScope >= ToScope && Entry == NULL)
+		Entry = SymTable_lookup_scope(oSymTable,name,FromScope--);
+
+	return Entry;
+}
+
+/* Hides one entry only in the SymTable*/
+int SymTable_hide(SymTable_T oSymTable,
+					const char* name,
+					unsigned int scope) 
 {
 	
-	return EXIT_FAILURE;
-}
+	if(oSymTable == NULL || name == NULL) 
+		return EXIT_FAILURE;
 
-int SymTable_lookup_scope(SymTable_T oSymTable,
-					const char *pcKey, unsigned int scope)
-{
+	SymEntry_T Entry = SymTable_lookup_scope(oSymTable, name, scope);
+	
+	if(Entry == NULL)
 	return EXIT_FAILURE;
-}
 
-/* It hides all Entries in the table */
-void SymTable_hide(SymTable_T oSymTable, unsigned int scope) 
-{
+	Entry->isActive = false;
+
+	return EXIT_SUCCESS;
 }

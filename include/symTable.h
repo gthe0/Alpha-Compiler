@@ -41,36 +41,42 @@ int SymTable_insert(SymTable_T oSymTable,
 
 
 /**
- * @brief Searches for a specific entry in the Symbol Table
+ * @brief Searches for an entry in the Symbol Table between two scopes
  * 
  * @param oSymTable	Pointer to the SymTable
- * @param pcKey		Key to be searched
+ * @param name		name of Entry
+ * @param FromScope	The Scope that we are currently at
+ * @param ToScope	The Scope up to which we search
  * 
- * @return	Whether the key was found or not
+ * @return The Entry if it was found, otherwise NULL
 */
-int SymTable_lookup(SymTable_T oSymTable,
-					const char *pcKey);
+SymEntry_T SymTable_lookup(SymTable_T oSymTable,
+					const char *name, 
+					unsigned int FromScope,
+					unsigned int ToScope);
 
 /**
  * @brief Searches for a specific entry in the Symbol Table in a specific scope
  * 
  * @param oSymTable	Pointer to the SymTable
- * @param pcKey		Key to be searched
+ * @param name		Key to be searched
  * @param scope		Scope of the key to be searched
  * 
- * @return	Whether the key was found or not
+ * @return The Entry if it was found, otherwise NULL
 */
-int SymTable_lookup_scope(SymTable_T oSymTable,
-					const char *pcKey, unsigned int scope);
+SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
+					const char *name, unsigned int scope);
 
 /**
-* @brief It hides all Symbol Entries with the same scope.
+* @brief It hides a specific Entry.
 *
 * @param oSymTable Symbol Table.
-* @param scope scope of Entries to be hiden.
+* @param name name of Entry.
+* @param scope scope of Entry to be hiden.
 */
-void SymTable_hide(SymTable_T oSymTable, unsigned int scope);
-
+int SymTable_hide(SymTable_T oSymTable,
+					const char* name,
+					unsigned int scope);
 
 
 #endif  /* symTable ADT*/

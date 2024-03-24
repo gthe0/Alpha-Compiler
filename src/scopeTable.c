@@ -30,40 +30,35 @@ struct scopeTable
 	ScopeList_T* table;
 };
 
-/* 
-* It frees a ScopeList
-*/
-static void ScopeList_free(ScopeList_T list)
-{
-	ScopeList_T temp;
+/*---------------------------- UTILITIES --------------------------------*/
 
-	while (list)
-	{
-		temp = list;
-		list = list->next;
-		
-		SymEntry_free(temp->oSymEntry);
-		free(temp);
-	}
+/**
+* @brief A function that checks if a SymEntry is within a List 
+* @param List the List that we will parse.
+* @param name the name of the Entry.
+* @param scope the scope of the Entry
+*
+* @return Entry if it does, NULL if it does not
+*/
+static SymEntry_T List_contains(ScopeList_T List, const char* name, unsigned int scope )
+{
+	if(List == NULL || name == NULL) 
+		return NULL;
 	
-	return ;
-} 
+	while (List != NULL)
+	{
+		if (List->oSymEntry->isActive
+			&& !str_cmp(getName(List->oSymEntry),name) 
+			&& getScope(List->oSymEntry) == scope)
+			return List->oSymEntry;
 
-/* 
-* It returns a new Empty ScopeList
-*/
-static ScopeList_T ScopeList_alloc()
-{
-	ScopeList_T new = malloc(sizeof(ScopeList));
+		List = List->next;
+	}
 
-	/* If malloc fails abort */	
-	assert(new);
+	return NULL;
+}
 
-	new->oSymEntry = NULL;
-	new->next = NULL;
-
-	return new; 
-} 
+/*---------------------------------------------------------------------*/
 
 /* 
 * It returns a new Empty ScopeTable
@@ -87,6 +82,32 @@ ScopeTable_T ScopeTable_new(void)
 	return new;
 }
 
+void ScopeTable_free(ScopeTable_T oScopeTable)
+{
+	if(oScopeTable == NULL)
+		return;
+
+	ScopeList_T temp = NULL,
+		   		head = NULL ;
+	
+	for (int i = 0; i < oScopeTable->max_scope; i++)
+	{
+		head = oScopeTable->table[i];
+
+		while (head)
+		{
+			temp = head ;
+			head = head->next;
+
+			SymEntry_free(temp->oSymEntry);
+			free(temp);
+		}
+	}
+	
+	free(oScopeTable->table);
+	free(oScopeTable);
+}
+
 /* 
 * It Inserts an Entry in the Scope Table
 */
@@ -98,7 +119,7 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 	{
 		oScopeTable->table = realloc(oScopeTable->table,
 									oScopeTable->max_scope+SIZE);
-		/* If malloc fails abort */	
+		/* If realloc fails abort */	
 		assert(oScopeTable->table);
 
 		for (int i = oScopeTable->max_scope + 1 ;
@@ -109,7 +130,38 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 		oScopeTable->max_scope += SIZE;
 	}
 
-	ScopeList_T sl = oScopeTable->table[scope];
+	ScopeList_T head = oScopeTable->table[scope];
 
-	return EXIT_FAILURE;
+	/* Check if there is an Active instance of the Entry */
+	if(List_contains(head,getName(oSymEntry),getScope(oSymEntry)) != NULL)
+		return EXIT_FAILURE;
+
+	ScopeList_T node = malloc(sizeof(ScopeList));
+
+	/* If we run out of mem, abort */
+	assert(node);
+
+	node->oSymEntry = oSymEntry;
+	node->next = head;
+
+	oScopeTable->table[scope] = node;
+
+	return EXIT_SUCCESS;
+}
+
+/* Hide all entries with the same Scope */
+int ScopeTable_hide(ScopeTable_T oScopeTable, unsigned int scope)
+{
+	if(oScopeTable == NULL && scope > oScopeTable->max_scope)
+		return EXIT_FAILURE;
+	
+	ScopeList_T head = oScopeTable->table[scope];
+
+	while (head && head->oSymEntry->isActive)
+	{
+		head->oSymEntry->isActive = false;
+		head = head->next;
+	}
+
+	return EXIT_SUCCESS;
 }
