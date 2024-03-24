@@ -67,4 +67,12 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
 					const char *name, unsigned int scope);
 
+/**
+* @brief Prints all nodes of the Symbol table in random order.
+* 
+* @param oSymTable	Pointer to the SymTable 
+*
+*/
+void SymTable_print(SymTable_T oSymTable);
+
 #endif  /* symTable ADT*/

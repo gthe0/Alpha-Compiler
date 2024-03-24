@@ -272,10 +272,11 @@ int main(int argc,char** argv)
 	oScopeStack = ScopeStack_init();
 	Tables_init(&oSymTable,&oScopeTable);
 	
-	yyparse();
+	SymTable_print(oSymTable);
 	
 	/* Close streams and clean up */
 	Tables_free(oSymTable,oScopeTable);
+	ScopeFree(oScopeStack);
 
 	fclose(ost);
 	fclose(yyin);

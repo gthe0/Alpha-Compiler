@@ -99,4 +99,12 @@ const char* getName(SymEntry_T oSymEntry);
 */
 unsigned int getScope(SymEntry_T oSymEntry);
 
+/**
+* @brief Prints the Symbol Entry.
+*
+* @param oSymEntry Symbol Entry.
+*/
+void SymEntry_print(SymEntry_T oSymEntry);
+
+
 #endif  /* Symbol Table Entry */

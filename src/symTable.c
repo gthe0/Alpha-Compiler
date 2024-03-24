@@ -182,3 +182,21 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 
 	return Entry;
 }
+
+/* Prints the contents of Symbol Table in random order */
+void SymTable_print(SymTable_T oSymTable) 
+{
+   	SymList	* head = NULL ;
+
+	for (int i = 0; i < BUCKET_SIZE; i++)
+	{
+		head = oSymTable->List[i];
+
+		while (head)
+		{
+			SymEntry_print(head->entry);
+			head = head->next;
+		}
+	}
+
+}
