@@ -186,7 +186,7 @@ indexedelem
 	;
 
 block
-	: '{' stmt_list '}' 
+	: '{' {scope++;} stmt_list '}'{scope--;} 
 	;
 
 funcdef
