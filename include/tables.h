@@ -59,10 +59,10 @@ int Tables_init(SymTable_T* oSymTable,
 * @param oSymTable		Pointer to the Sym Table 
 * @param oScopeTable	Pointer to the Scope Table 
 * @param ost			The output stream 
-* @param option			0, for SymTable print, 1 for ScopeTable print
+* @param option			true for SymTable print, false for ScopeTable print
 *
 */
 void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
-				, FILE* ost, int option);
+				, FILE* ost, bool option);
 
 #endif /* wrapper */
