@@ -94,8 +94,16 @@ stmt: expr ';'
 	| whilestmt
 	| forstmt
 	| returnstmt
-	| BREAK ';'
+	| BREAK ';'				
+	{
+		if(loop_counter == 0)
+			LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s\n",s ,yylineno, $1)
+	}
 	| CONTINUE ';'
+	{
+		if(loop_counter == 0)
+			LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s\n",s ,yylineno, $1)
+	}
 	| block
 	| funcdef
 	| ';'
@@ -206,10 +214,10 @@ block
 	;
 
 funcpref
-	:	FUNC id_option	{
-							oScopeStack = ScopePush(oScopeStack,scope+1);
-							printf("Scope TOP:%u expected %u\n",ScopeTop(oScopeStack),scope+1);
-						}
+	:	FUNC id_option {
+		oScopeStack = ScopePush(oScopeStack,scope+1);
+		
+	}
 	;
 
 funcdef
@@ -223,7 +231,7 @@ funcdef
 
 id_option
 	: /* empty production, making id_option optional */
-	| ID
+	| ID	
 	;
 
 const

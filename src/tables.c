@@ -44,6 +44,7 @@ int Tables_insert(SymTable_T oSymTable,
 	{
 		if (!strcmp(LIB_FUNCTIONS[NO_OF_LIBFUNCTS],name))
 		{
+			LOG_ERROR(PARSER,ERROR,"");
 			return EXIT_FAILURE;
 		}
 		
