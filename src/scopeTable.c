@@ -106,7 +106,7 @@ void ScopeTable_free(ScopeTable_T oScopeTable, int free_entries)
 	ScopeList_T temp = NULL,
 		   		head = NULL ;
 	
-	for (int i = 0; i < oScopeTable->max_scope; i++)
+	for (int i = 0; i <= oScopeTable->max_scope; i++)
 	{
 		head = oScopeTable->table[i];
 
