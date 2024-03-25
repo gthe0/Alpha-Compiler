@@ -30,7 +30,8 @@
 	static SymTable_T oSymTable = NULL;
 
 	static unsigned int scope = 0;
-	
+	static unsigned int loop_counter = 0;
+
 	/* Flex variables */
 	extern FILE* 	yyin;
 	extern char*	yytext;
@@ -180,7 +181,10 @@ elist
 	| elist ',' expr
 	;
 
-objectdef:  '[' object_list ']' ;
+objectdef
+	:	'[' object_list ']'
+	|	'[' ']'
+	;
 
 object_list
 	: elist
@@ -198,7 +202,7 @@ indexedelem
 	;
 
 block
-	: '{' {scope++;} stmt_list '}'{scope--;} 
+	: '{' {scope++;} stmt_list '}'{scope--;}
 	;
 
 funcpref
@@ -242,13 +246,16 @@ ifstmt
 	|  IF '(' expr ')' stmt ELSE stmt
 	;
 
+loop_Inc:	{loop_counter++;}
+loop_End:	{loop_counter--;}
+
 whilestmt
-	: WHILE '(' expr ')' stmt 
+	: WHILE '(' expr ')' loop_Inc  stmt loop_End 
 	;
 
 forstmt
-	: FOR '(' elist ';' expr ';' elist ')' stmt
-	| FOR '(' elist ';' expr ';' ')' stmt
+	: FOR '(' elist ';' expr ';' elist ')' loop_Inc  stmt loop_End
+	| FOR '(' elist ';' expr ';' ')' loop_Inc stmt loop_End
 	;
 
 returnstmt
