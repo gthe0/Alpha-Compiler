@@ -42,9 +42,9 @@ int Tables_insert(SymTable_T oSymTable,
 {
 	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
 	{
-		if (!strcmp(,))
+		if (!strcmp(LIB_FUNCTIONS[NO_OF_LIBFUNCTS],name))
 		{
-			/* code */
+			return EXIT_FAILURE;
 		}
 		
 	}
