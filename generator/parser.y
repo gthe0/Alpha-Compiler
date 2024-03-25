@@ -37,8 +37,10 @@
 	extern int 		yylineno;
 	
 	int yylex(void);
-	int yyerror(char* s);
+	int yyerror(const char* s);
 %}
+
+%define parse.error verbose
 
 %union
 {
@@ -196,8 +198,12 @@ block
 	: '{' {scope++;} stmt_list '}'{scope--;} 
 	;
 
+funcpref
+	:	FUNC id_option {}
+	;
+
 funcdef
-	: FUNC id_option '('{scope++;} idlist ')'{scope--;}  block
+	: funcpref '('{scope++;} idlist ')'{scope--;}  block
 	;
 
 id_option
@@ -221,7 +227,7 @@ idlist
 	;
 
 ifstmt
-	:  IF '(' expr ')' stmt THEN
+	:  IF '(' expr ')' stmt %prec THEN
 	|  IF '(' expr ')' stmt ELSE stmt
 	;
 
@@ -240,9 +246,9 @@ returnstmt
 %%
 /* Same as lex */
 
-int yyerror(char* s)
+int yyerror(const char* s)
 {
-	LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s",s ,yylineno, yytext);
+	LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s\n",s ,yylineno, yytext);
 	return EXIT_FAILURE;
 }
 
