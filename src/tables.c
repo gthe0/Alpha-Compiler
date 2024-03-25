@@ -40,9 +40,15 @@ int Tables_insert(	SymTable_T oSymTable,
 					unsigned int scope,
 					unsigned int yylineno)
 {
+	int a;
 	SymEntry_T entry = SymEntry_create(type,name,scope,yylineno);
  	
-	return (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry));
+	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
+	{
+		SymEntry_free(entry);
+	}
+
+	return a;
 }
 
 /* Free both tables */

@@ -135,17 +135,19 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 	/* Resize if scope is bigger than no of buckets */
 	if(oScopeTable->max_scope < scope )
 	{
-		oScopeTable->table = realloc(oScopeTable->table,
-									oScopeTable->max_scope+SIZE);
+
+		oScopeTable->table = realloc(oScopeTable->table,sizeof(ScopeList_T)*(SIZE+oScopeTable->max_scope));
+		
 		/* If realloc fails abort */	
 		assert(oScopeTable->table);
+		ScopeTable_print(oScopeTable);
 
 		for (int i = oScopeTable->max_scope + 1 ;
-				 i <= oScopeTable->max_scope + SIZE;
+				 i < oScopeTable->max_scope + SIZE;
 				 i++)
         	oScopeTable->table[i] = NULL;
 
-		oScopeTable->max_scope += SIZE;
+		oScopeTable->max_scope += SIZE - 1;
 	}
 
 	ScopeList_T head = oScopeTable->table[scope];
