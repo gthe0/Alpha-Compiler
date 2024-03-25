@@ -248,6 +248,7 @@ whilestmt
 
 forstmt
 	: FOR '(' elist ';' expr ';' elist ')' stmt
+	| FOR '(' elist ';' expr ';' ')' stmt
 	;
 
 returnstmt
