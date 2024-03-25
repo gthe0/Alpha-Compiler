@@ -153,9 +153,11 @@ member
 	| lvalue '[' expr ']'
 	;
 
-call: call '(' elist ')'
+call: call '(' ')'
+	| call '(' elist ')'
 	| lvalue callsuffix
 	| '(' funcdef ')' '(' elist ')'
+	| '(' funcdef ')' '('  ')'
 	;
 
 callsuffix
@@ -165,10 +167,12 @@ callsuffix
 
 normcall
 	: '(' elist ')'
+	| '(' ')'
 	;
 
 methodcall
 	: DOUBLE_DOT ID '(' elist ')' 
+	| DOUBLE_DOT ID '('  ')' 
 	; // equivalent to lvalue.id(lvalue, elist)
 
 elist
