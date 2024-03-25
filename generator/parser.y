@@ -75,8 +75,8 @@
 %nonassoc EQ_OP  NE_OP
 %nonassoc '<' '>' GE_OP  LE_OP
 
-%nonassoc THEN
-%nonassoc ELSE
+%precedence THEN
+%precedence ELSE
 
 %start program
 %%
@@ -227,7 +227,7 @@ idlist
 	;
 
 ifstmt
-	:  IF '(' expr ')' stmt %prec THEN
+	:  IF '(' expr ')' stmt THEN
 	|  IF '(' expr ')' stmt ELSE stmt
 	;
 
