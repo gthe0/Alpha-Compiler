@@ -52,7 +52,7 @@ ScopeStack_T ScopePush(ScopeStack_T stack, unsigned int scope)
 
 	head->scope = scope;
 	head->prev = stack;
-	head->isBottom = 1;
+	head->isBottom = 0;
 
 	return head;
 }
@@ -68,12 +68,13 @@ unsigned int ScopeTop(ScopeStack_T stack)
 unsigned int ScopePop(ScopeStack_T stack)
 {
 	assert(stack);
+	assert(ScopeIsEmpty(stack) == 0);
 
 	unsigned int top = ScopeTop(stack);
-	
-	ScopeStack_T temp = stack;
 
-	stack = stack->prev;
+	ScopeStack_T temp = stack->prev;
+
+	*stack = *(temp);
 	
 	free(temp);
 

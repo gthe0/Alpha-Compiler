@@ -75,7 +75,6 @@
 %nonassoc EQ_OP  NE_OP
 %nonassoc '<' '>' GE_OP  LE_OP
 
-%precedence THEN
 %precedence ELSE
 
 %start program
@@ -165,7 +164,7 @@ callsuffix
 	;
 
 normcall
-	: '(' elist ')' 
+	: '(' elist ')'
 	;
 
 methodcall
@@ -199,11 +198,19 @@ block
 	;
 
 funcpref
-	:	FUNC id_option {}
+	:	FUNC id_option	{
+							oScopeStack = ScopePush(oScopeStack,scope+1);
+							printf("Scope TOP:%u expected %u\n",ScopeTop(oScopeStack),scope+1);
+						}
 	;
 
 funcdef
-	: funcpref '('{scope++;} idlist ')'{scope--;}  block
+	: funcpref	'('	{scope++;}
+	  idlist	')'	{scope--;}
+	  block			{
+						int sc = ScopePop(oScopeStack);
+						ScopeTable_hide(oScopeTable,sc);
+					}
 	;
 
 id_option
@@ -227,7 +234,7 @@ idlist
 	;
 
 ifstmt
-	:  IF '(' expr ')' stmt THEN
+	:  IF '(' expr ')' stmt
 	|  IF '(' expr ')' stmt ELSE stmt
 	;
 
