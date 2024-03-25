@@ -33,12 +33,32 @@ static char* LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
 };
 
 /* Insert Entries in both tables */
-int Tables_insert(	SymTable_T oSymTable,
+int Tables_insert(SymTable_T oSymTable,
 					ScopeTable_T oScopeTable,
 					SymbolType type,
 					const char* name,
 					unsigned int scope,
 					unsigned int yylineno)
+{
+	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
+	{
+		if (!strcmp(,))
+		{
+			/* code */
+		}
+		
+	}
+
+	return Tables_insert_helper(oSymTable,oScopeTable,type,name,scope,yylineno);
+}
+
+/* Insert Entries in both tables */
+static int Tables_insert_helper(SymTable_T oSymTable,
+								ScopeTable_T oScopeTable,
+								SymbolType type,
+								const char* name,
+								unsigned int scope,
+								unsigned int yylineno)
 {
 	int a;
 	SymEntry_T entry = SymEntry_create(type,name,scope,yylineno);
@@ -72,7 +92,7 @@ int Tables_init(SymTable_T* oSymTable,
 
 	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
 	{
-		Tables_insert(*oSymTable,*oScopeTable,LIBFUNC,LIB_FUNCTIONS[i],0,0);
+		Tables_insert_helper(*oSymTable,*oScopeTable,LIBFUNC,LIB_FUNCTIONS[i],0,0);
 	}
 
 	return EXIT_SUCCESS;

@@ -141,9 +141,9 @@ primary
 	;
 
 lvalue
-	: ID
-	| LOC ID
-	| DOUBLE_COL ID
+	: ID				{}
+	| LOC ID			{}
+	| DOUBLE_COL ID		{}
 	| member
 	;
 
