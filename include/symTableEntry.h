@@ -9,6 +9,7 @@
 #ifndef __SYMBOL_TABLE_ENTRY__
 #define __SYMBOL_TABLE_ENTRY__ 
 
+#include <stdio.h>
 #include <stdbool.h>
 
 /* Module struct */
@@ -103,8 +104,9 @@ unsigned int getScope(SymEntry_T oSymEntry);
 * @brief Prints the Symbol Entry.
 *
 * @param oSymEntry Symbol Entry.
+* @param ost The output stream used.
 */
-void SymEntry_print(SymEntry_T oSymEntry);
+void SymEntry_print(SymEntry_T oSymEntry, FILE* ost);
 
 
 #endif  /* Symbol Table Entry */

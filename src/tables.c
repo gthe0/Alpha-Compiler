@@ -77,3 +77,13 @@ int Tables_init(SymTable_T* oSymTable,
 
 	return EXIT_SUCCESS;
 }
+
+/* Choose to either use the Symbol Table print or the Scope Table one. */
+void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
+				, FILE* ost, int option)
+{
+	
+
+
+
+}

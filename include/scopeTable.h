@@ -9,6 +9,8 @@
 #ifndef __SCOPE_TABLE__
 #define __SCOPE_TABLE__ 
 
+#include <stdio.h>
+
 #include <symTableEntry.h>
 
 typedef struct scopeTable scopeTable, *ScopeTable_T;
@@ -54,8 +56,9 @@ int ScopeTable_hide(ScopeTable_T oScopeTable,
 * @brief Prints all nodes of the Symbol table in order of scope and insertion.
 * 
 * @param oSymTable	Pointer to the SymTable 
+* @param ost The output stream used.
 *
 */
-void ScopeTable_print(ScopeTable_T oScopeTable); 
+void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost); 
 
 #endif /* scope table ADT*/

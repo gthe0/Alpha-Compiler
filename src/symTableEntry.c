@@ -124,7 +124,7 @@ unsigned int getScope(SymEntry_T oSymEntry)
 }
 
 /* Used to Print Entry Info */
-void SymEntry_print(SymEntry_T oSymEntry)
+void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
 {
 	if(!oSymEntry)
 		return ;
@@ -133,22 +133,22 @@ void SymEntry_print(SymEntry_T oSymEntry)
 	{
 		if (oSymEntry->type == GLOBAL) 
 		{
-			printf(" \"%s\" [global variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
+			fprintf(ost," \"%s\" [global variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
 		} 
 		else if (oSymEntry->type == LOCAL) 
 		{
-			printf(" \"%s\" [local variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);            } 
+			fprintf(ost," \"%s\" [local variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);            } 
 		else if (oSymEntry->type == FORMAL) 
 		{
-				printf(" \"%s\" [formal variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
+			fprintf(ost," \"%s\" [formal variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
 		}
 		else if (oSymEntry->type == USERFUNC) 
 		{
-				printf(" \"%s\" [user function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
+			fprintf(ost," \"%s\" [user function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
 		} 
 		else if (oSymEntry->type == LIBFUNC) 
 		{
-			printf(" \"%s\" [library function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
+			fprintf(ost," \"%s\" [library function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
 		}
 	}
 

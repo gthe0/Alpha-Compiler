@@ -61,16 +61,18 @@ static SymEntry_T List_contains(ScopeList_T List, const char* name, unsigned int
 
 /**
 * @brief A function to Print list from the end to the begining
+*
 * @param head the List that we will print.
+* @param ost The output stream used.
 *
 */
-static void In_Order_Print(ScopeList_T head)
+static void In_Order_Print(ScopeList_T head, FILE* ost)
 {
 	if(head == NULL)
 		return;
 	
-	In_Order_Print(head->next);
-	SymEntry_print(head->oSymEntry);
+	In_Order_Print(head->next,ost);
+	SymEntry_print(head->oSymEntry,ost);
 }
 
 /*---------------------------------------------------------------------*/
@@ -140,7 +142,6 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 		
 		/* If realloc fails abort */	
 		assert(oScopeTable->table);
-		ScopeTable_print(oScopeTable);
 
 		for (int i = oScopeTable->max_scope + 1 ;
 				 i < oScopeTable->max_scope + SIZE;
@@ -187,7 +188,7 @@ int ScopeTable_hide(ScopeTable_T oScopeTable, unsigned int scope)
 }
 
 /* Prints the contents of the Symbol Table per scope and order */
-void ScopeTable_print(ScopeTable_T oScopeTable) 
+void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost) 
 {
 	if(!oScopeTable)
 		return ;
@@ -197,7 +198,7 @@ void ScopeTable_print(ScopeTable_T oScopeTable)
 	for (int i = 0; i <= oScopeTable->max_scope; i++)
 	{
 		head = oScopeTable->table[i];
-		In_Order_Print(head);
+		In_Order_Print(head,ost);
 	}
 
 }

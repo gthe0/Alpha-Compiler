@@ -10,6 +10,8 @@
 #ifndef __SYMBOL_TABLE__
 #define __SYMBOL_TABLE__ 
 
+#include <stdio.h>
+
 #include <symTableEntry.h>
 
 typedef struct 	SymTable SymTable, *SymTable_T;
@@ -71,8 +73,9 @@ SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
 * @brief Prints all nodes of the Symbol table in random order.
 * 
 * @param oSymTable	Pointer to the SymTable 
+* @param ost The output stream used.
 *
 */
-void SymTable_print(SymTable_T oSymTable);
+void SymTable_print(SymTable_T oSymTable, FILE* ost);
 
 #endif  /* symTable ADT*/

@@ -73,7 +73,8 @@
 %nonassoc EQ_OP  NE_OP
 %nonassoc '<' '>' GE_OP  LE_OP
 
-%precedence ELSE
+%nonassoc THEN
+%nonassoc ELSE
 
 %start program
 %%
@@ -220,7 +221,7 @@ idlist
 	;
 
 ifstmt
-	:  IF '(' expr ')' stmt
+	:  IF '(' expr ')' stmt THEN
 	|  IF '(' expr ')' stmt ELSE stmt
 	;
 
@@ -277,6 +278,9 @@ int main(int argc,char** argv)
 	/* Initializes tables and stack */
 	oScopeStack = ScopeStack_init();
 	Tables_init(&oSymTable,&oScopeTable);
+
+	/* Call the Parser */
+	yyparse();
 
 	/* Close streams and clean up */
 	Tables_free(oSymTable,oScopeTable);
