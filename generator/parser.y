@@ -274,19 +274,10 @@ int main(int argc,char** argv)
 	}
 	else ost = stdout;
 
-	const char* a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZZ";
 	/* Initializes tables and stack */
 	oScopeStack = ScopeStack_init();
 	Tables_init(&oSymTable,&oScopeTable);
-	
 
-	for(int i = 0; i < 1000;i++)
-	{
-		Tables_insert(oSymTable,oScopeTable,i%5,&a[i%40],i%14,0);
-	}
-
-	SymTable_print(oSymTable);
-	printf("\n=========================\n");
 	/* Close streams and clean up */
 	Tables_free(oSymTable,oScopeTable);
 	ScopeFree(oScopeStack);
