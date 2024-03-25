@@ -13,6 +13,7 @@ typedef struct ScopeStack ScopeStack, *ScopeStack_T;
 
 struct  ScopeStack
 {
+	int isBottom;
 	unsigned int scope;
 	ScopeStack_T prev;
 };
@@ -45,6 +46,14 @@ unsigned int ScopeTop(ScopeStack_T stack);
 * @return The Top element of the stack (it is an integer)
 */
 unsigned int ScopePop(ScopeStack_T stack);
+
+/**
+* @brief Checks if stack is Empty
+* @param stack The stack used. 
+*
+* @return 1 if it Empty or 0 if it is not.
+*/
+int ScopeIsEmpty(ScopeStack_T stack);
 
 /**
 * @brief Push an element in the stack.

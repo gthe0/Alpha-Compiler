@@ -22,6 +22,7 @@ ScopeStack_T ScopeStack_init(void)
 
 	new->prev = NULL;
 	new->scope = 0u;
+	new->isBottom = 1;
 
 	return new;
 }
@@ -51,6 +52,7 @@ ScopeStack_T ScopePush(ScopeStack_T stack, unsigned int scope)
 
 	head->scope = scope;
 	head->prev = stack;
+	head->isBottom = 1;
 
 	return head;
 }
@@ -76,4 +78,11 @@ unsigned int ScopePop(ScopeStack_T stack)
 	free(temp);
 
 	return top;
+}
+
+/* Check if the stack is Empty */
+int ScopeIsEmpty(ScopeStack_T stack)
+{
+	assert(stack);
+	return stack->isBottom;
 }

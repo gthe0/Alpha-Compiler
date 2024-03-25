@@ -93,20 +93,20 @@ stmt: expr ';'
 	;
 
 expr: assginexpr
-	| expr '+' expr
-	| expr '-' expr
-	| expr '*' expr
-	| expr '/' expr
-	| expr '%' expr
-	| expr '>' expr
-	| expr '<' expr
-	| expr GE_OP expr
-	| expr LE_OP expr
-	| expr EQ_OP expr
-	| expr NE_OP expr
-	| expr AND expr
-	| expr OR expr
-	| term
+	| expr '+' expr				
+	| expr '-' expr				
+	| expr '*' expr				
+	| expr '/' expr				
+	| expr '%' expr				
+	| expr '>' expr				
+	| expr '<' expr				
+	| expr GE_OP expr				
+	| expr LE_OP expr				
+	| expr EQ_OP expr				
+	| expr NE_OP expr				
+	| expr AND expr				
+	| expr OR expr				
+	| term				
 	;
 
 term: '(' expr ')'
@@ -190,7 +190,7 @@ block
 	;
 
 funcdef
-	: FUNC id_option '(' idlist ')' block
+	: FUNC id_option '('{scope++;} idlist ')'{scope--;}  block
 	;
 
 id_option
