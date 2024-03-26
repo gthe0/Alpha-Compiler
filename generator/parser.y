@@ -33,6 +33,8 @@
 	static unsigned int scope = 0;
 	static unsigned int loop_counter = 0;
 
+	static int invalid_funct = 0;
+	static int pop = 0;
 	/* Flex variables */
 	extern FILE* 	yyin;
 	extern char*	yytext;
@@ -131,6 +133,7 @@ term: '(' expr ')'
 
 assginexpr
 	: lvalue '=' expr 
+	| error '=' expr { yyerror("Wrong lvalue in assignment"); yyerrok;} 
 	;
 
 primary
@@ -143,13 +146,28 @@ primary
 
 lvalue
 	: ID			{
+
+		int type = 0;
+
+		if( (type = Valid_lvalue_ID(oSymTable,$1,yylineno, scope ,oScopeStack)) != EXIT_FAILURE)
+		{
+			if(type == 5)
+				Tables_insert(oSymTable,oScopeTable,GLOBAL,$1,scope,yylineno);
+			else if(type == 6)
+				Tables_insert(oSymTable,oScopeTable,LOCAL,$1,scope,yylineno);
+		}
+
 		
 	}
 	| LOC ID		{
+		if( Valid_local(oSymTable,$2,yylineno, scope ,oScopeStack) == EXIT_SUCCESS)
+		{
+			Tables_insert(oSymTable,oScopeTable,LOCAL,$2,scope,yylineno);
+		}
 
 	}
 	| DOUBLE_COL ID	{
-
+		global_exist(oSymTable,$2,yylineno);
 	}
 	| member
 	;
@@ -204,14 +222,19 @@ indexed
 	;
 
 indexedelem
-	: '{' expr ':' expr '}'
+	: '{'{scope++;} expr ':' expr '}'{
+		
+		ScopeTable_hide(oScopeTable,scope);
+		scope--;
+	}
 	;
 
 block
 	: '{' {scope++;} stmt_list '}'{
 		
 		ScopeTable_hide(oScopeTable,scope);
-		scope--;}
+		scope--;
+	}
 	;
 
 funcpref
@@ -227,16 +250,18 @@ funcdef
 	;
 
 id_option
-	: 		{Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name_generator(),scope,yylineno);
-			oScopeStack = ScopePush(oScopeStack,scope+1);
+	: 		{
+				Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name_generator(),scope,yylineno);
+				oScopeStack = ScopePush(oScopeStack,scope+1);
 	}
 	| ID	{
 		
-		if((lvalue_Function(oSymTable,$1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
+		if((invalid_funct = Valid_Function(oSymTable,$1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
 			Tables_insert(oSymTable,oScopeTable,USERFUNC,$1,scope,yylineno);
-			oScopeStack = ScopePush(oScopeStack,scope+1);
 		}
+		
+		oScopeStack = ScopePush(oScopeStack,scope+1);
 
 	}
 	;
@@ -252,8 +277,22 @@ const
 
 idlist
 	: 
-	| ID
-	| idlist ',' ID
+	| ID	{
+		
+		if((Valid_args(oSymTable,$1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
+		{
+			Tables_insert(oSymTable,oScopeTable,FORMAL,$1,scope,yylineno);
+		}
+
+	}
+	| idlist ',' ID	{
+		
+		if((Valid_args(oSymTable,$3,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
+		{
+			Tables_insert(oSymTable,oScopeTable,FORMAL,$3,scope,yylineno);
+		}
+
+	}
 	;
 
 ifstmt
@@ -282,7 +321,7 @@ returnstmt
 
 int yyerror(const char* s)
 {
-	LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s\n",s ,yylineno, yytext);
+	LOG_ERROR(PARSER,ERROR,"%s, line %d\n",s ,yylineno);
 	return EXIT_FAILURE;
 }
 

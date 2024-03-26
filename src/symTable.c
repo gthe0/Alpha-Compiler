@@ -61,7 +61,6 @@ static SymEntry_T List_contains(SymList* List, const char* name, unsigned int sc
 	
 	while (List != NULL)
 	{
-
 		if (List->entry->isActive
 			&& !strcmp(getName(List->entry),name) 
 			&& getScope(List->entry) == scope)
@@ -156,9 +155,9 @@ int SymTable_insert(SymTable_T oSymTable,
 
 /* It searches for a specific entry in the SymTable */
 SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
-					const char *name, unsigned int scope)
+					const char *name,  int scope)
 {
-	if(!name || !oSymTable)
+	if(!name || !oSymTable || scope < 0)
 	{
 		return NULL;
 	}
@@ -172,16 +171,18 @@ SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
 /* It searches for an entry in the SymTable between 2 scopes */
 SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 					const char *name, 
-					unsigned int FromScope,
-					unsigned int ToScope)
+					int FromScope,
+					int ToScope)
 {
 	SymEntry_T Entry = NULL;
 
-	if(oSymTable == NULL || name == NULL || ToScope < 0) 
+	if(oSymTable == NULL || name == NULL || ToScope > FromScope || ToScope <= 0) 
 		return NULL;
 	
 	while(FromScope >= ToScope && Entry == NULL)
+	{
 		Entry = SymTable_lookup_scope(oSymTable,name,FromScope--);
+	}
 
 	return Entry;
 }

@@ -54,8 +54,8 @@ int SymTable_insert(SymTable_T oSymTable,
 */
 SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 					const char *name, 
-					unsigned int FromScope,
-					unsigned int ToScope);
+					 int FromScope,
+					 int ToScope);
 
 /**
  * @brief Searches for a specific entry in the Symbol Table in a specific scope
@@ -67,7 +67,7 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
  * @return The Entry if it was found, otherwise NULL
 */
 SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
-					const char *name, unsigned int scope);
+					const char *name, int scope);
 
 /**
 * @brief Prints all nodes of the Symbol table in random order.

@@ -48,9 +48,59 @@ int Valid_loop_token(char *name, int loop_counter, unsigned int yylineno);
 *
 * @return EXIT_FAILURE or EXIT_SUCCESS 
 */
-int lvalue_Function(SymTable_T oSymTable,char* name,
+int Valid_Function(SymTable_T oSymTable,char* name,
 					unsigned int line, unsigned int FromScope,
 					ScopeStack_T stack);
+
+/**
+* @brief Check if the locals are valid
+* 
+* @param oSymTable The oSymTable (Used to lookup for the Symbol)
+* @param name The name of the token
+* @param line The line that we found the token
+* @param FromScope The current Scope 
+* @param stack The Scope Stack
+*
+* @return EXIT_FAILURE or EXIT_SUCCESS 
+*/
+int Valid_local(SymTable_T oSymTable,char* name,
+					unsigned int line, unsigned int FromScope,
+					ScopeStack_T stack);
+
+
+/**
+* @brief Check if the Arguments are valid
+* 
+* @param oSymTable The oSymTable (Used to lookup for the Symbol)
+* @param name The name of the token
+* @param line The line that we found the token
+* @param FromScope The current Scope 
+* @param stack The Scope Stack
+*
+* @return EXIT_FAILURE or EXIT_SUCCESS 
+*/
+int Valid_args(SymTable_T oSymTable,char* name,
+					unsigned int line, unsigned int FromScope,
+					ScopeStack_T stack);
+
+/* Function to check if the globals exists */
+int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
+					unsigned int line, unsigned int FromScope,
+					ScopeStack_T stack);
+
+/**
+* @brief Check if the global argument exists
+* 
+* @param oSymTable The oSymTable (Used to lookup for the Symbol)
+* @param name The name of the token
+* @param line The line that we found the token
+* @param FromScope The current Scope 
+* @param stack The Scope Stack
+*
+* @return EXIT_FAILURE or EXIT_SUCCESS 
+*/
+int global_exist(SymTable_T oSymTable, char *name,
+					unsigned int line);
 
 
 /**
