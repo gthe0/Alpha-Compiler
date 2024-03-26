@@ -157,7 +157,7 @@ lvalue
 			SymEntry_T entry;
 			if((entry = Valid_local(oSymTable,$2,yylineno, scope))==NULL)
 			{
-				entry =  SymEntry_create(LOCAL,$2,scope, yylineno);
+				entry =  SymEntry_create(scope == 0 ? GLOBAL:LOCAL,$2,scope, yylineno);
 				Tables_insert_Entry(oSymTable,oScopeTable,entry);
 			}
 			$$ = entry;
