@@ -64,8 +64,7 @@ int Valid_Function(SymTable_T oSymTable,char* name,
 * @return EXIT_FAILURE or EXIT_SUCCESS 
 */
 int Valid_local(SymTable_T oSymTable,char* name,
-					unsigned int line, unsigned int FromScope,
-					ScopeStack_T stack);
+					unsigned int line, unsigned int scope);
 
 
 /**

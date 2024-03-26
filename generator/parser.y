@@ -160,7 +160,7 @@ lvalue
 		
 	}
 	| LOC ID		{
-		if( Valid_local(oSymTable,$2,yylineno, scope ,oScopeStack) == EXIT_SUCCESS)
+		if( Valid_local(oSymTable,$2,yylineno, scope) == EXIT_SUCCESS)
 		{
 			Tables_insert(oSymTable,oScopeTable,LOCAL,$2,scope,yylineno);
 		}
@@ -222,11 +222,7 @@ indexed
 	;
 
 indexedelem
-	: '{'{scope++;} expr ':' expr '}'{
-		
-		ScopeTable_hide(oScopeTable,scope);
-		scope--;
-	}
+	: '{' expr ':' expr '}'
 	;
 
 block
@@ -297,6 +293,7 @@ idlist
 
 ifstmt
 	:  IF '(' expr ')' stmt
+	|  IF '(' error ')'				 	{  yyerrok;} 
 	|  IF '(' expr ')' stmt ELSE stmt
 	;
 

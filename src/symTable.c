@@ -176,9 +176,10 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 {
 	SymEntry_T Entry = NULL;
 
-	if(oSymTable == NULL || name == NULL || ToScope > FromScope || ToScope <= 0) 
+	if(oSymTable == NULL || name == NULL || ToScope > FromScope || ToScope < 0) 
 		return NULL;
 	
+
 	while(FromScope >= ToScope && Entry == NULL)
 	{
 		Entry = SymTable_lookup_scope(oSymTable,name,FromScope--);

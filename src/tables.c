@@ -46,6 +46,7 @@ int Tables_insert(SymTable_T oSymTable,
 	
 	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
 	{
+		LOG_ERROR(PARSER,ERROR,"Insert failed ! Token already exists\n");
 		SymEntry_free(entry);
 	}
 
