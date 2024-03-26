@@ -50,45 +50,6 @@ static int Lib_shadow_check(char *name)
 	return EXIT_SUCCESS;
 }
 
-int lvalue_local(SymTable_T oSymTable, char *name, int scope)
-{
-	SymEntry_T entry;
-
-	assert(oSymTable);
-	assert(name);
-
-	if (Lib_shadow_check(name) == EXIT_FAILURE)
-		return EXIT_FAILURE;
-
-	/* If an active local instance is already inserted in
-	the Symbol table, return Exit Failure*/
-	if (entry = SymTable_lookup_scope(oSymTable, name, scope))
-	{
-		LOG_ERROR(PARSER, ERROR, "%s local instance found at line %d\n", name, getLine(entry));
-		return EXIT_FAILURE;
-	}
-
-	return EXIT_SUCCESS;
-}
-
-int lvalue_global(SymTable_T oSymTable, char *name)
-{
-	assert(oSymTable);
-	assert(name);
-
-	if (Lib_shadow_check(name) == EXIT_FAILURE)
-		return EXIT_FAILURE;
-
-	/* If global value is already inserted in
-	the Symbol table, return Exit Failure*/
-	if (SymTable_lookup_scope(oSymTable, name, 0) != NULL)
-	{
-		LOG_ERROR(PARSER, ERROR, "%s global instance found\n", name);
-		return EXIT_FAILURE;
-	}
-
-	return EXIT_SUCCESS;
-}
 
 /* Function to check if the Function Definition is Valid */
 int Valid_Function(SymTable_T oSymTable, char *name,
@@ -230,9 +191,6 @@ int Valid_local(SymTable_T oSymTable, char *name,
 	/* If there is already an entry with this name, then it fails*/
 	if (entry = SymTable_lookup_scope(oSymTable, name, scope))
 	{
-		LOG_ERROR(PARSER, ERROR, "Invalid Local %s. Token is already inserted in the Table\n", name);
-		LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u\n\n", name, getLine(entry));
-
 		return EXIT_FAILURE;
 	}
 
