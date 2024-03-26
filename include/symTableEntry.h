@@ -101,6 +101,15 @@ const char* getName(SymEntry_T oSymEntry);
 unsigned int getScope(SymEntry_T oSymEntry);
 
 /**
+* @brief Getter of Symbol Line.
+*
+* @param oSymEntry Symbol Entry.
+*
+* @return The line of Insertion.
+*/
+unsigned int getLine(SymEntry_T oSymEntry);
+
+/**
 * @brief Prints the Symbol Entry.
 *
 * @param oSymEntry Symbol Entry.

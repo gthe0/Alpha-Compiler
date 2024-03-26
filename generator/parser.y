@@ -95,14 +95,8 @@ stmt: expr ';'
 	| whilestmt
 	| forstmt
 	| returnstmt
-	| BREAK ';' {
-		if(loop_counter == 0)
-			LOG_ERROR(PARSER,ERROR,"BREAK outside a loop\n");
-	}
-	| CONTINUE ';'{
-		if(loop_counter == 0)
-			LOG_ERROR(PARSER,ERROR,"CONTINUE outside a loop\n");
-	}
+	| BREAK ';' 	{Valid_loop_token("break",loop_counter,yylineno);}
+	| CONTINUE ';'	{Valid_loop_token("continue",loop_counter,yylineno);}
 	| block
 	| funcdef
 	| ';'
@@ -152,10 +146,7 @@ lvalue
 		
 	}
 	| LOC ID		{
-		if(lvalue_local(oSymTable,$2,scope) == 0)
-		{
-			Tables_insert(oSymTable,oScopeTable,LOCAL,$2,scope,yylineno);
-		}
+
 	}
 	| DOUBLE_COL ID	{
 
@@ -236,13 +227,17 @@ funcdef
 	;
 
 id_option
-	: /* empty production, making id_option optional */
-	| ID{
-		if((lvalue_Function(oSymTable,$1,scope, oScopeStack))==0)
+	: 		{Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name_generator(),scope,yylineno);
+			oScopeStack = ScopePush(oScopeStack,scope+1);
+	}
+	| ID	{
+		
+		if((lvalue_Function(oSymTable,$1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
 			Tables_insert(oSymTable,oScopeTable,USERFUNC,$1,scope,yylineno);
 			oScopeStack = ScopePush(oScopeStack,scope+1);
 		}
+
 	}
 	;
 
@@ -279,8 +274,8 @@ forstmt
 	;
 
 returnstmt
-	: RET expr ';'	{if(ScopeIsEmpty(oScopeStack)) LOG_ERROR(PARSER,ERROR, "Return outside a Function\n");}
-	| RET ';'		{if(ScopeIsEmpty(oScopeStack)) LOG_ERROR(PARSER,ERROR, "Return outside a Function\n");}
+	: RET expr ';'	{Valid_return(oScopeStack,yylineno);}
+	| RET ';'		{Valid_return(oScopeStack,yylineno);}
 	;
 %%
 /* Same as lex */

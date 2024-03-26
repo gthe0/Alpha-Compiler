@@ -123,6 +123,17 @@ unsigned int getScope(SymEntry_T oSymEntry)
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->scope : oSymEntry->value.varVal->scope ;
 }
 
+/* Getter of Line */
+unsigned int getLine(SymEntry_T oSymEntry)
+{
+	/* If oSymEntry is NULL or both enties in value are NULL then abort */	
+	assert(oSymEntry);
+
+	/* Return the scope */
+	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->line : oSymEntry->value.varVal->line ;
+}
+
+
 /* Used to Print Entry Info */
 void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
 {
