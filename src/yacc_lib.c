@@ -167,7 +167,7 @@ SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *
 		/* If stack is Empty, do nothing*/
 		if(isEmpty) return entry;
 
-		if(entry_scope < top && entry->type <= FORMAL)
+		if(entry_scope < top && entry->type <= FORMAL && entry->type != GLOBAL)
 		{
 			LOG_ERROR(PARSER, ERROR, "Token %s out of scope. Function has a minimum scope of %u \n", name, top);
 			LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u with a scope of %u. "\
