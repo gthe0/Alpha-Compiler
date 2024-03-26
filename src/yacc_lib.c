@@ -182,7 +182,7 @@ int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
 		/* If stack is Empty, do nothing*/
 		if(isEmpty) return EXIT_FAILURE;
 
-		if(entry_scope < top )
+		if(entry_scope < top && entry->type <= FORMAL)
 		{
 			LOG_ERROR(PARSER, ERROR, "Token %s out of scope. Function has scope of %u \n", name, top);
 			LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u in scope %u. "\
@@ -222,7 +222,7 @@ int Valid_local(SymTable_T oSymTable, char *name,
 	if (Lib_shadow_check(name) == EXIT_FAILURE)
 	{
 		LOG_ERROR(PARSER, ERROR, "Shadowing Library Function, line %d, token %s\n", line, name);
-		LOG_ERROR(PARSER, NOTE, "%s is a library Function\n\n", name, getLine(entry));
+		LOG_ERROR(PARSER, NOTE, "%s is a library Function\n\n", name);
 
 		return EXIT_FAILURE;
 	}

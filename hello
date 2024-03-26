@@ -10,10 +10,9 @@
  "sqrt" [library function] (line 0) (scope 0)
  "cos" [library function] (line 0) (scope 0)
  "sin" [library function] (line 0) (scope 0)
- "f" [user function] (line 3) (scope 0)
+ "G" [user function] (line 3) (scope 0)
 
 --------------------------------------------------
- "f" [local variable] (line 4) (scope 1)
- "g" [user function] (line 5) (scope 1)
+ "F" [user function] (line 4) (scope 1)
 
 --------------------------------------------------
