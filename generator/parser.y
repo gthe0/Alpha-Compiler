@@ -16,6 +16,7 @@
 	#include <stdlib.h>
 
 	#include <ScopeStack.h>
+	#include <yacc_lib.h>
 	#include <tables.h>
 	#include <log.h>
 
@@ -94,15 +95,13 @@ stmt: expr ';'
 	| whilestmt
 	| forstmt
 	| returnstmt
-	| BREAK ';'				
-	{
+	| BREAK ';' {
 		if(loop_counter == 0)
-			LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s\n",s ,yylineno, $1)
+			LOG_ERROR(PARSER,ERROR,"BREAK outside a loop\n");
 	}
-	| CONTINUE ';'
-	{
+	| CONTINUE ';'{
 		if(loop_counter == 0)
-			LOG_ERROR(PARSER,ERROR,"%s, line %d, token %s\n",s ,yylineno, $1)
+			LOG_ERROR(PARSER,ERROR,"CONTINUE outside a loop\n");
 	}
 	| block
 	| funcdef
@@ -149,9 +148,18 @@ primary
 	;
 
 lvalue
-	: ID				{}
-	| LOC ID			{}
-	| DOUBLE_COL ID		{}
+	: ID			{
+		
+	}
+	| LOC ID		{
+		if(lvalue_local(oSymTable,$2,scope) == 0)
+		{
+			Tables_insert(oSymTable,oScopeTable,LOCAL,$2,scope,yylineno);
+		}
+	}
+	| DOUBLE_COL ID	{
+
+	}
 	| member
 	;
 
@@ -191,7 +199,6 @@ elist
 
 objectdef
 	:	'[' object_list ']'
-	|	'[' ']'
 	;
 
 object_list
@@ -210,28 +217,33 @@ indexedelem
 	;
 
 block
-	: '{' {scope++;} stmt_list '}'{scope--;}
+	: '{' {scope++;} stmt_list '}'{
+		
+		ScopeTable_hide(oScopeTable,scope);
+		scope--;}
 	;
 
 funcpref
-	:	FUNC id_option {
-		oScopeStack = ScopePush(oScopeStack,scope+1);
-		
-	}
+	:	FUNC id_option 
 	;
 
 funcdef
 	: funcpref	'('	{scope++;}
 	  idlist	')'	{scope--;}
 	  block			{
-						int sc = ScopePop(oScopeStack);
-						ScopeTable_hide(oScopeTable,sc);
+						ScopePop(oScopeStack);
 					}
 	;
 
 id_option
 	: /* empty production, making id_option optional */
-	| ID	
+	| ID{
+		if((lvalue_Function(oSymTable,$1,scope, oScopeStack))==0)
+		{
+			Tables_insert(oSymTable,oScopeTable,USERFUNC,$1,scope,yylineno);
+			oScopeStack = ScopePush(oScopeStack,scope+1);
+		}
+	}
 	;
 
 const
@@ -267,8 +279,8 @@ forstmt
 	;
 
 returnstmt
-	: RET expr ';'
-	| RET ';'
+	: RET expr ';'	{if(ScopeIsEmpty(oScopeStack)) LOG_ERROR(PARSER,ERROR, "Return outside a Function\n");}
+	| RET ';'		{if(ScopeIsEmpty(oScopeStack)) LOG_ERROR(PARSER,ERROR, "Return outside a Function\n");}
 	;
 %%
 /* Same as lex */
@@ -314,6 +326,8 @@ int main(int argc,char** argv)
 
 	/* Call the Parser */
 	yyparse();
+
+	Tables_print(oSymTable,oScopeTable,ost,0);
 
 	/* Close streams and clean up */
 	Tables_free(oSymTable,oScopeTable);

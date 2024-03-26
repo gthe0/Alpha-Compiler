@@ -199,6 +199,9 @@ void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost)
 	{
 		head = oScopeTable->table[i];
 		In_Order_Print(head,ost);
+
+		if(head!=NULL)
+			fprintf(ost,"\n--------------------------------------------------\n");
 	}
 
 }

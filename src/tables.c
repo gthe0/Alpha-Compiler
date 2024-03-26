@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define NO_OF_LIBFUNCTS 12
 
@@ -33,6 +34,26 @@ static char* LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
 };
 
 /* Insert Entries in both tables */
+static int Tables_insert_helper(SymTable_T oSymTable,
+								ScopeTable_T oScopeTable,
+								SymbolType type,
+								const char* name,
+								unsigned int scope,
+								unsigned int yylineno)
+{
+	int a;
+	SymEntry_T entry = SymEntry_create(type,name,scope,yylineno);
+	
+	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
+	{
+		LOG_ERROR(PARSER,ERROR,"Insert failed ! Token already exists\n");
+		SymEntry_free(entry);
+	}
+
+	return a;
+}
+
+/* Insert Entries in both tables */
 int Tables_insert(SymTable_T oSymTable,
 					ScopeTable_T oScopeTable,
 					SymbolType type,
@@ -44,7 +65,7 @@ int Tables_insert(SymTable_T oSymTable,
 	{
 		if (!strcmp(LIB_FUNCTIONS[NO_OF_LIBFUNCTS],name))
 		{
-			LOG_ERROR(PARSER,ERROR,"");
+			LOG_ERROR(PARSER,ERROR,"Shadowing Library Function, line %d, token %s",yylineno,name);
 			return EXIT_FAILURE;
 		}
 		
@@ -53,24 +74,6 @@ int Tables_insert(SymTable_T oSymTable,
 	return Tables_insert_helper(oSymTable,oScopeTable,type,name,scope,yylineno);
 }
 
-/* Insert Entries in both tables */
-static int Tables_insert_helper(SymTable_T oSymTable,
-								ScopeTable_T oScopeTable,
-								SymbolType type,
-								const char* name,
-								unsigned int scope,
-								unsigned int yylineno)
-{
-	int a;
-	SymEntry_T entry = SymEntry_create(type,name,scope,yylineno);
- 	
-	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
-	{
-		SymEntry_free(entry);
-	}
-
-	return a;
-}
 
 /* Free both tables */
 void Tables_free(SymTable_T oSymTable,
@@ -86,7 +89,10 @@ int Tables_init(SymTable_T* oSymTable,
 {
 	/* If they are both initialized already*/
 	if(!oSymTable && !oScopeTable)
+	{
+		LOG_ERROR(PARSER,NOTE,"You Inserted Initialized tables !\n");
 		return EXIT_FAILURE;
+	}
 
 	*oSymTable = SymTable_new();
 	*oScopeTable = ScopeTable_new();

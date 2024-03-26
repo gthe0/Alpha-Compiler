@@ -61,10 +61,13 @@ static SymEntry_T List_contains(SymList* List, const char* name, unsigned int sc
 	
 	while (List != NULL)
 	{
+
 		if (List->entry->isActive
 			&& !strcmp(getName(List->entry),name) 
 			&& getScope(List->entry) == scope)
-			return List->entry;
+			{
+				return List->entry;
+			}
 
 		List = List->next;
 	}
@@ -141,12 +144,12 @@ int SymTable_insert(SymTable_T oSymTable,
 
 	/* If we run out of mem, abort */
 	assert(node);
-
+	
 	node->entry = oSymEntry;
 	node->next = head;
 
 	oSymTable->List[hash] = node;
-
+	
 	return EXIT_SUCCESS;
 }
 

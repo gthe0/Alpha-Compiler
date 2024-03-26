@@ -129,27 +129,24 @@ void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
 	if(!oSymEntry)
 		return ;
 
-	if (oSymEntry->isActive) 
+	if (oSymEntry->type == GLOBAL) 
 	{
-		if (oSymEntry->type == GLOBAL) 
-		{
-			fprintf(ost," \"%s\" [global variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
-		} 
-		else if (oSymEntry->type == LOCAL) 
-		{
-			fprintf(ost," \"%s\" [local variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);            } 
-		else if (oSymEntry->type == FORMAL) 
-		{
-			fprintf(ost," \"%s\" [formal variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
-		}
-		else if (oSymEntry->type == USERFUNC) 
-		{
-			fprintf(ost," \"%s\" [user function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
-		} 
-		else if (oSymEntry->type == LIBFUNC) 
-		{
-			fprintf(ost," \"%s\" [library function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
-		}
+		fprintf(ost," \"%s\" [global variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
+	} 
+	else if (oSymEntry->type == LOCAL) 
+	{
+		fprintf(ost," \"%s\" [local variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);            } 
+	else if (oSymEntry->type == FORMAL) 
+	{
+		fprintf(ost," \"%s\" [formal variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);
+	}
+	else if (oSymEntry->type == USERFUNC) 
+	{
+		fprintf(ost," \"%s\" [user function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
+	} 
+	else if (oSymEntry->type == LIBFUNC) 
+	{
+		fprintf(ost," \"%s\" [library function] (line %d) (scope %d)\n", oSymEntry->value.funcVal->name, oSymEntry->value.funcVal->line, oSymEntry->value.funcVal->scope);
 	}
 
 	return ;

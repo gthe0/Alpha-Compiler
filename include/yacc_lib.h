@@ -10,7 +10,10 @@
 #define __YACC_LIB_H__
 
 #include <symTable.h>
+#include <ScopeStack.h>
 
-
+int lvalue_local(SymTable_T oSymTable,char* name,int scope);
+int lvalue_global(SymTable_T oSymTable,char* name);
+int lvalue_Function(SymTable_T oSymTable,char* name,int FromScope,ScopeStack_T stack);
 
 #endif /* Yacc lib */
