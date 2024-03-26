@@ -14,6 +14,7 @@
 */
 
 %{
+	#include <symTableEntry.h>
 	#include <parser.h>
 	#include <log.h>
 

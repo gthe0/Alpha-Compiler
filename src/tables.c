@@ -34,6 +34,22 @@ static char* LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
 };
 
 /* Insert Entries in both tables */
+int Tables_insert_Entry(SymTable_T oSymTable,
+						ScopeTable_T oScopeTable,
+						SymEntry_T entry)
+{
+	int a;
+	
+	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
+	{
+		LOG_ERROR(PARSER,ERROR,"Insert failed ! Token already exists\n");
+		SymEntry_free(entry);
+	}
+
+	return a;
+}
+
+/* Insert Entries in both tables */
 int Tables_insert(SymTable_T oSymTable,
 					ScopeTable_T oScopeTable,
 					SymbolType type,

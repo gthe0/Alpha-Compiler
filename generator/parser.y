@@ -15,10 +15,12 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
+	#include <symTableEntry.h>
 	#include <ScopeStack.h>
 	#include <yacc_lib.h>
 	#include <tables.h>
 	#include <log.h>
+
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
@@ -51,11 +53,14 @@
 	int	intVal;
 	char* string;
 	float floatVal;
+	SymEntry_T entry;
 }
 
 %token <string> 	ID STRING
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
+
+%type <entry> lvalue
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR
@@ -124,15 +129,15 @@ expr: assginexpr
 term: '(' expr ')'
 	| '-' expr	%prec UNARY_MINUS
 	| NOT expr
-	| INC_OP lvalue
-	| lvalue INC_OP
-	| DEC_OP lvalue
-	| lvalue DEC_OP
+	| INC_OP lvalue 	{eval_lvalue($2,"++",yylineno);}
+	| lvalue INC_OP		{eval_lvalue($1,"++",yylineno);}
+	| DEC_OP lvalue		{eval_lvalue($2,"--",yylineno);}
+	| lvalue DEC_OP		{eval_lvalue($1,"--",yylineno);}
 	| primary
 	;
 
 assginexpr
-	: lvalue '=' expr 
+	: lvalue '=' expr {eval_lvalue($1,"assignment",yylineno);}
 	| error '=' expr { yyerror("Wrong lvalue in assignment"); yyerrok;} 
 	;
 
@@ -145,31 +150,22 @@ primary
 	;
 
 lvalue
-	: ID			{
-
-		int type = 0;
-
-		if( (type = Valid_lvalue_ID(oSymTable,$1,yylineno, scope ,oScopeStack)) != EXIT_FAILURE)
-		{
-			if(type == 5)
-				Tables_insert(oSymTable,oScopeTable,GLOBAL,$1,scope,yylineno);
-			else if(type == 6)
-				Tables_insert(oSymTable,oScopeTable,LOCAL,$1,scope,yylineno);
-		}
-
-		
+	: ID	{
+		$$ = Valid_lvalue_ID(oSymTable,oScopeTable,$1,yylineno, scope ,oScopeStack);
 	}
 	| LOC ID		{
-		if( Valid_local(oSymTable,$2,yylineno, scope) == EXIT_SUCCESS)
-		{
-			Tables_insert(oSymTable,oScopeTable,LOCAL,$2,scope,yylineno);
-		}
-
+			SymEntry_T entry;
+			if((entry = Valid_local(oSymTable,$2,yylineno, scope))==NULL)
+			{
+				entry =  SymEntry_create(LOCAL,$2,scope, yylineno);
+				Tables_insert_Entry(oSymTable,oScopeTable,entry);
+			}
+			$$ = entry;
 	}
 	| DOUBLE_COL ID	{
-		global_exist(oSymTable,$2,yylineno);
+		$$ = find_global(oSymTable,$2,yylineno);
 	}
-	| member
+	| member	{$$ = NULL;}
 	;
 
 member

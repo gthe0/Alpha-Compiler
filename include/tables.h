@@ -18,6 +18,18 @@
 * 
 * @param oSymTable The Symbol table
 * @param oScopeTable The Scope table
+* @param entry The entry to be inserted
+*
+* @return EXIT_SUCCESS or EXIT_FAILURE
+*/
+int Tables_insert_Entry(SymTable_T oSymTable,
+						ScopeTable_T oScopeTable,
+						SymEntry_T entry);
+/**
+* @brief A wrapper function used to Create and Insert Entries in both tables
+* 
+* @param oSymTable The Symbol table
+* @param oScopeTable The Scope table
 * @param type 	The type of the Entry
 * @param name 	The name of the Entry
 * @param scope 	The scope of the Entry
@@ -64,5 +76,6 @@ int Tables_init(SymTable_T* oSymTable,
 */
 void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
 				, FILE* ost, bool option);
+
 
 #endif /* wrapper */

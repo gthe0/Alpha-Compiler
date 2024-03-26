@@ -15,28 +15,36 @@
 
 #define NO_OF_LIBFUNCTS 12
 
-#define GLOBAL_ID 5
+#define GLOBAL_SCOPE 0
 #define LOCAL_ID 6
 
 static unsigned unnamed_func_counter = 0;
 
 /* Library Functions. We Insert them in the initialization of the Tables*/
 static char *LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
-	{
-		"print",
-		"input",
-		"objectmemberkeys",
-		"objecttotalmembers",
-		"objectcopy",
-		"totalarguments",
-		"argument",
-		"typeof",
-		"strtonum",
-		"sqrt",
-		"cos",
-		"sin",
+{
+	"print",
+	"input",
+	"objectmemberkeys",
+	"objecttotalmembers",
+	"objectcopy",
+	"totalarguments",
+	"argument",
+	"typeof",
+	"strtonum",
+	"sqrt",
+	"cos",
+	"sin",
 };
 
+
+/**
+* @brief Check if we shadow library Functions. 
+* 
+* @param name name of the token
+*
+* @return EXIT_SUCCESS if we do not, EXIT_FAILURE otherwise.
+*/
 static int Lib_shadow_check(char *name)
 {
 	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
@@ -74,8 +82,23 @@ int Valid_Function(SymTable_T oSymTable, char *name,
 	/* If there is already an entry with this name, then it fails*/
 	if (entry = SymTable_lookup(oSymTable, name, FromScope, ScopeTop(stack)))
 	{
-		LOG_ERROR(PARSER, ERROR, "Invalid Function %s. Token is already inserted in the Table\n", name);
-		LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u\n\n", name, getLine(entry));
+		if (getScope(entry) == FromScope)
+		{
+			if (entry->type > FORMAL)
+			{
+				LOG_ERROR(PARSER, ERROR, "Invalid redeclaration of Function %s in line %u\n", name,line);
+				LOG_ERROR(PARSER, NOTE, "Cannot Redeclare Functions\n\n");
+			}
+			else
+			{
+				LOG_ERROR(PARSER, ERROR, "Invalid redeclaration of Variable %s to a Function in line %u\n", name,line);
+				LOG_ERROR(PARSER, NOTE, "Cannot Redeclare Variables as Functions\n\n");
+			}
+		}
+		else
+		{
+			LOG_ERROR(PARSER, ERROR, "Token %s was inserted in line %u\n", name,getLine(entry));
+		}
 
 		return EXIT_FAILURE;
 	}
@@ -116,11 +139,12 @@ int Valid_args(SymTable_T oSymTable, char *name,
 }
 
 /* Function to check if the globals exists */
-int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
+SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *name,
 					unsigned int line, unsigned int FromScope,
 					ScopeStack_T stack)
 {
 	assert(oSymTable);
+	assert(oScopeTable);
 	assert(stack);
 	assert(name);
 
@@ -129,7 +153,7 @@ int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
 	/* If shadowing of library functions happens then Exit*/
 	if (Lib_shadow_check(name) == EXIT_FAILURE)
 	{
-		return EXIT_FAILURE;
+		return SymTable_lookup_scope(oSymTable, name, 0);
 	}
 
 	int isEmpty = ScopeIsEmpty(stack);
@@ -141,17 +165,18 @@ int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
 		int entry_scope = getScope(entry);
 		
 		/* If stack is Empty, do nothing*/
-		if(isEmpty) return EXIT_FAILURE;
+		if(isEmpty) return entry;
 
 		if(entry_scope < top && entry->type <= FORMAL)
 		{
-			LOG_ERROR(PARSER, ERROR, "Token %s out of scope. Function has scope of %u \n", name, top);
-			LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u in scope %u. "\
-			"It would have been accessible if it was initialized within these scopes: %u-%u\n\n"
+			LOG_ERROR(PARSER, ERROR, "Token %s out of scope. Function has a minimum scope of %u \n", name, top);
+			LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u with a scope of %u. "\
+			"It would have been accessible if it was a function or initialized within these scopes: %u-%u\n\n"
 			, name, getLine(entry),entry_scope,top,FromScope);
+
 		}
 
-		return EXIT_FAILURE;
+		return entry;
 	}
 
 	/*If Entry is NULL then it was not found and we insert it*/
@@ -159,25 +184,25 @@ int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
 	{
 		if (FromScope == 0)
 		{
-			return GLOBAL_ID;
+			entry = SymEntry_create(GLOBAL,name,FromScope,line);
 		}
 		else if (FromScope > 0)
 		{
-			return LOCAL_ID;
+			entry = SymEntry_create(LOCAL,name,FromScope,line);
 		}
+
+		Tables_insert_Entry(oSymTable,oScopeTable,entry);
 	}
 	
-	return EXIT_FAILURE;
+	return entry;
 }
 
 /* Function to check if the locals are Valid */
-int Valid_local(SymTable_T oSymTable, char *name,
+SymEntry_T Valid_local(SymTable_T oSymTable, char *name,
 				unsigned int line, unsigned int scope)
 {
 	assert(oSymTable);
 	assert(name);
-
-	SymEntry_T entry = NULL;
 
 	/* If shadowing of library functions happens then Exit*/
 	if (Lib_shadow_check(name) == EXIT_FAILURE)
@@ -185,20 +210,14 @@ int Valid_local(SymTable_T oSymTable, char *name,
 		LOG_ERROR(PARSER, ERROR, "Shadowing Library Function, line %d, token %s\n", line, name);
 		LOG_ERROR(PARSER, NOTE, "%s is a library Function\n\n", name);
 
-		return EXIT_FAILURE;
+		return  SymTable_lookup_scope(oSymTable, name, 0);
 	}
 
-	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup_scope(oSymTable, name, scope))
-	{
-		return EXIT_FAILURE;
-	}
-
-	return EXIT_SUCCESS;
+	return SymTable_lookup_scope(oSymTable, name, scope);
 }
 
 /* Function to check if the globals exists */
-int global_exist(SymTable_T oSymTable, char *name,
+SymEntry_T find_global(SymTable_T oSymTable, char *name,
 				 unsigned int line)
 {
 	assert(oSymTable);
@@ -207,14 +226,12 @@ int global_exist(SymTable_T oSymTable, char *name,
 	SymEntry_T entry = NULL;
 
 	/* If there is not an entry, throw error*/
-	if (SymTable_lookup_scope(oSymTable, name, 0) == NULL)
+	if ((entry = SymTable_lookup_scope(oSymTable, name, 0)) == NULL)
 	{
 		LOG_ERROR(PARSER, ERROR, "Invalid GLOBAL %s in line %u. Token does not exist in Table\n", name, line);
-
-		return EXIT_FAILURE;
 	}
 
-	return EXIT_SUCCESS;
+	return entry;
 }
 
 /* Check if the loop-only keys are valid */
@@ -260,4 +277,29 @@ char *func_name_generator()
 	strcat(generated_name, func_number);
 
 	return generated_name;
+}
+
+int eval_lvalue(SymEntry_T entry,char* operation, int yylineno)
+{
+	if(entry == NULL) return EXIT_FAILURE;
+	
+	/* If Functions are used with a variable operator, then EXIT_FAILURE*/
+	if (entry->type == LIBFUNC)
+	{
+		LOG_ERROR(PARSER, ERROR, "Illegal usage of %s operation in line %u\n",operation,yylineno);
+		LOG_ERROR(PARSER, NOTE, "%s is a library Function.\n\n", getName(entry));
+
+		return EXIT_FAILURE;
+	}
+
+	if (entry->type == USERFUNC)
+	{
+		LOG_ERROR(PARSER, ERROR, "Illegal usage of %s operation in line %u\n",operation,yylineno);
+		LOG_ERROR(PARSER, NOTE, "%s is a User Function.\n\n", getName(entry));
+
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
+
 }

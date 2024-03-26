@@ -9,12 +9,8 @@
 #ifndef __YACC_LIB_H__
 #define __YACC_LIB_H__
 
-#include <symTable.h>
+#include <tables.h>
 #include <ScopeStack.h>
-
-int lvalue_local(SymTable_T oSymTable,char* name,int scope);
-int lvalue_global(SymTable_T oSymTable,char* name);
-
 
 /**
 * @brief This Functions checks if the return statement is valid
@@ -58,12 +54,11 @@ int Valid_Function(SymTable_T oSymTable,char* name,
 * @param oSymTable The oSymTable (Used to lookup for the Symbol)
 * @param name The name of the token
 * @param line The line that we found the token
-* @param FromScope The current Scope 
-* @param stack The Scope Stack
+* @param scope The current Scope 
 *
-* @return EXIT_FAILURE or EXIT_SUCCESS 
+* @return the token if found or else NULL 
 */
-int Valid_local(SymTable_T oSymTable,char* name,
+SymEntry_T Valid_local(SymTable_T oSymTable,char* name,
 					unsigned int line, unsigned int scope);
 
 
@@ -83,12 +78,11 @@ int Valid_args(SymTable_T oSymTable,char* name,
 					ScopeStack_T stack);
 
 /* Function to check if the globals exists */
-int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
+SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *name,
 					unsigned int line, unsigned int FromScope,
 					ScopeStack_T stack);
-
 /**
-* @brief Check if the global argument exists
+* @brief Check if the global token exists
 * 
 * @param oSymTable The oSymTable (Used to lookup for the Symbol)
 * @param name The name of the token
@@ -96,11 +90,12 @@ int Valid_lvalue_ID(SymTable_T oSymTable, char *name,
 * @param FromScope The current Scope 
 * @param stack The Scope Stack
 *
-* @return EXIT_FAILURE or EXIT_SUCCESS 
+* @return The token if found or else return NULL if not found 
 */
-int global_exist(SymTable_T oSymTable, char *name,
+SymEntry_T find_global(SymTable_T oSymTable, char *name,
 					unsigned int line);
 
+int eval_lvalue(SymEntry_T entry,char* operation, int yylineno);
 
 /**
 * @brief This Functions generates a name for Functions with no name defined
