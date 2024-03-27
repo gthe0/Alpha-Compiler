@@ -193,17 +193,20 @@ normcall
 	;
 
 methodcall
-	: DOUBLE_DOT ID '(' elist ')' 
+	: DOUBLE_DOT ID '(' elist ')'  
+	| DOUBLE_DOT ID '(' error ')' {  yyerrok;} 
 	| DOUBLE_DOT ID '('  ')' 
 	; // equivalent to lvalue.id(lvalue, elist)
 
 elist
 	: expr 
 	| elist ',' expr
+	| elist ',' error	{ yyerrok;} 
 	;
 
 objectdef
 	:	'[' object_list ']'
+	|	'[' error ']'	{  yyerrok;} 
 	;
 
 object_list
@@ -218,7 +221,10 @@ indexed
 	;
 
 indexedelem
-	: '{' expr ':' expr '}'
+	: '{' expr  ':' expr '}'
+	| '{' error ':' expr '}'		{ yyerrok;} 
+	| '{' expr  ':' error '}'		{ yyerrok;} 
+	| '{' expr error expr '}'		{ yyerrok;} 
 	;
 
 block
@@ -298,11 +304,14 @@ loop_End:	{loop_counter--;}
 
 whilestmt
 	: WHILE '(' expr ')' loop_Inc  stmt loop_End 
+	| WHILE '(' error ')' loop_Inc  stmt loop_End {  yyerrok;} 
 	;
 
 forstmt
 	: FOR '(' elist ';' expr ';' elist ')' loop_Inc  stmt loop_End
 	| FOR '(' elist ';' expr ';' ')' loop_Inc stmt loop_End
+	| FOR '(' elist ';' error ';' elist')' loop_Inc stmt loop_End	{  yyerrok;} 
+	| FOR '(' elist ';' error ';' ')' loop_Inc stmt loop_End	{  yyerrok;} 
 	;
 
 returnstmt
