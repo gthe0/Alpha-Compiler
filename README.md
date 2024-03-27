@@ -2,36 +2,40 @@
 
 ## Overview
 
-This project is a simple implementation of a lexical analyzer using FLEX.
+This project is a simple implementation of a syntax analyzer using Flex and Bison/YACC.
 
 ## Contributors
 
-- Niki Psoma (CSD5038)
+### CONTRIBUTORS IN AM ORDER
 - Georgios Theodorakis (CSD4881)
 - Fotis Pelantakis (CSD4988)
+- Niki Psoma (CSD5038)
 
 ## Project Contents
 
+- `parser.y`: YACC file with the Grammar rules and error checks.
 - `lex.l`: Lexical analyzer specification file.
-- `al.h`, `alpha_token.h`: Libraries.
-- `al.c`: Implementation of a "printer".
-- `alpha_token.c`: Contains list implementation (create, insert, print) and basic struct.
+- `src`: The folder with all the .c source files.
+- `include`: The folder with all the include files i.e. header (.h) files.
+- `scripts`: The folder with all the scripts used.
 - `Makefile`: Contains instructions for building the project.
 
 ## Building and Running
 
 To build the project, run the following command:
-- make flex (This will generate the lexer code from `lex.l`)
-- make compile (This will compile all the `.c` files, and link them into an executable named `scanner.out`.)
+- make generate (This will generate the lexer code from `lex.l` and the yacc/bison code from `parser.y`)
+- make compile (This will compile all the `.c` files, and link them into an executable named `parser.out`.)
 
-To run the lexical analyzer on an input file, use the following command:
-- ./bin/scanner.out INPUT_FILE
+To run the parser on an input file, use the following command:
+- ./bin/parser.out INPUT_FILE
 
 INPUT_FILE: File containing the input (It's self explanatory). If no input file is specified, the program will terminate.
 
+If no input file is specified, the program will halt its execution immediately !
+
 If you want to generate an output file, please use either command:
-- ./bin/scanner.out INPUT_FILE OUT_FILE
-- ./bin/scanner.out INPUT_FILE > OUT_FILE
+- ./bin/parser.out INPUT_FILE OUT_FILE
+- ./bin/parser.out INPUT_FILE > OUT_FILE
 
 OUT_FILE: File where the output will be written
 
