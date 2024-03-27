@@ -249,8 +249,12 @@ funcdef
 
 id_option
 	: 		{
-				Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name_generator(),scope,yylineno);
+				char * func_name = func_name_generator();
+
+				Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name,scope,yylineno);
 				oScopeStack = ScopePush(oScopeStack,scope+1);
+
+				free(func_name);
 	}
 	| ID	{
 		
