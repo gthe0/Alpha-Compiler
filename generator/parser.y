@@ -138,7 +138,7 @@ term: '(' expr ')'
 
 assginexpr
 	: lvalue '=' expr {eval_lvalue($1,"assignment",yylineno);}
-	| error '=' expr { yyerror("Wrong lvalue in assignment"); yyerrok;} 
+	| error '=' expr { LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
 	;
 
 primary
