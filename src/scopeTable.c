@@ -200,7 +200,12 @@ void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost)
 
 		head = oScopeTable->table[i];
 		if(head!=NULL)
-			fprintf(ost,"\n-------------------- SCOPE %d --------------------\n\n",i);
+		{
+			if(i == 0)
+				fprintf(ost,"--------------------     SCOPE %d     --------------------\n",i);
+			else
+				fprintf(ost,"\n-------------------     SCOPE %d     --------------------\n",i);
+		}
 			
 		In_Order_Print(head,ost);
 	}
