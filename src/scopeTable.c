@@ -204,7 +204,7 @@ void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost)
 			if(i == 0)
 				fprintf(ost,"--------------------     SCOPE %d     --------------------\n",i);
 			else
-				fprintf(ost,"\n-------------------     SCOPE %d     --------------------\n",i);
+				fprintf(ost,"\n--------------------     SCOPE %d     --------------------\n",i);
 		}
 			
 		In_Order_Print(head,ost);
