@@ -197,11 +197,12 @@ void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost)
 
 	for (int i = 0; i <= oScopeTable->max_scope; i++)
 	{
-		head = oScopeTable->table[i];
-		In_Order_Print(head,ost);
 
+		head = oScopeTable->table[i];
 		if(head!=NULL)
-			fprintf(ost,"\n--------------------------------------------------\n");
+			fprintf(ost,"\n-------------------- SCOPE %d --------------------\n\n",i);
+			
+		In_Order_Print(head,ost);
 	}
 
 }
