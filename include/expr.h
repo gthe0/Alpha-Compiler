@@ -7,14 +7,14 @@
 /* encountered during parsing								*/
 /*----------------------------------------------------------*/
 
-#ifndef __EXPRESSIONS__
-#define __EXPRESSIONS__ 
+#ifndef __EXPR_H__
+#define __EXPR_H__ 
 
 #include <symTableEntry.h>
 
 /* typedefs of the various structs */
 typedef enum expr_t expr_t ;
-typedef struct expr expr;
+typedef struct expr expr, *Expr_T;
 
 /* expression types */
 enum expr_t
@@ -52,7 +52,6 @@ struct expr
     char *strConst;
     unsigned char boolConst;
 };
-
 
 
 #endif /* expr.h module */
