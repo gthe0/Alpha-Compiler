@@ -13,7 +13,7 @@
 
 #include <expr.h>
 
-#define EXPAND_SIZE 0x400
+#define _QUAD_FILE_ "quad.txt"
 
 /* Type definitions to use */
 typedef struct quad quad, *Quad_T ;
@@ -83,5 +83,10 @@ void emit(
 * @brief expands quad table.
 */
 void expand (void);
+
+/**
+* @brief A function to write the quads in quads.txt
+*/
+void write_quad(void);
 
 #endif /* Quads module */
