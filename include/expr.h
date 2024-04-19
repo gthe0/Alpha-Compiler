@@ -63,7 +63,7 @@ struct expr
 expr* newexpr(expr_t type);
 
 /**
-* @brief Creates a new String expression 
+* @brief Creates a new constant String expression 
 * @param strConst The string used in the expression 
 *
 * @return The String expression
@@ -71,7 +71,7 @@ expr* newexpr(expr_t type);
 expr* new_string_expr(char* strConst);
 
 /**
-* @brief Creates a new boolean expression 
+* @brief Creates a new constant boolean expression 
 * @param boolConst Value of the boolean expression  
 *
 * @return The boolean expression
@@ -85,5 +85,13 @@ expr* new_bool_expr(bool boolConst);
 */
 expr* new_nil_expr(void);
 
+
+/**
+* @brief Creates a new constant number expression 
+* @param numConst Value of the boolean expression  
+*
+* @return The constant number expression
+*/
+expr* new_num_expr(double numConst);
 
 #endif /* expr.h ADT */

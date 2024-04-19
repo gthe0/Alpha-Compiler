@@ -12,7 +12,7 @@
 
 #include <quad.h>
 
-#define QUAD_FILE "quad.txt"
+#define QUAD_FILE "quads.txt"
 
 Quad_T quad_table = NULL;
 

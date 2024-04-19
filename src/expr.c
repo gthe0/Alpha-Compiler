@@ -39,9 +39,18 @@ expr* new_nil_expr(void)
 
 
 /*Creates a new boolean expression*/
-expr* new_nil_expr(bool boolConst)
+expr* new_bool_expr(bool boolConst)
 {
 	expr* e = newexpr(boolexpr_e);
 	e->boolConst = boolConst;
+	return e;
+}
+
+
+/*Creates a new number expression*/
+expr* new_num_expr(double numConst)
+{
+	expr* e = newexpr(constnum_e);
+	e->numConst = numConst;
 	return e;
 }
