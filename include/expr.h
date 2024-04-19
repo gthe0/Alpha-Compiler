@@ -3,7 +3,7 @@
 /* 														    */
 /* expr.h			            							*/
 /* 														    */
-/* Type definitions and module for the expressions			*/
+/* Type definitions and ADT for the expressions				*/
 /* encountered during parsing								*/
 /*----------------------------------------------------------*/
 
@@ -54,4 +54,4 @@ struct expr
 };
 
 
-#endif /* expr.h module */
+#endif /* expr.h ADT */

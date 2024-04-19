@@ -13,8 +13,6 @@
 
 #include <expr.h>
 
-#define _QUAD_FILE_ "quad.txt"
-
 /* Type definitions to use */
 typedef struct quad quad, *Quad_T ;
 typedef enum iopcode iopcode;
@@ -87,6 +85,6 @@ void expand (void);
 /**
 * @brief A function to write the quads in quads.txt
 */
-void write_quad(void);
+void write_quads(void);
 
 #endif /* Quads module */

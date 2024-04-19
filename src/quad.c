@@ -12,18 +12,20 @@
 
 #include <quad.h>
 
+#define QUAD_FILE "quad.txt"
+
 Quad_T quad_table = NULL;
 
 static unsigned	currQuad = 0u;
 static unsigned	total	 = 0u;
 
 /* Resizing table */
-#define EXPAND_SIZE 0x400
-#define CURR_SIZE 	(total*sizeof(quad)) 
-#define NEW_SIZE	(EXPAND_SIZE*sizeof(quad)+CURR_SIZE)
+#define EXPAND_SIZE 	0x400
+#define CURR_SIZE 		(total*sizeof(quad)) 
+#define NEW_SIZE		(EXPAND_SIZE*sizeof(quad)+CURR_SIZE)
 
 /* Write quads in the quad.txt file */
-void write_quad(void)
+void write_quads(void)
 {
 	return;
 }
