@@ -10,10 +10,10 @@
 
 #include <assert.h>
 
-static unsigned programVarOffset	= 0 ;
-static unsigned functionLocalOffset = 0 ;
-static unsigned formalArgOffset 	= 0 ;
-static unsigned scopeSpaceCounter 	= 1 ;
+static unsigned int programVarOffset	= 0 ;
+static unsigned int functionLocalOffset = 0 ;
+static unsigned int formalArgOffset 	= 0 ;
+static unsigned int scopeSpaceCounter 	= 1 ;
 
 /* Get current Scope Space */
 ScopeSpace currscopespace(void)
@@ -56,6 +56,20 @@ void incurrscopeoffset(void)
         assert(0);
     }
 }
+
+/* Restore the Scope offset to a previous state*/
+void restorecurrscopeoffset(unsigned int n)
+{
+    switch (currscopespace())
+	{
+		case programvar		: programVarOffset = n; break;
+		case functionlocal	: functionLocalOffset = n; break;
+		case formalarg		: formalArgOffset = n; break;
+		default:
+			assert(0);
+    }
+}
+
 
 void enterscopespace(void) { ++scopeSpaceCounter; }
 void exitscopespace(void) {assert(scopeSpaceCounter > 1); --scopeSpaceCounter;}

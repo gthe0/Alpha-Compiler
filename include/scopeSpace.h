@@ -50,4 +50,9 @@ void enterscopespace(void);
 */
 void exitscopespace(void);
 
+/**
+* @brief Restores the Current Scope Space offset
+*/
+void restorecurrscopeoffset(unsigned int n);
+
 #endif /* scopeSpace module */
