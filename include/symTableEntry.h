@@ -122,6 +122,17 @@ unsigned int getLine(SymEntry_T oSymEntry);
 */
 unsigned int getOffset_val(SymEntry_T oSymEntry);
 
+
+/**
+* @brief Getter of Variable's Space.
+*
+* @param oSymEntry Symbol Entry.
+*
+* @return The Space of the variable.
+*/
+ScopeSpace getSpace_val(SymEntry_T oSymEntry);
+
+
 /**
 * @brief Prints the Symbol Entry.
 *

@@ -3,7 +3,7 @@
 /* 														    */
 /* ScopeStack.h		            							*/
 /* 														    */
-/* A simple interface for an integer Stack module			*/
+/* A simple interface for an integer Stack ADT				*/
 /*----------------------------------------------------------*/
 
 #ifndef __SCOPE_STACK__

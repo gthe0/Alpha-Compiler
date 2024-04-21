@@ -39,7 +39,7 @@ enum expr_t
 
 };
 
-/* expression list ??? */
+/* expression struct */
 struct expr
 {
 	expr_t type;

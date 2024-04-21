@@ -143,6 +143,15 @@ unsigned int getOffset_val(SymEntry_T oSymEntry)
 	return oSymEntry->value.varVal->offset ;
 }
 
+ScopeSpace getOffset_val(SymEntry_T oSymEntry)
+{
+	/* If oSymEntry is NULL or the type is not of a variable then abort */	
+	assert(oSymEntry && oSymEntry->type < USERFUNC);
+
+	/* Return the variable's space */
+	return oSymEntry->value.varVal->space;
+}
+
 /* Used to Print Entry Info */
 void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
 {
