@@ -57,6 +57,12 @@ void incurrscopeoffset(void)
     }
 }
 
+void resetfunctionlocaloffset(void)
+{functionLocalOffset = 0 ;}
+
+void resetformalargoffset(void)
+{formalArgOffset 	= 0 ;}
+
 /* Restore the Scope offset to a previous state*/
 void restorecurrscopeoffset(unsigned int n)
 {

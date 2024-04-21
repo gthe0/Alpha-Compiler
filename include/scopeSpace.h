@@ -41,6 +41,21 @@ unsigned currscopeoffset(void);
 void inccurrscopeoffset(void);
 
 /**
+* @brief Reset the formal argument offset, makes it 0
+*/
+void resetformalargoffset(void);
+
+/**
+* @brief Reset the Function local offset, makes it 0
+*/
+void resetfunctionlocaloffset(void);
+
+/**
+* @brief Restores the Current Scope Space offset
+*/
+void restorecurrscopeoffset(unsigned int n);
+
+/**
 * @brief Increases the Scope Space counter
 */
 void enterscopespace(void);
@@ -49,10 +64,5 @@ void enterscopespace(void);
 * @brief Decreases the Scope Space counter
 */
 void exitscopespace(void);
-
-/**
-* @brief Restores the Current Scope Space offset
-*/
-void restorecurrscopeoffset(unsigned int n);
 
 #endif /* scopeSpace module */
