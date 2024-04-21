@@ -3,7 +3,7 @@
 /* 														    */
 /* quad.h			            							*/
 /* 														    */
-/* A simple interfaces for the quads ADT which will 		*/
+/* A simple interfaces for the quads module which will 		*/
 /* store the quads in a dynamic resizeable table 			*/
 /*----------------------------------------------------------*/
 

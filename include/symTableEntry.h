@@ -9,6 +9,8 @@
 #ifndef __SYMBOL_TABLE_ENTRY__
 #define __SYMBOL_TABLE_ENTRY__ 
 
+#include <scopeSpace.h>
+
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -60,6 +62,9 @@ struct SymbolTableEntry
 	}value;
 	
 	SymbolType type;
+	
+	ScopeSpace space;
+	unsigned offset;
 };
 
 /**

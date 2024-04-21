@@ -3,7 +3,7 @@
 /* 														    */
 /* quad.c			            							*/
 /* 														    */
-/* An implementation of the quad.h ADT						*/
+/* An implementation of the quad.h module					*/
 /*----------------------------------------------------------*/
 
 #include <stdio.h>
@@ -24,11 +24,13 @@ static unsigned	total	 = 0u;
 #define CURR_SIZE 		(total*sizeof(quad)) 
 #define NEW_SIZE		(EXPAND_SIZE*sizeof(quad)+CURR_SIZE)
 
+
 /* Write quads in the quad.txt file */
 void write_quads(void)
 {
 	return;
 }
+
 
 /* Expand the Quad Table */
 void expand(void)
@@ -38,6 +40,7 @@ void expand(void)
 	total+=EXPAND_SIZE;
 	return;
 }
+
 
 /* Emit/Create the quad and insert it in the Quad Table */
 void emit(iopcode op, expr *result,
