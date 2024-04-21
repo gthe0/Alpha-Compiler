@@ -38,9 +38,11 @@ enum SymbolType
 /* Struct storing Variable information*/
 struct Variable
 {
+	ScopeSpace space;
 	const char *name;
 	unsigned int scope;
 	unsigned int line;
+	unsigned int offset;
 };
 
 /* Struct storing Function information*/
@@ -62,9 +64,6 @@ struct SymbolTableEntry
 	}value;
 	
 	SymbolType type;
-	
-	ScopeSpace space;
-	unsigned offset;
 };
 
 /**
@@ -113,6 +112,15 @@ unsigned int getScope(SymEntry_T oSymEntry);
 * @return The line of Insertion.
 */
 unsigned int getLine(SymEntry_T oSymEntry);
+
+/**
+* @brief Getter of Variable's offset.
+*
+* @param oSymEntry Symbol Entry.
+*
+* @return The offset of the variable.
+*/
+unsigned int getOffset_val(SymEntry_T oSymEntry);
 
 /**
 * @brief Prints the Symbol Entry.

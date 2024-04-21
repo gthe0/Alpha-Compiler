@@ -30,7 +30,8 @@ static Variable* setVariable(const char* name,
 	new->name = strdup(name);
 	new->line = line;
 	new->scope = scope;
-
+	new->offset = currscopeoffset(); 
+	new->space = currscopespace();
 	return (new);
 }
 
@@ -129,10 +130,18 @@ unsigned int getLine(SymEntry_T oSymEntry)
 	/* If oSymEntry is NULL or both enties in value are NULL then abort */	
 	assert(oSymEntry);
 
-	/* Return the scope */
+	/* Return the line */
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->line : oSymEntry->value.varVal->line ;
 }
 
+unsigned int getOffset_val(SymEntry_T oSymEntry)
+{
+	/* If oSymEntry is NULL or the type is not of a variable then abort */	
+	assert(oSymEntry && oSymEntry->type < USERFUNC);
+
+	/* Return the variable's offset */
+	return oSymEntry->value.varVal->offset ;
+}
 
 /* Used to Print Entry Info */
 void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
