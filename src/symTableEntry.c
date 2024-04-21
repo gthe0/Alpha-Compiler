@@ -143,7 +143,7 @@ unsigned int getOffset_val(SymEntry_T oSymEntry)
 	return oSymEntry->value.varVal->offset ;
 }
 
-ScopeSpace getOffset_val(SymEntry_T oSymEntry)
+ScopeSpace getSpace_val(SymEntry_T oSymEntry)
 {
 	/* If oSymEntry is NULL or the type is not of a variable then abort */	
 	assert(oSymEntry && oSymEntry->type < USERFUNC);

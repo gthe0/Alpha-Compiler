@@ -8,6 +8,8 @@
 
 #include <scopeSpace.h>
 
+#include <assert.h>
+
 static unsigned programVarOffset	= 0 ;
 static unsigned functionLocalOffset = 0 ;
 static unsigned formalArgOffset 	= 0 ;
