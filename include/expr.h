@@ -34,7 +34,7 @@ enum expr_t
     constbool_e,
     conststring_e,
 
-    nil_e,
+    nil_e
 };
 
 /* expression struct */
