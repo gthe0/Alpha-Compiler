@@ -15,7 +15,7 @@ typedef struct IntStack OffsetStack, *OffsetStack_T;
 
 struct  IntStack
 {
-	int isBottom;
+	int isEmpty;
 	unsigned int scope;
 	IntStack_T prev;
 };

@@ -22,7 +22,7 @@ IntStack_T IntStack_init(void)
 
 	new->prev = NULL;
 	new->scope = 0u;
-	new->isBottom = 1;
+	new->isEmpty = 1;
 
 	return new;
 }
@@ -52,7 +52,7 @@ IntStack_T IntStack_Push(IntStack_T stack, unsigned int scope)
 
 	head->scope = scope;
 	head->prev = stack;
-	head->isBottom = 0;
+	head->isEmpty = 0;
 
 	return head;
 }
@@ -85,5 +85,5 @@ unsigned int IntStack_Pop(IntStack_T stack)
 int IntStack_isEmpty(IntStack_T stack)
 {
 	assert(stack);
-	return stack->isBottom;
+	return stack->isEmpty;
 }
