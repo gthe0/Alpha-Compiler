@@ -80,7 +80,7 @@ int Valid_Function(SymTable_T oSymTable, char *name,
 	}
 
 	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup(oSymTable, name, FromScope, ScopeTop(stack)))
+	if (entry = SymTable_lookup(oSymTable, name, FromScope, IntStack_Top(stack)))
 	{
 		if (getScope(entry) == FromScope)
 		{
@@ -127,7 +127,7 @@ int Valid_args(SymTable_T oSymTable, char *name,
 	}
 
 	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup(oSymTable, name, FromScope, ScopeTop(stack)))
+	if (entry = SymTable_lookup(oSymTable, name, FromScope, IntStack_Top(stack)))
 	{
 		LOG_ERROR(PARSER, ERROR, "Invalid Formal %s. Token is already inserted in the Table\n", name);
 		LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u\n\n", name, getLine(entry));
@@ -156,8 +156,8 @@ SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *
 		return SymTable_lookup_scope(oSymTable, name, 0);
 	}
 
-	int isEmpty = ScopeIsEmpty(stack);
-	int top = ScopeTop(stack);
+	int isEmpty = IntStack_isEmpty(stack);
+	int top = IntStack_Top(stack);
 
 	/* If there is already an entry with this name, then it fails*/
 	if (entry = SymTable_lookup(oSymTable, name, FromScope, 0))
@@ -251,7 +251,7 @@ int Valid_loop_token(char *name, int loop_counter, unsigned int yylineno)
 /* Check if the return statement is valid */
 int Valid_return(ScopeStack_T stack, unsigned int yylineno)
 {
-	if (ScopeIsEmpty(stack))
+	if (IntStack_isEmpty(stack))
 	{
 		LOG_ERROR(PARSER, ERROR, "Illegal return outside a Function at line %u\n", yylineno);
 		LOG_ERROR(PARSER, NOTE, "return statement must be used inside a function \n\n");

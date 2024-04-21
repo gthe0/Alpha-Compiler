@@ -6,16 +6,18 @@
 /* A simple interface for an integer Stack ADT				*/
 /*----------------------------------------------------------*/
 
-#ifndef __SCOPE_STACK__
-#define __SCOPE_STACK__
+#ifndef __INTEGER_STACK__
+#define __INTEGER_STACK__
 
-typedef struct ScopeStack ScopeStack, *ScopeStack_T;
+typedef struct IntStack IntStack, *IntStack_T;
+typedef struct IntStack ScopeStack, *ScopeStack_T;
+typedef struct IntStack OffsetStack, *OffsetStack_T;
 
-struct  ScopeStack
+struct  IntStack
 {
 	int isBottom;
 	unsigned int scope;
-	ScopeStack_T prev;
+	IntStack_T prev;
 };
 
 /**
@@ -23,13 +25,13 @@ struct  ScopeStack
 * 
 * @return An empty Stack
 */
-ScopeStack_T ScopeStack_init(void);
+IntStack_T IntStack_init(void);
 
 /**
 * @brief Free the stack
 * @param stack The stack to be freed. 
 */
-void ScopeFree(ScopeStack_T stack);
+void IntStack_free(IntStack_T stack);
 
 /**
 * @brief Returns the Top element of the Stack
@@ -37,7 +39,7 @@ void ScopeFree(ScopeStack_T stack);
 *
 * @return The Top element of the stack (it is an integer)
 */
-unsigned int ScopeTop(ScopeStack_T stack);
+unsigned int IntStack_Top(IntStack_T stack);
 
 /**
 * @brief Pops out the Top element of the Stack
@@ -45,7 +47,7 @@ unsigned int ScopeTop(ScopeStack_T stack);
 *
 * @return The Top element of the stack (it is an integer)
 */
-unsigned int ScopePop(ScopeStack_T stack);
+unsigned int IntStack_Pop(IntStack_T stack);
 
 /**
 * @brief Checks if stack is Empty
@@ -53,7 +55,7 @@ unsigned int ScopePop(ScopeStack_T stack);
 *
 * @return 1 if it Empty or 0 if it is not.
 */
-int ScopeIsEmpty(ScopeStack_T stack);
+int IntStack_isEmpty(IntStack_T stack);
 
 /**
 * @brief Push an element in the stack.
@@ -62,6 +64,6 @@ int ScopeIsEmpty(ScopeStack_T stack);
 *
 * @return true if it has succeded and false if not 
 */
-ScopeStack_T ScopePush(ScopeStack_T stack, unsigned int scope);
+IntStack_T IntStack_Push(IntStack_T stack, unsigned int scope);
 
-#endif /* ScopeStack  ADT*/
+#endif /* IntStack  ADT*/

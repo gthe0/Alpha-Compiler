@@ -243,7 +243,7 @@ funcdef
 	: funcpref	'('	{scope++;}
 	  idlist	')'	{scope--;}
 	  block			{
-						ScopePop(oScopeStack);
+						IntStack_Pop(oScopeStack);
 					}
 	;
 
@@ -252,7 +252,7 @@ id_option
 				char * func_name = func_name_generator();
 
 				Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name,scope,yylineno);
-				oScopeStack = ScopePush(oScopeStack,scope+1);
+				oScopeStack = IntStack_Push(oScopeStack,scope+1);
 
 				free(func_name);
 	}
@@ -263,7 +263,7 @@ id_option
 			Tables_insert(oSymTable,oScopeTable,USERFUNC,$1,scope,yylineno);
 		}
 		
-		oScopeStack = ScopePush(oScopeStack,scope+1);
+		oScopeStack = IntStack_Push(oScopeStack,scope+1);
 
 	}
 	;
@@ -361,7 +361,7 @@ int main(int argc,char** argv)
 	else ost = stdout;
 
 	/* Initializes tables and stack */
-	oScopeStack = ScopeStack_init();
+	oScopeStack = IntStack_init();
 	Tables_init(&oSymTable,&oScopeTable);
 
 	/* Call the Parser */
@@ -371,7 +371,7 @@ int main(int argc,char** argv)
 
 	/* Close streams and clean up */
 	Tables_free(oSymTable,oScopeTable);
-	ScopeFree(oScopeStack);
+	IntStack_free(oScopeStack);
 
 	fclose(ost);
 	fclose(yyin);

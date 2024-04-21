@@ -1,9 +1,9 @@
 /*----------------------------------------------------------*/
 /* Authors: csd4881, csd4988, csd5038						*/
 /* 														    */
-/* ScopeStack.h		            							*/
+/* IntegerStack.c	            							*/
 /* 														    */
-/* A implementation of the Scope ADT						*/
+/* A implementation of the IntStack ADT						*/
 /*----------------------------------------------------------*/
 
 #include <IntegerStack.h>
@@ -13,9 +13,9 @@
 #include <stdlib.h>
 
 /* Return an Empty Stack or NULL */
-ScopeStack_T ScopeStack_init(void)
+IntStack_T IntStack_init(void)
 {
-	ScopeStack_T new = malloc(sizeof(ScopeStack));
+	IntStack_T new = malloc(sizeof(IntStack));
 
 	/* If malloc fails abort */
 	assert(new);
@@ -28,7 +28,7 @@ ScopeStack_T ScopeStack_init(void)
 }
 
 /* Free the stack */
-void ScopeFree(ScopeStack_T stack)
+void IntStack_free(ScopeStack_T stack)
 {
 	ScopeStack_T temp;
 	while(stack)
@@ -40,12 +40,12 @@ void ScopeFree(ScopeStack_T stack)
 }
 
 /* Push an element in the Stack */
-ScopeStack_T ScopePush(ScopeStack_T stack, unsigned int scope)
+IntStack_T IntStack_Push(IntStack_T stack, unsigned int scope)
 {
 	if(stack == NULL)
 		return NULL;
 
-	ScopeStack_T head = malloc(sizeof(ScopeStack));
+	IntStack_T head = malloc(sizeof(IntStack));
 	
 	/* If malloc fails abort */	
 	assert(head);
@@ -58,21 +58,21 @@ ScopeStack_T ScopePush(ScopeStack_T stack, unsigned int scope)
 }
 
 /* Get the top element of the stack */
-unsigned int ScopeTop(ScopeStack_T stack)
+unsigned int IntStack_Top(IntStack_T stack)
 {
 	assert(stack);
 	return stack->scope;
 }
 
 /* Pop the top of the stack */
-unsigned int ScopePop(ScopeStack_T stack)
+unsigned int IntStack_Pop(IntStack_T stack)
 {
 	assert(stack);
-	assert(ScopeIsEmpty(stack) == 0);
+	assert(IntStack_isEmpty(stack) == 0);
 
-	unsigned int top = ScopeTop(stack);
+	unsigned int top = IntStack_Top(stack);
 
-	ScopeStack_T temp = stack->prev;
+	IntStack_T temp = stack->prev;
 
 	*stack = *(temp);
 	
@@ -82,7 +82,7 @@ unsigned int ScopePop(ScopeStack_T stack)
 }
 
 /* Check if the stack is Empty */
-int ScopeIsEmpty(ScopeStack_T stack)
+int IntStack_isEmpty(IntStack_T stack)
 {
 	assert(stack);
 	return stack->isBottom;
