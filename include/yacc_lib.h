@@ -10,7 +10,7 @@
 #define __YACC_LIB_H__
 
 #include <tables.h>
-#include <ScopeStack.h>
+#include <IntegerStack.h>
 
 /**
 * @brief This Functions checks if the return statement is valid

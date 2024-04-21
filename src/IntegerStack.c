@@ -6,7 +6,7 @@
 /* A implementation of the Scope ADT						*/
 /*----------------------------------------------------------*/
 
-#include <ScopeStack.h>
+#include <IntegerStack.h>
 
 #include <assert.h>
 #include <stdio.h>
