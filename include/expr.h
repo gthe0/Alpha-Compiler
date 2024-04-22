@@ -108,4 +108,13 @@ expr* lvalue_expr(SymEntry_T oSymEntry);
 */
 unsigned int is_temp_expr(expr* e);
 
+/**
+* @brief Checks if arithmetic expression is valid or not
+* @param e The expression
+* @param context The context where an error was found
+*
+* @return 1 if it is and 0 if not 
+*/
+void check_arith (expr* e, const char* context);
+
 #endif /* expr.h ADT */

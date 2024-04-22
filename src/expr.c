@@ -12,6 +12,7 @@
 #include <assert.h>
 
 #include <expr.h>
+#include <log.h>
 
 /* Creates a new expression */
 expr *newexpr(expr_t t)
@@ -90,4 +91,21 @@ unsigned int is_temp_expr(expr* e)
 {
 	assert(e->sym->type < USERFUNC);
 	return e->sym && istempname(e->sym->value.varVal->name);
+}
+
+/* Checks whether arithmetic is valid or not */
+void check_arith (expr* e, const char* context)
+{
+	if(
+		e->type == constbool_e		|| 
+		e->type == conststring_e	||
+		e->type == programfunc_e	||
+		e->type == libraryfunc_e	||
+		e->type == newtable_e		||
+		e->type == boolexpr_e		||
+		e->type == nil_e
+	)
+	LOG_ERROR(PARSER,ERROR,"Illegal expr used in %s!",context);	
+
+	return ;
 }
