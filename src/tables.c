@@ -9,6 +9,7 @@
 
 #include <tables.h>
 #include <log.h>
+#include <name_gen.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,4 +115,23 @@ void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
 	}
 
 	return ;
+}
+
+SymEntry_T newtemp(SymTable_T oSymTable,
+					ScopeTable_T oScopeTable,
+					int scope,
+					unsigned yylineno)
+{
+	char *name = new_temp_name(); 
+	SymEntry_T oSymEntry;
+
+	oSymEntry = SymTable_lookup_scope(oSymTable,name,scope);
+	
+	if(!oSymEntry)
+	{
+		if(scope == 0)	oSymEntry = SymEntry_create(GLOBAL,name,scope,yylineno);
+		else			oSymEntry = SymEntry_create(LOCAL,name,scope,yylineno);
+	}
+
+	return oSymEntry;
 }

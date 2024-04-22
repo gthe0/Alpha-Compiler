@@ -78,9 +78,17 @@ void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
 				, FILE* ost, bool option);
 
 
+/**
+* @brief Choose to either use the Symbol Table print or the Scope Table one. 
+* 
+* @param oSymTable		Pointer to the Sym Table 
+* @param oScopeTable	Pointer to the Scope Table 
+* @param scope 	The scope of the Entry
+* @param yylineno 	The line of the Entry
+*
+*/
 SymEntry_T newtemp(SymTable_T oSymTable,
 					ScopeTable_T oScopeTable,
-					const char *name,
 					int scope,
 					unsigned yylineno);
 

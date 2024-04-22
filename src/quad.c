@@ -48,14 +48,18 @@ void emit(iopcode op, expr *result,
 }
 
 /*Generates a Quad whether e is a table item of not*/
-expr* emit_iftableitem(expr* e)
+expr* emit_iftableitem(	expr* e,
+						SymTable_T oSymTable,
+						ScopeTable_T oScopeTable ,
+						unsigned scope,
+						unsigned line )
 {
 	if(e->type != tableitem_e)
 		return e;
 
 
 	expr* result = newexpr(var_e);
-	result->sym  = newtemp();
+	result->sym  = newtemp(oSymTable,oScopeTable,scope,line);
 	emit(
 		tablegetelem_i,
 		e,
@@ -83,4 +87,16 @@ void expand(void)
 	quad_table = realloc(quad_table,NEW_SIZE);
 	total+=EXPAND_SIZE;
 	return;
+}
+
+/* Get next Quad */
+unsigned int next_quad_label(void)
+{
+	return (currQuad + 1);
+}
+
+/* Get current quad */
+unsigned int curr_quad_label(void)
+{
+	return (currQuad);
 }

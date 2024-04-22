@@ -11,6 +11,7 @@
 #ifndef __QUADS_H__
 #define __QUADS_H__
 
+#include <tables.h>
 #include <expr.h>
 
 /* Type definitions to use */
@@ -83,7 +84,11 @@ void emit(
 *
 * @return An expression based on whether it is a table item of not
 */
-expr* emit_iftableitem(expr* e);
+expr* emit_iftableitem(expr* e,
+						SymTable_T oSymTable,
+						ScopeTable_T oScopeTable ,
+						unsigned scope,
+						unsigned line);
 
 /**
 * @brief expands quad table.
@@ -94,5 +99,15 @@ void expand (void);
 * @brief A function to write the quads in quads.txt
 */
 void write_quads(void);
+
+/**
+* @brief Getter of next quad label/index
+*/
+unsigned int next_quad_label(void);
+
+/**
+* @brief Getter of current quad label/index
+*/
+unsigned int curr_quad_label(void);
 
 #endif /* Quads module */
