@@ -120,7 +120,9 @@ void expand (void);
 
 /**
 * @brief A function to write the quads in quads.txt
+*
+* @return EXIT_SUCCESS for success, EXIT_FAILURE for failure
 */
-void write_quads(void);
+int write_quads(void);
 
 #endif /* Quads module */

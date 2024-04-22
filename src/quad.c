@@ -11,6 +11,7 @@
 #include <assert.h>
 
 #include <quad.h>
+#include <log.h>
 
 #define QUAD_FILE "quads.txt"
 
@@ -72,12 +73,6 @@ expr* emit_iftableitem(	expr* e,
 }
 
 
-/* Write quads in the quad.txt file */
-void write_quads(void)
-{
-	return;
-}
-
 /* Expand the Quad Table */
 void expand(void)
 {
@@ -105,4 +100,34 @@ unsigned int next_quad_label(void)
 unsigned int curr_quad_label(void)
 {
 	return (currQuad);
+}
+
+static void quad_decode(FILE* ost, unsigned  index)
+{
+	if(!ost || isBadWritePtr(ost))
+	{
+		LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n",QUAD_FILE);
+		return ;
+	}
+	
+	return ;
+}
+
+/* Write quads in the quad.txt file */
+int write_quads(void)
+{
+	FILE* ost;
+
+	/* If the output file is not provided use ost */
+	if(!(ost = fopen(QUAD_FILE,"w")))
+	{
+		LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n",QUAD_FILE);
+		return EXIT_FAILURE;
+	}
+
+	for (unsigned i = 0; i < currQuad ; i++)
+		quad_decode(ost, i);
+
+
+	return EXIT_SUCCESS;
 }
