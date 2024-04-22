@@ -108,8 +108,6 @@ expr* lvalue_expr(SymEntry_T oSymEntry);
 */
 unsigned int is_temp_expr(expr* e);
 
-unsigned int expr_print(expr* e);
-
 /**
 * @brief Checks if arithmetic expression is valid or not
 * @param e The expression

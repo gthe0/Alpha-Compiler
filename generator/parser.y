@@ -15,13 +15,14 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
-	#include <symTableEntry.h>
-	#include <IntegerStack.h>
-	#include <name_gen.h>
-	#include <yacc_lib.h>
-	#include <tables.h>
 	#include <log.h>
-
+	#include <tables.h>
+	#include <name_gen.h>
+	#include <symTable.h>
+	#include <yacc_lib.h>
+	#include <scopeTable.h>
+	#include <IntegerStack.h>
+	#include <symTableEntry.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
 	#define YY_NO_UNISTD_H
@@ -30,8 +31,6 @@
 
 	/* The various tables that we will use */
 	static ScopeStack_T  oScopeStack = NULL;
-	static ScopeTable_T oScopeTable = NULL;
-	static SymTable_T oSymTable = NULL;
 
 	static unsigned int scope = 0;
 	static unsigned int loop_counter = 0;
@@ -152,19 +151,19 @@ primary
 
 lvalue
 	: ID	{
-		$$ = Valid_lvalue_ID(oSymTable,oScopeTable,$1,yylineno, scope ,oScopeStack);
+		$$ = Valid_lvalue_ID($1,yylineno, scope ,oScopeStack);
 	}
 	| LOC ID		{
 			SymEntry_T entry;
-			if((entry = Valid_local(oSymTable,$2,yylineno, scope))==NULL)
+			if((entry = Valid_local($2,yylineno, scope))==NULL)
 			{
 				entry =  SymEntry_create(scope == 0 ? GLOBAL:LOCAL,$2,scope, yylineno);
-				Tables_insert_Entry(oSymTable,oScopeTable,entry);
+				Tables_insert_Entry(entry);
 			}
 			$$ = entry;
 	}
 	| DOUBLE_COL ID	{
-		$$ = find_global(oSymTable,$2,yylineno);
+		$$ = find_global($2,yylineno);
 	}
 	| member	{$$ = NULL;}
 	;
@@ -231,7 +230,7 @@ indexedelem
 block
 	: '{' {scope++;} stmt_list '}'{
 		
-		ScopeTable_hide(oScopeTable,scope);
+		ScopeTable_hide(scope);
 		scope--;
 	}
 	;
@@ -252,16 +251,16 @@ id_option
 	: 		{
 				char * func_name = func_name_generator();
 
-				Tables_insert(oSymTable,oScopeTable,USERFUNC,func_name,scope,yylineno);
+				Tables_insert(USERFUNC,func_name,scope,yylineno);
 				oScopeStack = IntStack_Push(oScopeStack,scope+1);
 
 				free(func_name);
 	}
 	| ID	{
 		
-		if((invalid_funct = Valid_Function(oSymTable,$1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
+		if((invalid_funct = Valid_Function($1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
-			Tables_insert(oSymTable,oScopeTable,USERFUNC,$1,scope,yylineno);
+			Tables_insert(USERFUNC,$1,scope,yylineno);
 		}
 		
 		oScopeStack = IntStack_Push(oScopeStack,scope+1);
@@ -282,17 +281,17 @@ idlist
 	: 
 	| ID	{
 		
-		if((Valid_args(oSymTable,$1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
+		if((Valid_args($1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
-			Tables_insert(oSymTable,oScopeTable,FORMAL,$1,scope,yylineno);
+			Tables_insert(FORMAL,$1,scope,yylineno);
 		}
 
 	}
 	| idlist ',' ID	{
 		
-		if((Valid_args(oSymTable,$3,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
+		if((Valid_args($3,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
-			Tables_insert(oSymTable,oScopeTable,FORMAL,$3,scope,yylineno);
+			Tables_insert(FORMAL,$3,scope,yylineno);
 		}
 
 	}
@@ -363,15 +362,15 @@ int main(int argc,char** argv)
 
 	/* Initializes tables and stack */
 	oScopeStack = IntStack_init();
-	Tables_init(&oSymTable,&oScopeTable);
+	Tables_init();
 
 	/* Call the Parser */
 	yyparse();
 
-	Tables_print(oSymTable,oScopeTable,ost,0);
+	Tables_print(ost,0);
 
 	/* Close streams and clean up */
-	Tables_free(oSymTable,oScopeTable);
+	Tables_free();
 	IntStack_free(oScopeStack);
 
 	fclose(ost);

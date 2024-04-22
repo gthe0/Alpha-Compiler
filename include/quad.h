@@ -11,7 +11,6 @@
 #ifndef __QUADS_H__
 #define __QUADS_H__
 
-#include <tables.h>
 #include <expr.h>
 
 /* Type definitions to use */
@@ -81,14 +80,14 @@ void emit(
 /**
 * @brief Emits a quad if it is a table item
 * @param e The expression to be checked
+* @param scope The scope of the Symbol
+* @param yylineno The line of the Symbol
 *
 * @return An expression based on whether it is a table item of not
 */
 expr* emit_iftableitem(expr* e,
-						SymTable_T oSymTable,
-						ScopeTable_T oScopeTable ,
 						unsigned scope,
-						unsigned line);
+						unsigned yylineno);
 
 /**
 * @brief Getter of next quad label/index

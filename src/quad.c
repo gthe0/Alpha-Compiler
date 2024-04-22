@@ -13,6 +13,11 @@
 #include <quad.h>
 #include <log.h>
 
+#include <tables.h>
+#include <symTable.h>
+#include <scopeTable.h>
+
+
 #define QUAD_FILE "quads.txt"
 
 Quad_T quad_table = NULL;
@@ -50,17 +55,15 @@ void emit(iopcode op, expr *result,
 
 /*Generates a Quad whether e is a table item of not*/
 expr* emit_iftableitem(	expr* e,
-						SymTable_T oSymTable,
-						ScopeTable_T oScopeTable ,
 						unsigned scope,
-						unsigned line )
+						unsigned yylineno )
 {
 	if(e->type != tableitem_e)
 		return e;
 
 
 	expr* result = newexpr(var_e);
-	result->sym  = newtemp(oSymTable,oScopeTable,scope,line);
+	result->sym  = newtemp(scope,yylineno);
 	emit(
 		tablegetelem_i,
 		e,
@@ -104,7 +107,7 @@ unsigned int curr_quad_label(void)
 
 static void quad_decode(FILE* ost, unsigned  index)
 {
-	if(!ost || isBadWritePtr(ost))
+	if(!ost)
 	{
 		LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n",QUAD_FILE);
 		return ;

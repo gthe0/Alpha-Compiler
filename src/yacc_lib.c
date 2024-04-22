@@ -6,12 +6,14 @@
 /* Implementation of yacc_lib.h								*/
 /*----------------------------------------------------------*/
 
-#include <yacc_lib.h>
-#include <log.h>
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <log.h>
+#include <symTable.h>
+#include <yacc_lib.h>
+#include <scopeTable.h>
 
 #define NO_OF_LIBFUNCTS 12
 
@@ -59,11 +61,10 @@ static int Lib_shadow_check(char *name)
 
 
 /* Function to check if the Function Definition is Valid */
-int Valid_Function(SymTable_T oSymTable, char *name,
-				   unsigned int line, unsigned int FromScope,
-				   ScopeStack_T stack)
+int Valid_Function(char *name, unsigned int line,
+					 unsigned int FromScope, ScopeStack_T stack)
 {
-	assert(oSymTable);
+	assert(SymTable_isInit());
 	assert(stack);
 	assert(name);
 
@@ -79,7 +80,7 @@ int Valid_Function(SymTable_T oSymTable, char *name,
 	}
 
 	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup(oSymTable, name, FromScope, IntStack_Top(stack)))
+	if (entry = SymTable_lookup(name, FromScope, IntStack_Top(stack)))
 	{
 		if (getScope(entry) == FromScope)
 		{
@@ -106,11 +107,11 @@ int Valid_Function(SymTable_T oSymTable, char *name,
 }
 
 /* Function to check if the arguments are Valid */
-int Valid_args(SymTable_T oSymTable, char *name,
+int Valid_args(char *name,
 			   unsigned int line, unsigned int FromScope,
 			   ScopeStack_T stack)
 {
-	assert(oSymTable);
+	assert(SymTable_isInit());
 	assert(stack);
 	assert(name);
 
@@ -126,7 +127,7 @@ int Valid_args(SymTable_T oSymTable, char *name,
 	}
 
 	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup(oSymTable, name, FromScope, IntStack_Top(stack)))
+	if (entry = SymTable_lookup( name, FromScope, IntStack_Top(stack)))
 	{
 		LOG_ERROR(PARSER, ERROR, "Invalid Formal %s. Token is already inserted in the Table\n", name);
 		LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u\n\n", name, getLine(entry));
@@ -138,12 +139,11 @@ int Valid_args(SymTable_T oSymTable, char *name,
 }
 
 /* Function to check if the globals exists */
-SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *name,
-					unsigned int line, unsigned int FromScope,
-					ScopeStack_T stack)
+SymEntry_T Valid_lvalue_ID(char *name, unsigned int line,
+							 unsigned int FromScope, ScopeStack_T stack)
 {
-	assert(oSymTable);
-	assert(oScopeTable);
+	assert(SymTable_isInit());
+	assert(ScopeTable_isInit());
 	assert(stack);
 	assert(name);
 
@@ -152,14 +152,14 @@ SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *
 	/* If shadowing of library functions happens then Exit*/
 	if (Lib_shadow_check(name) == EXIT_FAILURE)
 	{
-		return SymTable_lookup_scope(oSymTable, name, 0);
+		return SymTable_lookup_scope(name, 0);
 	}
 
 	int isEmpty = IntStack_isEmpty(stack);
 	int top = IntStack_Top(stack);
 
 	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup(oSymTable, name, FromScope, 0))
+	if (entry = SymTable_lookup(name, FromScope, 0))
 	{
 		int entry_scope = getScope(entry);
 		
@@ -190,17 +190,16 @@ SymEntry_T Valid_lvalue_ID(SymTable_T oSymTable,ScopeTable_T oScopeTable, char *
 			entry = SymEntry_create(LOCAL,name,FromScope,line);
 		}
 
-		Tables_insert_Entry(oSymTable,oScopeTable,entry);
+		Tables_insert_Entry(entry);
 	}
 	
 	return entry;
 }
 
 /* Function to check if the locals are Valid */
-SymEntry_T Valid_local(SymTable_T oSymTable, char *name,
-				unsigned int line, unsigned int scope)
+SymEntry_T Valid_local(char *name, unsigned int line, unsigned int scope)
 {
-	assert(oSymTable);
+	assert(SymTable_isInit());
 	assert(name);
 
 	/* If shadowing of library functions happens then Exit*/
@@ -209,23 +208,22 @@ SymEntry_T Valid_local(SymTable_T oSymTable, char *name,
 		LOG_ERROR(PARSER, ERROR, "Shadowing Library Function, line %d, token %s\n", line, name);
 		LOG_ERROR(PARSER, NOTE, "%s is a library Function\n\n", name);
 
-		return  SymTable_lookup_scope(oSymTable, name, 0);
+		return  SymTable_lookup_scope(name, 0);
 	}
 
-	return SymTable_lookup_scope(oSymTable, name, scope);
+	return SymTable_lookup_scope(name, scope);
 }
 
 /* Function to check if the globals exists */
-SymEntry_T find_global(SymTable_T oSymTable, char *name,
-				 unsigned int line)
+SymEntry_T find_global(char *name, unsigned int line)
 {
-	assert(oSymTable);
+	assert(SymTable_isInit());
 	assert(name);
 
 	SymEntry_T entry = NULL;
 
 	/* If there is not an entry, throw error*/
-	if ((entry = SymTable_lookup_scope(oSymTable, name, 0)) == NULL)
+	if ((entry = SymTable_lookup_scope(name, 0)) == NULL)
 	{
 		LOG_ERROR(PARSER, ERROR, "Invalid GLOBAL %s in line %u. Token does not exist in Table\n", name, line);
 	}

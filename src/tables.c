@@ -10,6 +10,8 @@
 #include <tables.h>
 #include <log.h>
 #include <name_gen.h>
+#include <symTable.h>
+#include <scopeTable.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,13 +37,11 @@ static char* LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
 };
 
 /* Insert Entries in both tables */
-int Tables_insert_Entry(SymTable_T oSymTable,
-						ScopeTable_T oScopeTable,
-						SymEntry_T entry)
+int Tables_insert_Entry(SymEntry_T entry)
 {
 	int a;
 	
-	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
+	if(a = (SymTable_insert(entry)|ScopeTable_insert(entry)))
 	{
 		LOG_ERROR(PARSER,ERROR,"Insert failed ! Token already exists\n");
 		SymEntry_free(entry);
@@ -51,9 +51,7 @@ int Tables_insert_Entry(SymTable_T oSymTable,
 }
 
 /* Insert Entries in both tables */
-int Tables_insert(SymTable_T oSymTable,
-					ScopeTable_T oScopeTable,
-					SymbolType type,
+int Tables_insert(SymbolType type,
 					const char* name,
 					unsigned int scope,
 					unsigned int yylineno)
@@ -61,7 +59,7 @@ int Tables_insert(SymTable_T oSymTable,
 	int a;
 	SymEntry_T entry = SymEntry_create(type,name,scope,yylineno);
 	
-	if(a = (SymTable_insert(oSymTable,entry)|ScopeTable_insert(oScopeTable,entry)))
+	if(a = (SymTable_insert(entry)|ScopeTable_insert(entry)))
 	{
 		LOG_ERROR(PARSER,ERROR,"Insert failed ! Token already exists\n");
 		SymEntry_free(entry);
@@ -72,65 +70,63 @@ int Tables_insert(SymTable_T oSymTable,
 
 
 /* Free both tables */
-void Tables_free(SymTable_T oSymTable,
-				ScopeTable_T oScopeTable)
+void Tables_free(void)
 {
-	SymTable_free(oSymTable);
-	ScopeTable_free(oScopeTable,0);
+	SymTable_free();
+	ScopeTable_free(0);
 }
 
 /* Initialize both tables */
-int Tables_init(SymTable_T* oSymTable,
-				ScopeTable_T* oScopeTable)
+int Tables_init(void)
 {
 	/* If they are both initialized already*/
-	if(!oSymTable && !oScopeTable)
+	if(SymTable_isInit() && ScopeTable_isInit())
 	{
-		LOG_ERROR(PARSER,NOTE,"You Inserted Initialized tables !\n");
+		LOG_ERROR(PARSER,NOTE,"Tables are already Initialized !\n");
 		return EXIT_FAILURE;
 	}
 
-	*oSymTable = SymTable_new();
-	*oScopeTable = ScopeTable_new();
+	SymTable_new();
+	ScopeTable_new();
 
 	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
 	{
-		Tables_insert(*oSymTable,*oScopeTable,LIBFUNC,LIB_FUNCTIONS[i],0,0);
+		Tables_insert(LIBFUNC,LIB_FUNCTIONS[i],0,0);
 	}
 
 	return EXIT_SUCCESS;
 }
 
 /* Choose to either use the Symbol Table print or the Scope Table one. */
-void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
-				, FILE* ost, bool option)
+void Tables_print(FILE* ost, bool option)
 {
 	if(option)
 	{
-		SymTable_print(oSymTable,ost);
+		SymTable_print(ost);
 	}
 	else
 	{
-		ScopeTable_print(oScopeTable,ost);
+		ScopeTable_print(ost);
 	}
 
 	return ;
 }
 
-SymEntry_T newtemp(SymTable_T oSymTable,
-					ScopeTable_T oScopeTable,
-					int scope,
+/* Uses a new temp variable */
+SymEntry_T newtemp(int scope,
 					unsigned yylineno)
 {
 	char *name = new_temp_name(); 
 	SymEntry_T oSymEntry;
 
-	oSymEntry = SymTable_lookup_scope(oSymTable,name,scope);
+	oSymEntry = SymTable_lookup_scope(name,scope);
 	
 	if(!oSymEntry)
 	{
 		if(scope == 0)	oSymEntry = SymEntry_create(GLOBAL,name,scope,yylineno);
 		else			oSymEntry = SymEntry_create(LOCAL,name,scope,yylineno);
+	
+		Tables_insert_Entry(oSymEntry);
 	}
 
 	return oSymEntry;

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------*/
 /* Authors: csd4881, csd4988, csd5038						*/
 /* 														    */
-/* symTable.h		            							*/
+/* symTable.c		            							*/
 /* 														    */
 /* A Linked List implementation of the symTable interface 	*/
 /*----------------------------------------------------------*/
@@ -26,6 +26,9 @@ typedef struct SymTableList{
 struct SymTable{
 	SymList* List[BUCKET_SIZE];
 };
+
+
+SymTable_T oSymTable = NULL;
 
 /*---------------------------- UTILITIES --------------------------------*/
 
@@ -77,7 +80,7 @@ static SymEntry_T List_contains(SymList* List, const char* name, unsigned int sc
 /*---------------------------------------------------------------------*/
 
 /* It returns a new Empty SymTable or aborts if it fails*/
-SymTable_T SymTable_new(void)
+void SymTable_new(void)
 {
 	SymTable_T new = malloc(sizeof(SymTable));
 	
@@ -89,11 +92,13 @@ SymTable_T SymTable_new(void)
 		new->List[i] = NULL;
 	}
 	
-	return new;
+	oSymTable = new;
+
+	return ;
 }
 
 /* It frees the SymTable */
-void SymTable_free(SymTable_T oSymTable)
+void SymTable_free(void)
 {
 	if(oSymTable == NULL)
 		return;
@@ -119,8 +124,7 @@ void SymTable_free(SymTable_T oSymTable)
 }
 
 /* It Inserts an Entry in the SymTable */
-int SymTable_insert(SymTable_T oSymTable,
-					SymEntry_T oSymEntry)
+int SymTable_insert(SymEntry_T oSymEntry)
 {
 	if(!oSymEntry || !oSymTable)
 	{
@@ -154,8 +158,7 @@ int SymTable_insert(SymTable_T oSymTable,
 
 
 /* It searches for a specific entry in the SymTable */
-SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
-					const char *name,  int scope)
+SymEntry_T SymTable_lookup_scope(const char *name,  int scope)
 {
 	if(!name || !oSymTable || scope < 0)
 	{
@@ -169,8 +172,7 @@ SymEntry_T SymTable_lookup_scope(SymTable_T oSymTable,
 }
 
 /* It searches for an entry in the SymTable between 2 scopes */
-SymEntry_T SymTable_lookup(SymTable_T oSymTable,
-					const char *name, 
+SymEntry_T SymTable_lookup(const char *name, 
 					int FromScope,
 					int ToScope)
 {
@@ -182,14 +184,14 @@ SymEntry_T SymTable_lookup(SymTable_T oSymTable,
 
 	while(FromScope >= ToScope && Entry == NULL)
 	{
-		Entry = SymTable_lookup_scope(oSymTable,name,FromScope--);
+		Entry = SymTable_lookup_scope(name,FromScope--);
 	}
 
 	return Entry;
 }
 
 /* Prints the contents of Symbol Table in random order */
-void SymTable_print(SymTable_T oSymTable, FILE* ost) 
+void SymTable_print(FILE* ost) 
 {
 	if(!oSymTable)
 		return ;
@@ -207,4 +209,10 @@ void SymTable_print(SymTable_T oSymTable, FILE* ost)
 		}
 	}
 
+}
+
+/* Checks if it is initialized */
+int SymTable_isInit(void)
+{
+	return oSymTable != NULL ? 1 : 0 ;
 }

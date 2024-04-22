@@ -1,9 +1,9 @@
 /*----------------------------------------------------------*/
 /* Authors: csd4881, csd4988, csd5038						*/
 /* 														    */
-/* scopeTable.h		            							*/
+/* scopeTable.c		            							*/
 /* 														    */
-/* A list implementation for Scope Table ADT		        */
+/* A list implementation for Scope Table module		        */
 /*----------------------------------------------------------*/
 
 #include <stdio.h>
@@ -30,6 +30,8 @@ struct scopeTable
 	unsigned int max_scope;
 	ScopeList_T* table;
 };
+
+static ScopeTable_T oScopeTable = NULL;
 
 /*---------------------------- UTILITIES --------------------------------*/
 
@@ -80,7 +82,7 @@ static void In_Order_Print(ScopeList_T head, FILE* ost)
 /* 
 * It returns a new Empty ScopeTable
 */
-ScopeTable_T ScopeTable_new(void)
+void ScopeTable_new(void)
 {
 	ScopeTable_T new = malloc(sizeof(scopeTable));
 
@@ -96,11 +98,13 @@ ScopeTable_T ScopeTable_new(void)
 	for (int i = 0; i < SIZE; i++)
         new->table[i] = NULL;
 
-	return new;
+	oScopeTable = new ;
+
+	return ;
 }
 
 /* Free the scope table */
-void ScopeTable_free(ScopeTable_T oScopeTable, int free_entries)
+void ScopeTable_free(int free_entries)
 {
 	if(oScopeTable == NULL)
 		return;
@@ -131,7 +135,7 @@ void ScopeTable_free(ScopeTable_T oScopeTable, int free_entries)
 /* 
 * It Inserts an Entry in the Scope Table
 */
-int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
+int ScopeTable_insert(SymEntry_T oSymEntry)
 {
 	int scope = getScope(oSymEntry);
 	/* Resize if scope is bigger than no of buckets */
@@ -171,7 +175,7 @@ int ScopeTable_insert(ScopeTable_T oScopeTable,SymEntry_T oSymEntry)
 }
 
 /* Hide all entries with the same Scope */
-int ScopeTable_hide(ScopeTable_T oScopeTable, unsigned int scope)
+int ScopeTable_hide(unsigned int scope)
 {
 	if(oScopeTable == NULL && scope > oScopeTable->max_scope)
 		return EXIT_FAILURE;
@@ -188,7 +192,7 @@ int ScopeTable_hide(ScopeTable_T oScopeTable, unsigned int scope)
 }
 
 /* Prints the contents of the Symbol Table per scope and order */
-void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost) 
+void ScopeTable_print(FILE* ost) 
 {
 	if(!oScopeTable)
 		return ;
@@ -210,4 +214,10 @@ void ScopeTable_print(ScopeTable_T oScopeTable, FILE* ost)
 		In_Order_Print(head,ost);
 	}
 
+}
+
+/* Is Scope Table initialized ?*/
+int ScopeTable_isInit()
+{
+	return oScopeTable != NULL ? 1 : 0 ;
 }
