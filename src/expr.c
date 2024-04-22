@@ -80,7 +80,7 @@ expr* lvalue_expr(SymEntry_T oSymEntry)
 }
 
 /* Checks whether the name is temporary or not */
-static unsigned int istempname(char* s)
+static unsigned int istempname(const char* s)
 {
 	return *s == '_' ;
 }
