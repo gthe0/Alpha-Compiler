@@ -15,6 +15,13 @@ OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build
 #	LEXICAL GENERATOR
 ###########################################################################################
 
+all: clean generate 
+	$(SOURCE_FILES += src/parser.c)
+	$(SOURCE_FILES += src/scanner.c)
+	$(MAKE) compile
+	$(SOURCE_FILES -= src/parser.c)
+	$(SOURCE_FILES -= src/scanner.c)
+
 # Compile object files
 object: $(OBJ_FILES)
 
@@ -54,8 +61,7 @@ RULEGEN: scripts/RuleGen.py scripts/misc/list
 # Clean up build artifacts
 clean:
 	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt\
-		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output
-
+		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode
 
 # Ensure that the build and bin directories exist
 $(BUILD_DIR):
