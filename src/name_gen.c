@@ -40,7 +40,7 @@ char *new_temp_name(void)
 	return generated_name;
 }
 
-
+/* Resets temp counter */
 void reset_temp(void)
 {
 	temp_counter = 0;

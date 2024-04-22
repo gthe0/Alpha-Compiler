@@ -78,8 +78,6 @@ void write_quads(void)
 	return;
 }
 
-
-
 /* Expand the Quad Table */
 void expand(void)
 {
@@ -88,6 +86,14 @@ void expand(void)
 	total+=EXPAND_SIZE;
 	return;
 }
+
+/* patch label */
+void patchlabel(unsigned quadNo, unsigned label)
+{
+	assert(quadNo < currQuad);
+	quad_table[quadNo].label = label;
+}
+
 
 /* Get next Quad */
 unsigned int next_quad_label(void)

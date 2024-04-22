@@ -91,6 +91,29 @@ expr* emit_iftableitem(expr* e,
 						unsigned line);
 
 /**
+* @brief Getter of next quad label/index
+*
+* @return currQuad + 1
+*/
+unsigned int next_quad_label(void);
+
+/**
+* @brief Getter of current quad label/index
+*
+* @return currQuad
+*/
+unsigned int curr_quad_label(void);
+
+/**
+* @brief Getter of current quad label/index
+*
+* @param quadNo The number/index of the quad
+* @param label The label to be patched
+*
+*/
+void patchlabel(unsigned quadNo, unsigned label);
+
+/**
 * @brief expands quad table.
 */
 void expand (void);
@@ -99,15 +122,5 @@ void expand (void);
 * @brief A function to write the quads in quads.txt
 */
 void write_quads(void);
-
-/**
-* @brief Getter of next quad label/index
-*/
-unsigned int next_quad_label(void);
-
-/**
-* @brief Getter of current quad label/index
-*/
-unsigned int curr_quad_label(void);
 
 #endif /* Quads module */

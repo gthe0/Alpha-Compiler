@@ -100,4 +100,12 @@ expr* new_num_expr(double numConst);
 */
 expr* lvalue_expr(SymEntry_T oSymEntry);
 
+/**
+* @brief Checks if e is temp
+* @param e The expression
+*
+* @return 1 if it is and 0 if not 
+*/
+unsigned int is_temp_expr(expr* e);
+
 #endif /* expr.h ADT */

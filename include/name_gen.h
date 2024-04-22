@@ -6,6 +6,9 @@
 /* A library with utility functions for name creation		*/
 /*----------------------------------------------------------*/
 
+#ifndef __NAME_GEN_H__
+#define	__NAME_GEN_H__
+
 /**
 * @brief This Functions generates a name for Functions with no name defined
 * 
@@ -24,3 +27,5 @@ char* new_temp_name(void);
 * @brief Resets temp_counter
 */
 void reset_temp(void);
+
+#endif /* Name Generation functions */

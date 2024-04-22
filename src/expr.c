@@ -78,3 +78,16 @@ expr* lvalue_expr(SymEntry_T oSymEntry)
 
 	return e;
 }
+
+/* Checks whether the name is temporary or not */
+static unsigned int istempname(char* s)
+{
+	return *s == '_' ;
+}
+
+/* Checks if the expression is temporary */
+unsigned int is_temp_expr(expr* e)
+{
+	assert(e->sym->type < USERFUNC);
+	return e->sym && istempname(e->sym->value.varVal->name);
+}
