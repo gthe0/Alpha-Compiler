@@ -78,4 +78,10 @@ void Tables_print(SymTable_T oSymTable,ScopeTable_T oScopeTable
 				, FILE* ost, bool option);
 
 
+SymEntry_T newtemp(SymTable_T oSymTable,
+					ScopeTable_T oScopeTable,
+					const char *name,
+					int scope,
+					unsigned yylineno);
+
 #endif /* wrapper */

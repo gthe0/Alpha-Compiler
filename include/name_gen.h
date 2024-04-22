@@ -3,7 +3,7 @@
 /* 														    */
 /* name_gen.h		            							*/
 /* 														    */
-/* A library with utility functions to create names			*/
+/* A library with utility functions for name creation		*/
 /*----------------------------------------------------------*/
 
 /**
@@ -11,4 +11,16 @@
 * 
 * @return a name with illegal characters so that it will be unique
 */
-char* func_name_generator();
+char* func_name_generator(void);
+
+/**
+* @brief Generaetes a temporary symbol name
+*
+* @return The temp name 
+*/
+char* new_temp_name(void);
+
+/**
+* @brief Resets temp_counter
+*/
+void reset_temp(void);
