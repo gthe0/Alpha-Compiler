@@ -7,7 +7,7 @@ INCLUDE     := ./include
 GENERATOR   := ./generator
 
 # Collect all C source files in the directory
-SOURCE_FILES := $(wildcard $(SRC)/*.c)
+SOURCE_FILES = $(wildcard $(SRC)/*.c)
 TMP_SOURCE_FILES := $(SOURCE_FILES:$(SRC)/%=%) # Remove the src/ prefix
 OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build/ and .o
 
@@ -15,12 +15,7 @@ OBJ_FILES := $(addprefix $(BUILD_DIR)/,$(TMP_SOURCE_FILES:.c=.o)) # Append build
 #	LEXICAL GENERATOR
 ###########################################################################################
 
-all: clean generate 
-	$(SOURCE_FILES += src/parser.c)
-	$(SOURCE_FILES += src/scanner.c)
-	$(MAKE) compile
-	$(SOURCE_FILES -= src/parser.c)
-	$(SOURCE_FILES -= src/scanner.c)
+all: clean generate compile
 
 # Compile object files
 object: $(OBJ_FILES)
@@ -44,7 +39,7 @@ bison: $(GENERATOR)/parser.y
 	mv parser.c $(SRC)/parser.c
 
 # Compile each source file into its object file individually
-$(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC)/%.c $(BUILD_DIR)
 	gcc -I $(INCLUDE) -c $< -o $@
 
 ###########################################################################################
