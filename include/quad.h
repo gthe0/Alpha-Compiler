@@ -78,6 +78,14 @@ void emit(
 );
 
 /**
+* @brief Emits a quad if it is a table item
+* @param e The expression to be checked
+*
+* @return An expression based on whether it is a table item of not
+*/
+expr* emit_iftableitem(expr* e);
+
+/**
 * @brief expands quad table.
 */
 void expand (void);

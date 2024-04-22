@@ -18,7 +18,6 @@
 #define GLOBAL_SCOPE 0
 #define LOCAL_ID 6
 
-static unsigned unnamed_func_counter = 0;
 
 /* Library Functions. We Insert them in the initialization of the Tables*/
 static char *LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
@@ -262,22 +261,6 @@ int Valid_return(ScopeStack_T stack, unsigned int yylineno)
 	return EXIT_SUCCESS;
 }
 
-/* This Functions generates a name for Functions with no name defined */
-char *func_name_generator()
-{
-	char *name = "$function_";
-	char func_number[20];
-
-	sprintf(func_number, "%d", unnamed_func_counter++);
-
-	char *generated_name = malloc((strlen(name) + strlen(func_number)) * sizeof(char) + 1);
-	assert(generated_name);
-
-	strcpy(generated_name, name);
-	strcat(generated_name, func_number);
-
-	return generated_name;
-}
 
 int eval_lvalue(SymEntry_T entry,char* operation, int yylineno)
 {

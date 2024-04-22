@@ -92,4 +92,12 @@ expr* new_nil_expr(void);
 */
 expr* new_num_expr(double numConst);
 
+/**
+* @brief Generate an lvalue expression
+* @param oSymEntry The Symbol Table Entry
+*
+* @return The lvalue expression
+*/
+expr* lvalue_expr(SymEntry_T oSymEntry);
+
 #endif /* expr.h ADT */

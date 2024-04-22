@@ -17,6 +17,7 @@
 
 	#include <symTableEntry.h>
 	#include <IntegerStack.h>
+	#include <name_gen.h>
 	#include <yacc_lib.h>
 	#include <tables.h>
 	#include <log.h>

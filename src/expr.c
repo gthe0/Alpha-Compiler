@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include <expr.h>
 
@@ -53,5 +54,27 @@ expr* new_num_expr(double numConst)
 {
 	expr* e = newexpr(constnum_e);
 	e->numConst = numConst;
+	return e;
+}
+
+
+/* lvalue expression generator */
+expr* lvalue_expr(SymEntry_T oSymEntry)
+{
+	assert(oSymEntry);
+
+    expr* e = (expr*)malloc(sizeof(expr));
+    memset(e, 0, sizeof(expr));
+
+    e->next = NULL;
+    e->sym = oSymEntry;
+
+	if(oSymEntry->type < USERFUNC)
+		e->type = var_e;
+	else if(oSymEntry->type == USERFUNC)
+		e->type = programfunc_e;
+	else if(oSymEntry->type == LIBFUNC)
+		e->type = libraryfunc_e;
+
 	return e;
 }

@@ -97,11 +97,4 @@ SymEntry_T find_global(SymTable_T oSymTable, char *name,
 
 int eval_lvalue(SymEntry_T entry,char* operation, int yylineno);
 
-/**
-* @brief This Functions generates a name for Functions with no name defined
-* 
-* @return a name with illegal characters so that it will be unique
-*/
-char* func_name_generator();
-
 #endif /* Yacc lib */
