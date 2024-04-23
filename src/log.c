@@ -64,7 +64,8 @@ void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 	/* Free them */
 	va_end(args);
 	
-	ERROR_COMP = 1 ;
+	if(log_t == ERROR)
+		ERROR_COMP = 1 ; 
 
 	return ;
 }
