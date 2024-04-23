@@ -26,6 +26,7 @@ static unsigned	int currQuad = 0u;
 static unsigned	int total	 = 0u;
 
 extern int yylineno;
+extern int scope;
 
 /* Resizing table */
 #define EXPAND_SIZE 	0x400
@@ -54,9 +55,7 @@ void emit(iopcode op, expr *result,
 }
 
 /*Generates a Quad whether e is a table item of not*/
-expr* emit_iftableitem(	expr* e,
-						unsigned scope,
-						unsigned yylineno )
+expr* emit_iftableitem(	expr* e)
 {
 	if(e->type != tableitem_e)
 		return e;
@@ -114,6 +113,20 @@ static void quad_decode(FILE* ost, unsigned  index)
 	}
 	
 	return ;
+}
+
+/* Creates a table item expr */
+expr* member_item (expr* lv, char* name) {
+	
+	lv = emit_iftableitem(lv); // Emit code if r-value use of table item
+	
+	expr* ti = newexpr(tableitem_e); // Make a new expression
+	
+	ti->sym = lv->sym;
+	ti->index = newexpr_conststring(name); // Const string index
+	
+	return ti;
+
 }
 
 /* Write quads in the quad.txt file */

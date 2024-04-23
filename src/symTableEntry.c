@@ -164,7 +164,8 @@ void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
 	} 
 	else if (oSymEntry->type == LOCAL) 
 	{
-		fprintf(ost," \"%s\" [local variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);            } 
+		fprintf(ost," \"%s\" [local variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);            
+	} 
 	else if (oSymEntry->type == FORMAL) 
 	{
 		fprintf(ost," \"%s\" [formal variable] (line %d) (scope %d)\n", oSymEntry->value.varVal->name, oSymEntry->value.varVal->line, oSymEntry->value.varVal->scope);

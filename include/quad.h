@@ -80,14 +80,10 @@ void emit(
 /**
 * @brief Emits a quad if it is a table item
 * @param e The expression to be checked
-* @param scope The scope of the Symbol
-* @param yylineno The line of the Symbol
 *
 * @return An expression based on whether it is a table item of not
 */
-expr* emit_iftableitem(expr* e,
-						unsigned scope,
-						unsigned yylineno);
+expr* emit_iftableitem(expr* e);
 
 /**
 * @brief Getter of next quad label/index
@@ -116,6 +112,16 @@ void patchlabel(unsigned quadNo, unsigned label);
 * @brief expands quad table.
 */
 void expand (void);
+
+/**
+* @brief generates a new table member expr
+* 
+* @param lv The expression/table
+* @param name The name of the expression
+*
+* @return The member item
+*/
+expr* member_item (expr* lv, char* name);
 
 /**
 * @brief A function to write the quads in quads.txt
