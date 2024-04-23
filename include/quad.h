@@ -124,6 +124,16 @@ void expand (void);
 expr* member_item (expr* lv, char* name);
 
 /**
+* @brief generates a function call and returns result
+* 
+* @param lv The function call/expression
+* @param reversed_elist The reversed argument list
+*
+* @return The result of the function call
+*/
+expr* make_call (expr* lv, expr* reversed_elist);
+
+/**
 * @brief A function to write the quads in quads.txt
 *
 * @return EXIT_SUCCESS for success, EXIT_FAILURE for failure

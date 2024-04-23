@@ -118,6 +118,8 @@ static void quad_decode(FILE* ost, unsigned  index)
 /* Creates a table item expr */
 expr* member_item (expr* lv, char* name) {
 	
+	assert(lv);
+
 	lv = emit_iftableitem(lv); // Emit code if r-value use of table item
 	
 	expr* ti = newexpr(tableitem_e); // Make a new expression
@@ -128,6 +130,31 @@ expr* member_item (expr* lv, char* name) {
 	return ti;
 
 }
+
+/* Creates a Call */
+expr* make_call (expr* lv, expr* reversed_elist) {
+	
+	assert(lv);
+
+	expr* func = emit_iftableitem(lv);
+	
+	while (reversed_elist)
+	{
+		emit(param_i, reversed_elist, NULL, NULL,yylineno,0);
+		reversed_elist = reversed_elist->next;
+	}
+	
+	emit(call_i, func,NULL, NULL,yylineno,0);
+	
+	expr* result = newexpr(var_e);
+	
+	result->sym = newtemp(scope,yylineno);
+	
+	emit(getretval_i, NULL, NULL, result,yylineno,0);
+	
+	return result;
+}
+
 
 /* Write quads in the quad.txt file */
 int write_quads(void)
