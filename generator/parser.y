@@ -32,7 +32,7 @@
 	/* The various tables that we will use */
 	static ScopeStack_T  oScopeStack = NULL;
 
-	static unsigned int scope = 0;
+	unsigned int scope = 0;
 	static unsigned int loop_counter = 0;
 
 	static int invalid_funct = 0;

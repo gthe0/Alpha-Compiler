@@ -125,7 +125,7 @@ expr* member_item (expr* lv, char* name) {
 	expr* ti = newexpr(tableitem_e); // Make a new expression
 	
 	ti->sym = lv->sym;
-	ti->index = newexpr_conststring(name); // Const string index
+	ti->index = new_string_expr(name); // Const string index
 	
 	return ti;
 
