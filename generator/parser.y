@@ -31,6 +31,7 @@
 
 	/* The various tables that we will use */
 	static ScopeStack_T  oScopeStack = NULL;
+	unsigned int ERROR_COMP = 0;
 
 	unsigned int scope = 0;
 	static unsigned int loop_counter = 0;
@@ -366,6 +367,8 @@ int main(int argc,char** argv)
 
 	/* Call the Parser */
 	yyparse();
+
+	printf("ERROR COMPILATION%s ENCOUNTERD\n",ERROR_COMP == 0 ? " NOT" : "");
 
 	Tables_print(ost,0);
 

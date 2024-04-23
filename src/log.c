@@ -12,6 +12,8 @@
 
 #include <log.h>
 
+extern unsigned ERROR_COMP;
+
 /*
 * A function to print the errors in stderr
 */
@@ -61,6 +63,8 @@ void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 
 	/* Free them */
 	va_end(args);
+	
+	ERROR_COMP = 1 ;
 
 	return ;
 }
