@@ -12,6 +12,8 @@
 typedef struct IntStack IntStack, *IntStack_T;
 typedef struct IntStack ScopeStack, *ScopeStack_T;
 typedef struct IntStack OffsetStack, *OffsetStack_T;
+typedef struct IntStack BrkListStack, *BrkListStack_T;
+typedef struct IntStack ContListStack, *ContListStack_T;
 
 struct  IntStack
 {
