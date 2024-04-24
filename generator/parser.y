@@ -22,6 +22,7 @@
 	#include <name_gen.h>
 	#include <symTable.h>
 	#include <scopeTable.h>
+	#include <scopeSpace.h>
 	#include <IntegerStack.h>
 	#include <parser_utils.h>
 	#include <symTableEntry.h>
@@ -70,9 +71,10 @@
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
-%type <entry> 		lvalue 
-%type <string> 		id_option
+%type <entry> 		lvalue funcpref
+%type <string> 		func_name
 %type <statement> 	stmt
+%type <expression>	const 
 
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
@@ -295,7 +297,18 @@ block
 	;
 
 funcpref
-	:	FUNC id_option 
+	:	FUNC func_name 
+	{
+		$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
+		
+		emit(funcstart_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,0,yylineno);
+		
+		IntStack_Push(&offsetStack, curr_scope_offset()); 
+		IntStack_Push(&oScopeStack, scope+1); 
+		
+		enterscopespace(); 
+		resetformalargoffset();
+	}
 	;
 
 funcdef
@@ -307,28 +320,24 @@ funcdef
 	}
 	;
 
-id_option
+func_name
 	: 		
 	{
-		$$ = Manage_id_option_anonymous(scope,yylineno) ; 
-		IntStack_Push(&oScopeStack,scope+1);
+		$$ =  func_name_generator();
 	}
 	| ID	
 	{
-		Manage_id_option_named($1,yylineno,scope,oScopeStack);
-		IntStack_Push(&oScopeStack,scope+1);
-	
 		$$ = $1;
 	}
 	;
 
 const
-	: INT 
-	| NIL 
-	| TRUE 
-	| FALSE 
-	| FLOAT 
-	| STRING 
+	: INT 		{ $$ = new_num_expr($1); }
+	| FLOAT 	{ $$ = new_num_expr($1); }
+	| NIL 		{ $$ = new_nil_expr(  ); }
+	| TRUE 		{ $$ = new_bool_expr(1); }
+	| FALSE 	{ $$ = new_bool_expr(0); }
+	| STRING 	{ $$ = new_string_expr($1);}
 	;
 
 idlist
@@ -351,8 +360,8 @@ idlist
 
 ifstmt
 	:  IF '(' expr ')' stmt
-	|  IF '(' error ')'				 	{  yyerrok;} 
 	|  IF '(' expr ')' stmt ELSE stmt
+	|  IF '(' error ')'				 	{  yyerrok;} 
 	;
 
 loop_Inc:	{loop_counter++;}
@@ -367,7 +376,7 @@ forstmt
 	: FOR '(' elist ';' expr ';' elist ')' loop_Inc  stmt loop_End
 	| FOR '(' elist ';' expr ';' ')' loop_Inc stmt loop_End
 	| FOR '(' elist ';' error ';' elist')' loop_Inc stmt loop_End	{  yyerrok;} 
-	| FOR '(' elist ';' error ';' ')' loop_Inc stmt loop_End	{  yyerrok;} 
+	| FOR '(' elist ';' error ';' ')' loop_Inc stmt loop_End		{  yyerrok;} 
 	;
 
 returnstmt

@@ -90,9 +90,9 @@ static SymEntry_T Valid_local(char *name, unsigned int line, unsigned int scope)
 * @param FromScope The current Scope 
 * @param stack The Scope Stack
 *
-* @return EXIT_FAILURE or EXIT_SUCCESS 
+* @return The entry found or NULL 
 */
-static int Valid_Function(char *name, unsigned int line,
+static SymEntry_T Valid_Function(char *name, unsigned int line,
 					 unsigned int FromScope, ScopeStack_T stack)
 {
 	assert(SymTable_isInit());
@@ -107,7 +107,7 @@ static int Valid_Function(char *name, unsigned int line,
 		LOG_ERROR(PARSER, ERROR, "Shadowing Library Function, line %d, token %s\n", line, name);
 		LOG_ERROR(PARSER, NOTE, "%s is a library Function\n\n", name);
 
-		return EXIT_FAILURE;
+		return SymTable_lookup_scope(name, 0);
 	}
 
 	/* If there is already an entry with this name, then it fails*/
@@ -130,10 +130,9 @@ static int Valid_Function(char *name, unsigned int line,
 		{
 			LOG_ERROR(PARSER, ERROR, "Token %s was inserted in line %u\n", name,getLine(entry));
 		}
-		return EXIT_FAILURE;
 	}
 
-	return EXIT_SUCCESS;
+	return entry;
 }
 
 /* Function to check if the arguments are Valid */
@@ -352,24 +351,18 @@ SymEntry_T Manage_lv_global(char *name, unsigned int line)
 }
 
 /* Manages function id */
-SymEntry_T Manage_id_option_named(char *name, unsigned int line,
+SymEntry_T Manage_func_pref(char *name, unsigned int line,
 					 unsigned int FromScope, ScopeStack_T stack)
 {
-	if((Valid_Function(name,line,FromScope,stack)) == EXIT_SUCCESS)
+	SymEntry_T entry;
+	
+	if((entry = Valid_Function(name,line,FromScope,stack)) == NULL)
 	{
-		Tables_insert(USERFUNC,name,FromScope,line);
+		entry = SymEntry_create(USERFUNC,name,FromScope,line);
+		Tables_insert_Entry(entry);
+
+		return entry ;
 	}
 		
 	return NULL;
-}
-
-/* Manages function id */
-char* Manage_id_option_anonymous(int scope,unsigned yylineno)
-{
-	char* func_name = func_name_generator();
-	SymEntry_T entry = SymEntry_create(USERFUNC,func_name,scope,yylineno);
-	
-	Tables_insert_Entry(entry);
-
-	return func_name;
 }

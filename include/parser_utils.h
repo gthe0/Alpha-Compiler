@@ -100,7 +100,7 @@ SymEntry_T Manage_lv_global(char *name,unsigned int line);
 *
 * @return The function symbol 
 */
-SymEntry_T Manage_id_option_named(char *name, unsigned int line,
+SymEntry_T Manage_func_pref(char *name, unsigned int line,
 					 unsigned int FromScope, ScopeStack_T stack);
 
 /**
@@ -111,6 +111,6 @@ SymEntry_T Manage_id_option_named(char *name, unsigned int line,
 *
 * @return The function symbol 
 */
-char* Manage_id_option_anonymous(int scope,unsigned yylineno);
+char* Manage_func_name_anonymous(int scope,unsigned yylineno);
 
 #endif /* parser utilities */
