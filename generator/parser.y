@@ -19,7 +19,7 @@
 	#include <tables.h>
 	#include <name_gen.h>
 	#include <symTable.h>
-	#include <yacc_lib.h>
+	#include <parser_utils.h>
 	#include <scopeTable.h>
 	#include <IntegerStack.h>
 	#include <symTableEntry.h>
@@ -368,7 +368,7 @@ int main(int argc,char** argv)
 	/* Call the Parser */
 	yyparse();
 
-	printf("ERROR COMPILATION%s ENCOUNTERD\n",ERROR_COMP == 0 ? " NOT" : "");
+	printf("COMPILATION ERROR%s ENCOUNTERD\n",ERROR_COMP == 0 ? " NOT" : "");
 
 	Tables_print(ost,0);
 

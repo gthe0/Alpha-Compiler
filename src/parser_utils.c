@@ -1,9 +1,9 @@
 /*----------------------------------------------------------*/
 /* Authors: csd4881, csd4988, csd5038						*/
 /* 														    */
-/* yacc_lib.c		            							*/
+/* parser_utils.c		            							*/
 /* 														    */
-/* Implementation of yacc_lib.h								*/
+/* Implementation of parser_utils.h								*/
 /*----------------------------------------------------------*/
 
 #include <assert.h>
@@ -12,7 +12,7 @@
 
 #include <log.h>
 #include <symTable.h>
-#include <yacc_lib.h>
+#include <parser_utils.h>
 #include <scopeTable.h>
 
 #define NO_OF_LIBFUNCTS 12
