@@ -12,6 +12,8 @@
 #include <assert.h>
 
 #include <expr.h>
+#include <stmt.h>
+#include <quad.h>
 #include <log.h>
 
 /* Creates a new expression */
@@ -108,4 +110,9 @@ void check_arith (expr* e, const char* context)
 	LOG_ERROR(PARSER,ERROR,"Illegal expr used in %s!",context);	
 
 	return ;
+}
+
+void short_circuit(expr* e)
+{
+	assert(e && e->type == boolexpr_e);
 }

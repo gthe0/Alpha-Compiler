@@ -120,4 +120,11 @@ unsigned int is_temp_expr(expr* e);
 */
 void check_arith (expr* e, const char* context);
 
+
+/**
+* @brief Short circuit the expression's truth/false lists
+* @param e The expression
+*/
+void short_circuit(expr* e);
+
 #endif /* expr.h ADT */

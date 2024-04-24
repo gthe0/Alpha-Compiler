@@ -104,57 +104,55 @@ stmt_list
 	;
 	
 stmt: expr ';' 
-		{
-			reset_temp();
-			$$ = NULL;
-		}
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	| ifstmt
-		{
-			reset_temp();
-			$$ = NULL;
-		}
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	| whilestmt
-		{
-			reset_temp();
-			$$ = NULL;
-		}
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	| forstmt
-		{
-			reset_temp();
-			$$ = NULL;
-		}
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	| returnstmt
-		{
-			reset_temp();
-			$$ = NULL;
-		}
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	| BREAK ';' 	
-		{
-			reset_temp();
-			$$ = Manage_loop_stmt("break",loop_counter,yylineno);
-		}
+	{
+		reset_temp();
+		$$ = Manage_loop_stmt("break",loop_counter,yylineno);
+	}
 	| CONTINUE ';'	
-		{
-			reset_temp();
-			$$ = Manage_loop_stmt("continue",loop_counter,yylineno);
-		}
+	{
+		reset_temp();
+		$$ = Manage_loop_stmt("continue",loop_counter,yylineno);
+	}
 	| block
-		{
+	{
 			reset_temp();
-			$$ = NULL;
-		}
-
+		$$ = NULL;
+	}
 	| funcdef
-		{
-			reset_temp();
-			$$ = NULL;
-		}
-
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	| ';'
-		{
-			reset_temp();
-			$$ = NULL;
-		}
+	{
+		reset_temp();
+		$$ = NULL;
+	}
 	;
 
 expr: assginexpr
@@ -276,8 +274,14 @@ indexedelem
 	;
 
 block
-	: '{' {scope++;} stmt_list '}'{
-		
+	:
+	'{' 
+	{
+		scope++;
+	} 
+	stmt_list 
+	'}'
+	{
 		ScopeTable_hide(scope);
 		scope--;
 	}
@@ -310,7 +314,10 @@ id_option
 	}
 	| ID	
 	{
-		Manage_func_def($1,yylineno,scope,&oScopeStack);
+		Manage_func_def($1,yylineno,scope,oScopeStack);
+	
+		oScopeStack = IntStack_Push(oScopeStack,scope+1);
+	
 		$$ = $1;
 	}
 	;
@@ -326,16 +333,15 @@ const
 
 idlist
 	: 
-	| ID	{
-
+	| ID
+	{
 		if((Valid_args($1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
 			Tables_insert(FORMAL,$1,scope,yylineno);
 		}
-
 	}
-	| idlist ',' ID	{
-		
+	| idlist ',' ID	
+	{		
 		if((Valid_args($3,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
 			Tables_insert(FORMAL,$3,scope,yylineno);
@@ -413,7 +419,7 @@ int main(int argc,char** argv)
 	/* Call the Parser */
 	yyparse();
 
-	printf("COMPILATION ERROR%s ENCOUNTERD\n",ERROR_COMP == 0 ? " NOT" : "");
+	printf("%30.100s\n",ERROR_COMP ? "COMPILATION ERROR ENCOUNTERD" : "ALL FINE");
 
 	Tables_print(ost,0);
 

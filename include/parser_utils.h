@@ -101,6 +101,6 @@ SymEntry_T Manage_lv_global(char *name,unsigned int line);
 * @return The function symbol 
 */
 SymEntry_T Manage_func_def(char *name, unsigned int line,
-					 unsigned int FromScope, ScopeStack_T* stack);
+					 unsigned int FromScope, ScopeStack_T stack);
 
 #endif /* parser utilities */

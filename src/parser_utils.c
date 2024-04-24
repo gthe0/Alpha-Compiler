@@ -352,16 +352,14 @@ SymEntry_T Manage_lv_global(char *name, unsigned int line)
 
 /* Manages function id */
 SymEntry_T Manage_func_def(char *name, unsigned int line,
-					 unsigned int FromScope, ScopeStack_T* stack)
+					 unsigned int FromScope, ScopeStack_T stack)
 {
 	SymEntry_T entry;
 
-	if((Valid_Function(name,line,FromScope,*stack)) == EXIT_SUCCESS)
+	if((Valid_Function(name,line,FromScope,stack)) == EXIT_SUCCESS)
 	{
 		Tables_insert(USERFUNC,name,FromScope,line);
 	}
-	
-	*stack = IntStack_Push(*stack,FromScope+1);
-	
+		
 	return NULL;
 }
