@@ -49,6 +49,9 @@ struct expr
 	double numConst;
     char *strConst;
     unsigned char boolConst;
+
+	int true_list;
+	int false_list;
 };
 
 

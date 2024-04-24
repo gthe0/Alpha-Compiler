@@ -19,9 +19,9 @@
 	#include <tables.h>
 	#include <name_gen.h>
 	#include <symTable.h>
-	#include <parser_utils.h>
 	#include <scopeTable.h>
 	#include <IntegerStack.h>
+	#include <parser_utils.h>
 	#include <symTableEntry.h>
 
 	#if defined(WIN32) || defined(_WIN32_WCE)
