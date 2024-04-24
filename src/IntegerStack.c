@@ -40,10 +40,10 @@ void IntStack_free(ScopeStack_T stack)
 }
 
 /* Push an element in the Stack */
-IntStack_T IntStack_Push(IntStack_T stack, unsigned int scope)
+void IntStack_Push(IntStack_T* stack, unsigned int scope)
 {
-	if(stack == NULL)
-		return NULL;
+	if(stack == NULL || *stack == NULL)
+		return;
 
 	IntStack_T head = malloc(sizeof(IntStack));
 	
@@ -51,10 +51,12 @@ IntStack_T IntStack_Push(IntStack_T stack, unsigned int scope)
 	assert(head);
 
 	head->scope = scope;
-	head->prev = stack;
+	head->prev = *stack;
 	head->isEmpty = 0;
 
-	return head;
+	*stack = head ;
+
+	return;
 }
 
 /* Get the top element of the stack */

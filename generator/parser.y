@@ -70,9 +70,9 @@
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
-%type <entry> lvalue 
-%type <string> id_option
-%type <statement> stmt
+%type <entry> 		lvalue 
+%type <string> 		id_option
+%type <statement> 	stmt
 
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
@@ -315,7 +315,7 @@ id_option
 		SymEntry_T entry = SymEntry_create(USERFUNC,func_name,scope,yylineno);
 		
 		Tables_insert_Entry(entry);
-		oScopeStack = IntStack_Push(oScopeStack,scope+1);
+		IntStack_Push(&oScopeStack,scope+1);
 
 		$$ = func_name ; 
 	}
@@ -323,7 +323,7 @@ id_option
 	{
 		Manage_func_def($1,yylineno,scope,oScopeStack);
 	
-		oScopeStack = IntStack_Push(oScopeStack,scope+1);
+		IntStack_Push(&oScopeStack,scope+1);
 	
 		$$ = $1;
 	}

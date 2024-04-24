@@ -59,11 +59,9 @@ int IntStack_isEmpty(IntStack_T stack);
 
 /**
 * @brief Push an element in the stack.
-* @param stack The stack used. 
+* @param stack The stack to the pointer used. 
 * @param scope To be pushed. 
-*
-* @return true if it has succeded and false if not 
 */
-IntStack_T IntStack_Push(IntStack_T stack, unsigned int scope);
+void IntStack_Push(IntStack_T* stack, unsigned int scope);
 
 #endif /* IntStack  ADT*/
