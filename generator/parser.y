@@ -147,7 +147,7 @@ stmt: expr ';'
 	}
 	| block
 	{
-			reset_temp();
+		reset_temp();
 		$$ = NULL;
 	}
 	| funcdef
