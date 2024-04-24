@@ -15,6 +15,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
+	#include <stmt.h>
+	#include <expr.h>
 	#include <log.h>
 	#include <tables.h>
 	#include <name_gen.h>
@@ -33,11 +35,9 @@
 	static ScopeStack_T  oScopeStack = NULL;
 	unsigned int ERROR_COMP = 0;
 
-	unsigned int scope = 0;
 	static unsigned int loop_counter = 0;
+	unsigned int scope = 0;
 
-	static int invalid_funct = 0;
-	static int pop = 0;
 	/* Flex variables */
 	extern FILE* 	yyin;
 	extern char*	yytext;
@@ -52,16 +52,20 @@
 %union
 {
 	int	intVal;
-	char* string;
 	float floatVal;
+	char* string;
+	expr* expression;
 	SymEntry_T entry;
+	stmt_T statement;
 }
 
 %token <string> 	ID STRING
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
-%type <entry> lvalue
+%type <entry> lvalue id_option
+%type <statement> stmt
+
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR
@@ -98,16 +102,58 @@ stmt_list
 	| stmt_list stmt 
 	;
 	
-stmt: expr ';'
+stmt: expr ';' 
+		{
+			reset_temp();
+			$$ = NULL;
+		}
 	| ifstmt
+		{
+			reset_temp();
+			$$ = NULL;
+		}
 	| whilestmt
+		{
+			reset_temp();
+			$$ = NULL;
+		}
 	| forstmt
+		{
+			reset_temp();
+			$$ = NULL;
+		}
 	| returnstmt
-	| BREAK ';' 	{Valid_loop_token("break",loop_counter,yylineno);}
-	| CONTINUE ';'	{Valid_loop_token("continue",loop_counter,yylineno);}
+		{
+			reset_temp();
+			$$ = NULL;
+		}
+	| BREAK ';' 	
+		{
+			reset_temp();
+			$$ = Manage_loop_stmt("break",loop_counter,yylineno);
+		}
+	| CONTINUE ';'	
+		{
+			reset_temp();
+			$$ = Manage_loop_stmt("continue",loop_counter,yylineno);
+		}
 	| block
+		{
+			reset_temp();
+			$$ = NULL;
+		}
+
 	| funcdef
+		{
+			reset_temp();
+			$$ = NULL;
+		}
+
 	| ';'
+		{
+			reset_temp();
+			$$ = NULL;
+		}
 	;
 
 expr: assginexpr
@@ -138,8 +184,8 @@ term: '(' expr ')'
 	;
 
 assginexpr
-	: lvalue '=' expr {eval_lvalue($1,"assignment",yylineno);}
-	| error '=' expr { LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
+	: lvalue '=' expr 	{eval_lvalue($1,"assignment",yylineno);}
+	| error '=' expr 	{LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
 	;
 
 primary
@@ -151,22 +197,22 @@ primary
 	;
 
 lvalue
-	: ID	{
-		$$ = Valid_lvalue_ID($1,yylineno, scope ,oScopeStack);
+	: ID	
+	{
+		$$ = Manage_lv_ID($1,yylineno, scope ,oScopeStack);
 	}
-	| LOC ID		{
-			SymEntry_T entry;
-			if((entry = Valid_local($2,yylineno, scope))==NULL)
-			{
-				entry =  SymEntry_create(scope == 0 ? GLOBAL:LOCAL,$2,scope, yylineno);
-				Tables_insert_Entry(entry);
-			}
-			$$ = entry;
+	| LOC ID
+	{
+		$$ =  Manage_lv_local($2,yylineno,scope);
 	}
-	| DOUBLE_COL ID	{
-		$$ = find_global($2,yylineno);
+	| DOUBLE_COL ID	
+	{
+		$$ = Manage_lv_global($2,yylineno);
 	}
-	| member	{$$ = NULL;}
+	| member	
+	{
+		$$ = NULL;
+	}
 	;
 
 member
@@ -243,29 +289,27 @@ funcpref
 funcdef
 	: funcpref	'('	{scope++;}
 	  idlist	')'	{scope--;}
-	  block			{
-						IntStack_Pop(oScopeStack);
-					}
+	  block			
+	{
+		IntStack_Pop(oScopeStack);
+	}
 	;
 
 id_option
-	: 		{
-				char * func_name = func_name_generator();
+	: 		
+	{
+		char * func_name = func_name_generator();
 
-				Tables_insert(USERFUNC,func_name,scope,yylineno);
-				oScopeStack = IntStack_Push(oScopeStack,scope+1);
-
-				free(func_name);
-	}
-	| ID	{
-		
-		if((invalid_funct = Valid_Function($1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
-		{
-			Tables_insert(USERFUNC,$1,scope,yylineno);
-		}
-		
+		SymEntry_T entry = SymEntry_create(USERFUNC,func_name,scope,yylineno);
+		Tables_insert_Entry(entry);
 		oScopeStack = IntStack_Push(oScopeStack,scope+1);
+		free(func_name);
 
+		$$ = entry ; 
+	}
+	| ID	
+	{
+		$$ = Manage_func_def($1,yylineno,scope,&oScopeStack);
 	}
 	;
 
@@ -364,7 +408,7 @@ int main(int argc,char** argv)
 	/* Initializes tables and stack */
 	oScopeStack = IntStack_init();
 	Tables_init();
-
+	expand();
 	/* Call the Parser */
 	yyparse();
 
