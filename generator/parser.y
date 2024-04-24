@@ -59,11 +59,12 @@
 	stmt_T statement;
 }
 
-%token <string> 	ID STRING
+%token <string> 	ID STRING 
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
-%type <entry> lvalue id_option
+%type <entry> lvalue 
+%type <string> id_option
 %type <statement> stmt
 
 
@@ -301,15 +302,16 @@ id_option
 		char * func_name = func_name_generator();
 
 		SymEntry_T entry = SymEntry_create(USERFUNC,func_name,scope,yylineno);
+		
 		Tables_insert_Entry(entry);
 		oScopeStack = IntStack_Push(oScopeStack,scope+1);
-		free(func_name);
 
-		$$ = entry ; 
+		$$ = func_name ; 
 	}
 	| ID	
 	{
-		$$ = Manage_func_def($1,yylineno,scope,&oScopeStack);
+		Manage_func_def($1,yylineno,scope,&oScopeStack);
+		$$ = $1;
 	}
 	;
 
@@ -325,7 +327,7 @@ const
 idlist
 	: 
 	| ID	{
-		
+
 		if((Valid_args($1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
 		{
 			Tables_insert(FORMAL,$1,scope,yylineno);
@@ -338,7 +340,6 @@ idlist
 		{
 			Tables_insert(FORMAL,$3,scope,yylineno);
 		}
-
 	}
 	;
 
