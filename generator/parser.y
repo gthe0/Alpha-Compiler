@@ -310,19 +310,12 @@ funcdef
 id_option
 	: 		
 	{
-		char * func_name = func_name_generator();
-
-		SymEntry_T entry = SymEntry_create(USERFUNC,func_name,scope,yylineno);
-		
-		Tables_insert_Entry(entry);
+		$$ = Manage_id_option_anonymous(scope,yylineno) ; 
 		IntStack_Push(&oScopeStack,scope+1);
-
-		$$ = func_name ; 
 	}
 	| ID	
 	{
-		Manage_func_def($1,yylineno,scope,oScopeStack);
-	
+		Manage_id_option_named($1,yylineno,scope,oScopeStack);
 		IntStack_Push(&oScopeStack,scope+1);
 	
 		$$ = $1;

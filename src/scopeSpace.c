@@ -49,11 +49,11 @@ void incurr_scope_offset(void)
 {
     switch (curr_scope_space())
     {
-    case programvar		: ++programVarOffset; break;
-    case functionlocal	: ++functionLocalOffset; break;
-    case formalarg		: ++formalArgOffset; break;
-    default:
-        assert(0);
+    	case programvar		: ++programVarOffset; break;
+    	case functionlocal	: ++functionLocalOffset; break;
+    	case formalarg		: ++formalArgOffset; break;
+    	default:
+    	    assert(0);
     }
 }
 

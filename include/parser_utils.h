@@ -100,7 +100,17 @@ SymEntry_T Manage_lv_global(char *name,unsigned int line);
 *
 * @return The function symbol 
 */
-SymEntry_T Manage_func_def(char *name, unsigned int line,
+SymEntry_T Manage_id_option_named(char *name, unsigned int line,
 					 unsigned int FromScope, ScopeStack_T stack);
+
+/**
+* @brief This Functions checks Manages the anonymous function definition
+* 
+* @param scope The current Scope 
+* @param yylineno The line that we found the token
+*
+* @return The function symbol 
+*/
+char* Manage_id_option_anonymous(int scope,unsigned yylineno);
 
 #endif /* parser utilities */

@@ -12,6 +12,7 @@
 
 #include <log.h>
 #include <symTable.h>
+#include <name_gen.h>
 #include <parser_utils.h>
 #include <scopeTable.h>
 
@@ -351,15 +352,24 @@ SymEntry_T Manage_lv_global(char *name, unsigned int line)
 }
 
 /* Manages function id */
-SymEntry_T Manage_func_def(char *name, unsigned int line,
+SymEntry_T Manage_id_option_named(char *name, unsigned int line,
 					 unsigned int FromScope, ScopeStack_T stack)
 {
-	SymEntry_T entry;
-
 	if((Valid_Function(name,line,FromScope,stack)) == EXIT_SUCCESS)
 	{
 		Tables_insert(USERFUNC,name,FromScope,line);
 	}
 		
 	return NULL;
+}
+
+/* Manages function id */
+char* Manage_id_option_anonymous(int scope,unsigned yylineno)
+{
+	char* func_name = func_name_generator();
+	SymEntry_T entry = SymEntry_create(USERFUNC,func_name,scope,yylineno);
+	
+	Tables_insert_Entry(entry);
+
+	return func_name;
 }
