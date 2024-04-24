@@ -16,7 +16,7 @@ static unsigned int formalArgOffset 	= 0 ;
 static unsigned int scopeSpaceCounter 	= 1 ;
 
 /* Get current Scope Space */
-ScopeSpace currscopespace(void)
+ScopeSpace curr_scope_space(void)
 {
     if (scopeSpaceCounter == 1)
     {
@@ -31,9 +31,9 @@ ScopeSpace currscopespace(void)
 }
 
 /* Get current Scope Space offset */
-unsigned currscopeoffset(void)
+unsigned curr_scope_offset(void)
 {
-    switch (currscopespace())
+    switch (curr_scope_space())
     {
 		case programvar		: 	return programVarOffset;
 		case functionlocal	:	return functionLocalOffset;
@@ -45,9 +45,9 @@ unsigned currscopeoffset(void)
 
 
 /* Inc current Scope Space offset */
-void incurrscopeoffset(void)
+void incurr_scope_offset(void)
 {
-    switch (currscopespace())
+    switch (curr_scope_space())
     {
     case programvar		: ++programVarOffset; break;
     case functionlocal	: ++functionLocalOffset; break;
@@ -64,9 +64,9 @@ void resetformalargoffset(void)
 {formalArgOffset 	= 0 ;}
 
 /* Restore the Scope offset to a previous state*/
-void restorecurrscopeoffset(unsigned int n)
+void restore_curr_scope_offset(unsigned int n)
 {
-    switch (currscopespace())
+    switch (curr_scope_space())
 	{
 		case programvar		: programVarOffset = n; break;
 		case functionlocal	: functionLocalOffset = n; break;

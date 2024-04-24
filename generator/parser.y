@@ -31,11 +31,18 @@
 	static int isatty(int i) {return 0;}
 	#endif
 
-	/* The various tables that we will use */
-	static ScopeStack_T  oScopeStack = NULL;
+	/* The various stacks that we will use */
+	static ScopeStack_T  	oScopeStack = NULL;
+	static OffsetStack_T  	offsetStack = NULL;
+
+	/* If Compilation Error is
+	 encountered, it will be set to 1 */
 	unsigned int ERROR_COMP = 0;
 
+	/*Counter used to see in how many loops are we in */
 	static unsigned int loop_counter = 0;
+
+	/* The current scope */
 	unsigned int scope = 0;
 
 	/* Flex variables */

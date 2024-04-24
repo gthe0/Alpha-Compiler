@@ -26,19 +26,19 @@ enum scopespace_t
 *
 * @return The Scope Space.
 */
-ScopeSpace currscopespace(void);
+ScopeSpace curr_scope_space(void);
 
 /**
 * @brief Calculates the current Scope Space offset
 *
 * @return The Scope Space offset.
 */
-unsigned currscopeoffset(void);
+unsigned curr_scope_offset(void);
 
 /**
 * @brief Increases the Current Scope Space offset
 */
-void inccurrscopeoffset(void);
+void inccurr_scope_offset(void);
 
 /**
 * @brief Reset the formal argument offset, makes it 0
@@ -53,7 +53,7 @@ void resetfunctionlocaloffset(void);
 /**
 * @brief Restores the Current Scope Space offset
 */
-void restorecurrscopeoffset(unsigned int n);
+void restore_curr_scope_offset(unsigned int n);
 
 /**
 * @brief Increases the Scope Space counter

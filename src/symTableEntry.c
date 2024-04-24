@@ -30,8 +30,8 @@ static Variable* setVariable(const char* name,
 	new->name = strdup(name);
 	new->line = line;
 	new->scope = scope;
-	new->offset = currscopeoffset(); 
-	new->space = currscopespace();
+	new->offset = curr_scope_offset(); 
+	new->space = curr_scope_space();
 	return (new);
 }
 
