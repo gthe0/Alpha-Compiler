@@ -72,7 +72,7 @@
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
-%type <entry> 		lvalue funcpref
+%type <entry> 		lvalue funcpref funcdef
 %type <string> 		func_name
 %type <statement> 	stmt
 %type <expression>	const 
@@ -302,10 +302,11 @@ funcpref
 	:	FUNC func_name 
 	{
 		$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
-		
+		set_i_address($$,next_quad_label());
+
 		emit(funcstart_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,0,yylineno);
 		
-		IntStack_Push(&offsetStack, curr_scope_offset()); 
+		IntStack_Push(&offsetStack, curr_scope_offset());
 		IntStack_Push(&oScopeStack, scope+1); 
 		
 		enterscopespace(); 
@@ -336,8 +337,12 @@ funcdef
 	  funcbody			
 	{
 		exitscopespace();
+		set_total_locals($1,$3);
+
 		IntStack_Pop(oScopeStack);
 		restore_curr_scope_offset(IntStack_Pop(offsetStack));
+		$$ = $1;
+		emit(funcend_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,0,yylineno);
 	}
 	;
 
@@ -444,6 +449,8 @@ int main(int argc,char** argv)
 
 	/* Initializes tables and stack */
 	oScopeStack = IntStack_init();
+	offsetStack = IntStack_init();
+
 	Tables_init();
 	expand();
 	/* Call the Parser */

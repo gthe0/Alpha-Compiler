@@ -69,7 +69,6 @@ unsigned int IntStack_Top(IntStack_T stack)
 /* Pop the top of the stack */
 unsigned int IntStack_Pop(IntStack_T stack)
 {
-	assert(stack);
 	assert(IntStack_isEmpty(stack) == 0);
 
 	unsigned int top = IntStack_Top(stack);

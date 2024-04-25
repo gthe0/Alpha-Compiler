@@ -51,6 +51,9 @@ struct Function
 	const char *name;
 	unsigned int scope;
 	unsigned int line;
+	unsigned int retlist;
+	unsigned int iaddress;
+	unsigned int total_locals;
 };
 
 /* Struct used for the Symbol Table Entry*/
@@ -131,6 +134,62 @@ unsigned int getOffset_val(SymEntry_T oSymEntry);
 * @return The Space of the variable.
 */
 ScopeSpace getSpace_val(SymEntry_T oSymEntry);
+
+/**
+* @brief Getter of instruction address 
+*
+* @param oSymEntry Symbol Entry.
+*
+* @return function.address
+*/
+unsigned int get_i_address(SymEntry_T oSymEntry);
+
+/**
+* @brief Setter of instruction addresses 
+* 
+* @param oSymEntry Symbol Entry.
+* @param iaddress the Instruction address of the function
+* 
+*/
+void set_i_address(SymEntry_T oSymEntry,unsigned int iaddress);
+
+/**
+* @brief Getter of return list 
+* 
+* @param oSymEntry Symbol Entry.
+*
+* @return function.retlist
+*/
+unsigned int get_retlist(SymEntry_T oSymEntry);
+
+/**
+* @brief Setter of instruction addresses 
+* 
+* @param oSymEntry Symbol Entry.
+* @param retlist The Instruction address of the function
+* 
+*/
+void set_retlist(SymEntry_T oSymEntry,unsigned int retlist);
+
+
+/**
+* @brief Getter of return list 
+* 
+* @param oSymEntry Symbol Entry.
+*
+* @return function.total_locals
+*/
+unsigned int get_total_locals(SymEntry_T oSymEntry);
+
+
+/**
+* @brief Setter of total_locals 
+* 
+* @param oSymEntry Symbol Entry.
+* @param total_locals The total of the function locals
+* 
+*/
+void set_total_locals(SymEntry_T oSymEntry, unsigned int total_locals);
 
 
 /**

@@ -35,6 +35,7 @@ static Variable* setVariable(const char* name,
 	return (new);
 }
 
+
 /*
 * Set Function Value in the union
 */
@@ -53,6 +54,7 @@ static Function* setFunction(const char* name,
 
 	return (new);
 }
+
 
 /*
 * Free Entry
@@ -73,6 +75,7 @@ void SymEntry_free(SymEntry_T oSymEntry)
 	free(oSymEntry);
 	return ;
 }
+
 
 /*
 * Set Entry for the table
@@ -104,6 +107,7 @@ SymEntry_T SymEntry_create(
 	return (oSymEntry);
 }
 
+
 /* Getter of Name */
 const char* getName(SymEntry_T oSymEntry)
 {
@@ -113,6 +117,7 @@ const char* getName(SymEntry_T oSymEntry)
 	/* Return the name */
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->name : oSymEntry->value.varVal->name ;
 }
+
 
 /* Getter of Scope */
 unsigned int getScope(SymEntry_T oSymEntry)
@@ -124,6 +129,7 @@ unsigned int getScope(SymEntry_T oSymEntry)
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->scope : oSymEntry->value.varVal->scope ;
 }
 
+
 /* Getter of Line */
 unsigned int getLine(SymEntry_T oSymEntry)
 {
@@ -134,6 +140,7 @@ unsigned int getLine(SymEntry_T oSymEntry)
 	return oSymEntry->type > FORMAL ? oSymEntry->value.funcVal->line : oSymEntry->value.varVal->line ;
 }
 
+
 unsigned int getOffset_val(SymEntry_T oSymEntry)
 {
 	/* If oSymEntry is NULL or the type is not of a variable then abort */	
@@ -143,6 +150,7 @@ unsigned int getOffset_val(SymEntry_T oSymEntry)
 	return oSymEntry->value.varVal->offset ;
 }
 
+
 ScopeSpace getSpace_val(SymEntry_T oSymEntry)
 {
 	/* If oSymEntry is NULL or the type is not of a variable then abort */	
@@ -151,6 +159,64 @@ ScopeSpace getSpace_val(SymEntry_T oSymEntry)
 	/* Return the variable's space */
 	return oSymEntry->value.varVal->space;
 }
+
+
+/* Getter of retlist */
+unsigned int get_i_address(SymEntry_T oSymEntry)
+{
+	assert(oSymEntry && oSymEntry->type > FORMAL);
+
+	return oSymEntry->value.funcVal->iaddress;
+}
+
+
+/* Setter of retlist */
+void set_i_address(SymEntry_T oSymEntry, unsigned int iaddress)
+{
+	if(!oSymEntry || oSymEntry->type < USERFUNC)
+		return ;
+
+	oSymEntry->value.funcVal->iaddress = iaddress ; 
+}
+
+
+/* Getter of retlist */
+unsigned int get_retlist(SymEntry_T oSymEntry)
+{
+	assert(oSymEntry && oSymEntry->type > FORMAL);
+
+	return oSymEntry->value.funcVal->retlist;
+}
+
+
+/* Setter of retlist */
+void set_retlist(SymEntry_T oSymEntry,unsigned int retlist)
+{
+	if(!oSymEntry || oSymEntry->type < USERFUNC)
+		return ;
+
+	oSymEntry->value.funcVal->retlist = retlist ; 
+}
+
+
+/* Getter of total_locals */
+unsigned int get_total_locals(SymEntry_T oSymEntry)
+{
+	assert(oSymEntry && oSymEntry->type > FORMAL);
+
+	return oSymEntry->value.funcVal->total_locals;
+}
+
+
+/* Setter of total_locals */
+void set_total_locals(SymEntry_T oSymEntry, unsigned int total_locals)
+{
+	if(!oSymEntry || oSymEntry->type < USERFUNC)
+		return ;
+		
+	oSymEntry->value.funcVal->total_locals = total_locals; 
+}
+
 
 /* Used to Print Entry Info */
 void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
