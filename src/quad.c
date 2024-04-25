@@ -35,9 +35,9 @@ extern int scope;
 
 
 /* Emit/Create the quad and insert it in the Quad Table */
-void emit(iopcode op, expr *result,
-		  expr *arg1, expr *arg2,
-		  unsigned line, unsigned label)
+void emit(iopcode op, expr *arg1,
+		 	expr *arg2, expr *result,
+		  	unsigned line, unsigned label)
 {
 	if (currQuad == total)
 		expand();

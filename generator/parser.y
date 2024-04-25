@@ -59,6 +59,7 @@
 
 %union
 {
+	unsigned unsignedVal;
 	int	intVal;
 	float floatVal;
 	char* string;
@@ -75,6 +76,7 @@
 %type <string> 		func_name
 %type <statement> 	stmt
 %type <expression>	const 
+%type <unsignedVal> funcbody
 
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
@@ -311,12 +313,31 @@ funcpref
 	}
 	;
 
-funcdef
-	: funcpref	'('	{scope++;}
-	  idlist	')'	{scope--;}
-	  block			
+funcargs
+	: '(' {scope++;} idlist ')'
 	{
+		resetfunctionlocaloffset();
+		enterscopespace(); 
+		scope--;
+	}
+	;
+
+funcbody
+	: block 
+	{
+		$$ = curr_scope_offset();
+		exitscopespace();
+	}
+	;
+
+funcdef
+	: funcpref
+	  funcargs
+	  funcbody			
+	{
+		exitscopespace();
 		IntStack_Pop(oScopeStack);
+		restore_curr_scope_offset(IntStack_Pop(offsetStack));
 	}
 	;
 

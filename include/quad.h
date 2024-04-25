@@ -61,18 +61,18 @@ struct quad{
 * @brief Creates and emits the quad.
 * 
 * @param op The opcode of the quad.
-* @param result The result argument of the quad.
 * @param arg1 The first argument of the quad.
 * @param arg2 The second argument of the quad.
+* @param result The result argument of the quad.
 * @param line The line where the quad was found in the source code
 * @param label The label/relative address of the quad (probably used for jumps etc).
 *
 */
 void emit(
 	iopcode 	op,
-	expr* 		result,
 	expr* 		arg1,
 	expr* 		arg2,
+	expr* 		result,
 	unsigned 	line,
 	unsigned 	label
 );
