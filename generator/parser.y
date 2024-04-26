@@ -72,10 +72,10 @@
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
-%type <entry> 		lvalue funcpref funcdef
+%type <entry> 		funcpref funcdef 
 %type <string> 		func_name
 %type <statement> 	stmt
-%type <expression>	const 
+%type <expression>	const primary expr lvalue member
 %type <unsignedVal> funcbody
 
 
@@ -166,70 +166,85 @@ stmt: expr ';'
 	}
 	;
 
-expr: assginexpr
-	| expr '+' expr				
-	| expr '-' expr				
-	| expr '*' expr				
-	| expr '/' expr				
-	| expr '%' expr				
-	| expr '>' expr				
-	| expr '<' expr				
-	| expr GE_OP expr				
-	| expr LE_OP expr				
-	| expr EQ_OP expr				
-	| expr NE_OP expr				
-	| expr AND expr				
-	| expr OR expr				
-	| term				
+expr: assginexpr				{$$ = NULL ;}
+	| expr '+' expr				{$$ = NULL ;}
+	| expr '-' expr				{$$ = NULL ;}
+	| expr '*' expr				{$$ = NULL ;}
+	| expr '/' expr				{$$ = NULL ;}
+	| expr '%' expr				{$$ = NULL ;}
+	| expr '>' expr				{$$ = NULL ;}
+	| expr '<' expr				{$$ = NULL ;}
+	| expr GE_OP expr			{$$ = NULL ;}
+	| expr LE_OP expr			{$$ = NULL ;}
+	| expr EQ_OP expr			{$$ = NULL ;}
+	| expr NE_OP expr			{$$ = NULL ;}
+	| expr AND expr				{$$ = NULL ;}
+	| expr OR expr				{$$ = NULL ;}
+	| term						{$$ = NULL ;}
 	;
 
 term: '(' expr ')'
 	| '-' expr	%prec UNARY_MINUS
 	| NOT expr
-	| INC_OP lvalue 	{eval_lvalue($2,"++",yylineno);}
-	| lvalue INC_OP		{eval_lvalue($1,"++",yylineno);}
-	| DEC_OP lvalue		{eval_lvalue($2,"--",yylineno);}
-	| lvalue DEC_OP		{eval_lvalue($1,"--",yylineno);}
+	| INC_OP lvalue 	{if($2 != NULL)eval_lvalue($2->sym,"++",yylineno);}
+	| lvalue INC_OP		{if($1 != NULL)eval_lvalue($1->sym,"++",yylineno);}
+	| DEC_OP lvalue		{if($2 != NULL)eval_lvalue($2->sym,"--",yylineno);}
+	| lvalue DEC_OP		{if($1 != NULL)eval_lvalue($1->sym,"--",yylineno);}
 	| primary
 	;
 
 assginexpr
-	: lvalue '=' expr 	{eval_lvalue($1,"assignment",yylineno);}
+	: lvalue '=' expr 	{if($1 != NULL)eval_lvalue($1->sym,"assignment",yylineno);}
 	| error '=' expr 	{LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
 	;
 
 primary
 	: lvalue
-	| call
-	| objectdef
-	| '(' funcdef ')'
-	| const
+	{ 
+    	$$ = emit_iftableitem($1);
+	}  
+	| call 				{$$ = NULL ;}
+	| objectdef				{$$ = NULL ;}
+	| '(' funcdef ')'				{$$ = NULL ;}
+	| const	
+	{
+		$$ = $1;
+	}
 	;
 
 lvalue
 	: ID	
 	{
-		$$ = Manage_lv_ID($1,yylineno, scope ,oScopeStack);
+		$$ = lvalue_expr(Manage_lv_ID($1,yylineno, scope ,oScopeStack));
 	}
 	| LOC ID
 	{
-		$$ =  Manage_lv_local($2,yylineno,scope);
+		$$ =  lvalue_expr(Manage_lv_local($2,yylineno,scope));
 	}
 	| DOUBLE_COL ID	
 	{
-		$$ = Manage_lv_global($2,yylineno);
+		$$ = lvalue_expr(Manage_lv_global($2,yylineno));
 	}
 	| member	
 	{
-		$$ = NULL;
+		$$ = $1;
 	}
 	;
 
 member
-	: call '.' ID
+	: call '.' ID	{$$ = NULL ;}
 	| lvalue '.' ID
-	| call '[' expr ']'
+	{
+		$$ = member_item($1,$3);
+	}
+	| call '[' expr ']'	{$$ = NULL ;}
 	| lvalue '[' expr ']'
+	{
+		$1 = emit_iftableitem($1);
+		$$ = newexpr(tableitem_e);
+		$$->sym = $1->sym;
+		$$->index = $3;
+	}
 	;
 
 call: call '(' ')'
@@ -250,7 +265,11 @@ normcall
 	;
 
 methodcall
-	: DOUBLE_DOT ID '(' elist ')'  
+	: DOUBLE_DOT ID '(' elist ')' 
+	{
+
+
+	}
 	| DOUBLE_DOT ID '(' error ')' {  yyerrok;} 
 	| DOUBLE_DOT ID '('  ')' 
 	; // equivalent to lvalue.id(lvalue, elist)
@@ -304,7 +323,7 @@ funcpref
 		$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
 		set_i_address($$,next_quad_label());
 
-		emit(funcstart_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,0,yylineno);
+		emit(funcstart_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
 		
 		IntStack_Push(&offsetStack, curr_scope_offset());
 		IntStack_Push(&oScopeStack, scope+1); 
@@ -342,7 +361,7 @@ funcdef
 		IntStack_Pop(oScopeStack);
 		restore_curr_scope_offset(IntStack_Pop(offsetStack));
 		$$ = $1;
-		emit(funcend_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,0,yylineno);
+		emit(funcend_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
 	}
 	;
 
