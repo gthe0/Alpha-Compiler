@@ -373,7 +373,7 @@ expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
 							 unsigned scope, unsigned yylineno)
 {
 
-	assert(arg1 && arg2);
+	if(!arg1 || !arg2) return NULL ;
 	
 	check_arith(arg1,context);
 	check_arith(arg2,context);

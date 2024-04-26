@@ -111,7 +111,7 @@ program
 	;
 
 stmt_list
-	: /* empty production, making stmt_list optional */
+	: { $$ = NULL ; }/* empty production, making stmt_list optional */
 	| stmt_list stmt
 	{
 		int b_list_stmt = 0,
