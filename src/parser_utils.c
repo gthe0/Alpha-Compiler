@@ -366,3 +366,22 @@ SymEntry_T Manage_func_pref(char *name, unsigned int line,
 		
 	return NULL;
 }
+
+/* Function to manage arithmetic expressions */
+expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
+							 iopcode op, char* context,
+							 unsigned scope, unsigned yylineno)
+{
+
+	assert(arg1 && arg2);
+	
+	check_arith(arg1,context);
+	check_arith(arg2,context);
+	
+	expr* result  = newexpr(arithexpr_e);
+	result-> sym = newtemp(scope,yylineno);
+
+	emit(op, arg1, arg2,result,yylineno,0);
+
+	return result;
+}

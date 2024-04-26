@@ -98,7 +98,8 @@ unsigned int is_temp_expr(expr* e)
 /* Checks whether arithmetic is valid or not */
 void check_arith (expr* e, const char* context)
 {
-	if(
+
+	if(				
 		e->type == constbool_e		|| 
 		e->type == conststring_e	||
 		e->type == programfunc_e	||

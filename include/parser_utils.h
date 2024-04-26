@@ -113,4 +113,21 @@ SymEntry_T Manage_func_pref(char *name, unsigned int line,
 */
 char* Manage_func_name_anonymous(int scope,unsigned yylineno);
 
+
+/**
+* @brief This Functions checks Manages the anonymous function definition
+*
+* @param arg1 The first argument of the expression
+* @param arg2 The second argument of the expression
+* @param op	The opcdode of the instruction
+* @param context The context in which it was used. 
+* @param scope The current Scope 
+* @param yylineno The line that we found the token
+*
+* @return The function symbol 
+*/
+expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
+							 iopcode op, char* context,
+							 unsigned scope, unsigned yylineno);
+
 #endif /* parser utilities */

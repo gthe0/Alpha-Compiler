@@ -167,11 +167,11 @@ stmt: expr ';'
 	;
 
 expr: assginexpr				{$$ = NULL ;}
-	| expr '+' expr				{$$ = NULL ;}
-	| expr '-' expr				{$$ = NULL ;}
-	| expr '*' expr				{$$ = NULL ;}
-	| expr '/' expr				{$$ = NULL ;}
-	| expr '%' expr				{$$ = NULL ;}
+	| expr '+' expr				{$$ = Manage_arithmetic_expr($1,$3,add_i,"ADDITION",scope,yylineno);}
+	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"SUBTRACTIOM",scope,yylineno);}
+	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"MULTIPLICATIOn",scope,yylineno);}
+	| expr '%' expr				{$$ = Manage_arithmetic_expr($1,$3,div_i,"DIVISION",scope,yylineno);}
+	| expr '/' expr				{$$ = Manage_arithmetic_expr($1,$3,mod_i,"MODULO",scope,yylineno);}
 	| expr '>' expr				{$$ = NULL ;}
 	| expr '<' expr				{$$ = NULL ;}
 	| expr GE_OP expr			{$$ = NULL ;}
@@ -181,7 +181,7 @@ expr: assginexpr				{$$ = NULL ;}
 	| expr AND expr				{$$ = NULL ;}
 	| expr OR expr				{$$ = NULL ;}
 	| term						{$$ = NULL ;}
-	;
+	; 
 
 term: '(' expr ')'
 	| '-' expr	%prec UNARY_MINUS
@@ -203,9 +203,9 @@ primary
 	{ 
     	$$ = emit_iftableitem($1);
 	}  
-	| call 				{$$ = NULL ;}
+	| call 					{$$ = NULL ;}
 	| objectdef				{$$ = NULL ;}
-	| '(' funcdef ')'				{$$ = NULL ;}
+	| '(' funcdef ')'		{$$ = NULL ;}
 	| const	
 	{
 		$$ = $1;
