@@ -64,7 +64,7 @@ expr* new_num_expr(double numConst)
 /* lvalue expression generator */
 expr* lvalue_expr(SymEntry_T oSymEntry)
 {
-	assert(oSymEntry);
+	if(!oSymEntry) return NULL ;
 
     expr* e = (expr*)malloc(sizeof(expr));
     memset(e, 0, sizeof(expr));
