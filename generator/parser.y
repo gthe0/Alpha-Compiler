@@ -451,8 +451,8 @@ int main(int argc,char** argv)
 	oScopeStack = IntStack_init();
 	offsetStack = IntStack_init();
 
-	Tables_init();
 	expand();
+	Tables_init();
 	/* Call the Parser */
 	yyparse();
 

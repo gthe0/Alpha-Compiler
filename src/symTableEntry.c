@@ -11,6 +11,8 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stmt.h>
+#include <quad.h>
 
 #include <symTableEntry.h>
 
@@ -51,6 +53,8 @@ static Function* setFunction(const char* name,
 	new->name = strdup(name);
 	new->line = line;
 	new->scope = scope;
+	new->iaddress = 0;
+	new->retlist = newlist(curr_quad_label());
 
 	return (new);
 }
