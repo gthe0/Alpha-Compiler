@@ -12,6 +12,7 @@
 *  will be copied on top of the generated c file
 */
 %{
+	#include <assert.h>
 	#include <stdio.h>
 	#include <stdlib.h>
 
@@ -74,7 +75,7 @@
 
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
-%type <statement> 	stmt
+%type <statement> 	stmt_list stmt
 %type <expression>	const primary expr lvalue member
 %type <unsignedVal> funcbody
 
@@ -111,7 +112,35 @@ program
 
 stmt_list
 	: /* empty production, making stmt_list optional */
-	| stmt_list stmt 
+	| stmt_list stmt
+	{
+		int b_list_stmt = 0,
+			c_list_stmt = 0;
+
+		/* alocate memory for a new stmt */
+		$$ = malloc(sizeof(stmt_t));
+		assert($$);
+
+		/* init_stmt */
+		make_stmt($$);
+
+		if($2)
+		{
+			b_list_stmt = $2->breakList;
+			c_list_stmt = $2->contList;
+		}
+
+		if($1)
+		{
+			$$->breakList	= mergelist($1->breakList,b_list_stmt);
+			$$->contList	= mergelist($1->contList,c_list_stmt);
+		}
+		else
+		{
+			$$->breakList	= mergelist(0,b_list_stmt);
+			$$->contList	= mergelist(0,c_list_stmt);
+		}
+	}
 	;
 	
 stmt: expr ';' 
@@ -206,10 +235,7 @@ primary
 	| call 					{$$ = NULL ;}
 	| objectdef				{$$ = NULL ;}
 	| '(' funcdef ')'		{$$ = NULL ;}
-	| const	
-	{
-		$$ = $1;
-	}
+	| const					{$$ = $1;	}
 	;
 
 lvalue
@@ -322,7 +348,7 @@ funcpref
 	{
 		$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
 		set_i_address($$,next_quad_label());
-
+		/* JUMP OUT OF FUNCTION SCOPE */
 		emit(funcstart_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
 		
 		IntStack_Push(&offsetStack, curr_scope_offset());
@@ -361,6 +387,8 @@ funcdef
 		IntStack_Pop(oScopeStack);
 		restore_curr_scope_offset(IntStack_Pop(offsetStack));
 		$$ = $1;
+		/* JUMP OUT OF FUNCTION SCOPE */
+
 		emit(funcend_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
 	}
 	;
