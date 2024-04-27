@@ -110,97 +110,97 @@ static void quad_decode(FILE *ost, unsigned i)
 	switch (quad_table[i].op)
 	{
 		case assign_i:
-			printf("ASSIGN ");
+			fprintf(ost,"ASSIGN ");
 			break;
 		case add_i:
-			printf("ADD ");
+			fprintf(ost,"ADD ");
 			break;
 		case sub_i:
-			printf("SUB ");
+			fprintf(ost,"SUB ");
 			break;
 		case mul_i:
-			printf("MUL ");
+			fprintf(ost,"MUL ");
 			break;
 		case div_i:
-			printf("DIV ");
+			fprintf(ost,"DIV ");
 			break;
 		case mod_i:
-			printf("MOD ");
+			fprintf(ost,"MOD ");
 			break;
 		case uminus_i:
-			printf("UMINUS ");
+			fprintf(ost,"UMINUS ");
 			break;
 		case and_i:
-			printf("AND ");
+			fprintf(ost,"AND ");
 			break;
 		case or_i:
-			printf("OR ");
+			fprintf(ost,"OR ");
 			break;
 		case not_i:
-			printf("NOT ");
+			fprintf(ost,"NOT ");
 			break;
 		case if_eq_i:
-			printf("IF_EQ ");
+			fprintf(ost,"IF_EQ ");
 			break;
 		case if_noteq_i:
-			printf("IF_NOTEQ ");
+			fprintf(ost,"IF_NOTEQ ");
 			break;
 		case if_lesseq_i:
-			printf("IF_LESSEQ ");
+			fprintf(ost,"IF_LESSEQ ");
 			break;
 		case if_greatereq_i:
-			printf("IF_GREATEREQ ");
+			fprintf(ost,"IF_GREATEREQ ");
 			break;
 		case if_less_i:
-			printf("IF_LESS ");
+			fprintf(ost,"IF_LESS ");
 			break;
 		case if_greater_i:
-			printf("IF_GREATER ");
+			fprintf(ost,"IF_GREATER ");
 			break;
 		case call_i:
-			printf("CALL ");
+			fprintf(ost,"CALL ");
 			break;
 		case param_i:
-			printf("PARAM ");
+			fprintf(ost,"PARAM ");
 			break;
 		case ret_i:
-			printf("RETURN ");
+			fprintf(ost,"RETURN ");
 			break;
 		case getretval_i:
-			printf("GETRETVAL ");
+			fprintf(ost,"GETRETVAL ");
 			break;
 		case funcstart_i:
-			printf("FUNCSTART ");
+			fprintf(ost,"FUNCSTART ");
 			break;
 		case funcend_i:
-			printf("FUNCEND ");
+			fprintf(ost,"FUNCEND ");
 			break;
 		case tablecreate_i:
-			printf("TABLECREATE ");
+			fprintf(ost,"TABLECREATE ");
 			break;
 		case tablegetelem_i:
-			printf("TABLEGETELEM ");
+			fprintf(ost,"TABLEGETELEM ");
 			break;
 		case tablesetelem_i:
-			printf("TABLESETELEM ");
+			fprintf(ost,"TABLESETELEM ");
 			break;
 		case jump_i:
-			printf("JUMP ");
+			fprintf(ost,"JUMP ");
 			break;
 		default:
-			printf("UNKNOWN ");
+			fprintf(ost,"UNKNOWN ");
 			break;
 	}
 		if (quad_table[i].result && quad_table[i].result->sym)
-			printf("%s ", getName(quad_table[i].result->sym));
+			fprintf(ost,"%s ", getName(quad_table[i].result->sym));
 		if (quad_table[i].arg1 && quad_table[i].arg1->sym)
-			printf("%s ", getName(quad_table[i].arg1->sym));
+			fprintf(ost,"%s ", getName(quad_table[i].arg1->sym));
 		if (quad_table[i].arg2 && quad_table[i].arg2->sym)
-			printf("%s ", getName(quad_table[i].arg2->sym));
-			printf("label %d ", quad_table[i].label);
-			printf("line %d ", quad_table[i].line);
+			fprintf(ost,"%s ", getName(quad_table[i].arg2->sym));
+			fprintf(ost,"label %d ", quad_table[i].label);
+			fprintf(ost,"line %d ", quad_table[i].line);
 
-	printf("\n");
+	fprintf(ost,"\n");
 	return;
 }
 

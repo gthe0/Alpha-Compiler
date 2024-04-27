@@ -516,12 +516,12 @@ int main(int argc,char** argv)
 	/* Call the Parser */
 	yyparse();
 
-	printf("%30.100s\n",ERROR_COMP ? "COMPILATION ERROR ENCOUNTERD" : "ALL FINE");
+	printf("%-30.100s\n",ERROR_COMP ? "COMPILATION ERROR ENCOUNTERD" : "ALL FINE");
 
 	Tables_print(ost,0);
 	
-	if(ERROR_COMP == 0)
-		write_quads();
+	//if(ERROR_COMP == 0)
+	//	write_quads();
 
 	/* Close streams and clean up */
 	Tables_free();

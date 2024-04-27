@@ -56,7 +56,7 @@ RULEGEN: scripts/RuleGen.py scripts/misc/list
 # Clean up build artifacts
 clean:
 	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt\
-		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode
+		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode quads.txt
 
 # Ensure that the build and bin directories exist
 $(BUILD_DIR):
