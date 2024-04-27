@@ -75,7 +75,7 @@
 
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
-%type <statement> 	stmt_list stmt
+%type <statement> 	stmt_list stmt block loop_stmt whilestmt forstmt
 %type <expression>	const primary expr lvalue member
 %type <unsignedVal> funcbody
 
@@ -107,11 +107,12 @@
 %start program
 %%
 program
-	: stmt_list /* stmt* means zero or more stmt */
+	: 
+	| stmt_list /* stmt* means zero or more stmt */
 	;
 
 stmt_list
-	: { $$ = NULL ; }/* empty production, making stmt_list optional */
+	: stmt { $$ = $1 ; }/* empty production, making stmt_list optional */
 	| stmt_list stmt
 	{
 		int b_list_stmt = 0,
@@ -137,8 +138,8 @@ stmt_list
 		}
 		else
 		{
-			$$->breakList	= mergelist(0,b_list_stmt);
-			$$->contList	= mergelist(0,c_list_stmt);
+			$$->breakList	= mergelist($$->breakList,b_list_stmt);
+			$$->contList	= mergelist($$->contList,c_list_stmt);
 		}
 	}
 	;
@@ -156,12 +157,12 @@ stmt: expr ';'
 	| whilestmt
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = $1;
 	}
 	| forstmt
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = $1;
 	}
 	| returnstmt
 	{
@@ -181,7 +182,7 @@ stmt: expr ';'
 	| block
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = $1;
 	}
 	| funcdef
 	{
@@ -330,14 +331,22 @@ indexedelem
 	;
 
 block
-	:
-	'{' 
-	{
-		scope++;
-	} 
+	:'{' { scope++; } 
 	stmt_list 
 	'}'
 	{
+		$$ = $3;
+		ScopeTable_hide(scope);
+		scope--;
+	}
+	|'{' { scope++; } '}'
+	{
+		/* alocate memory for a new stmt */
+		$$ = malloc(sizeof(stmt_t));
+		assert($$);
+
+		/* init_stmt */
+		make_stmt($$);
 		ScopeTable_hide(scope);
 		scope--;
 	}
@@ -439,17 +448,21 @@ ifstmt
 
 loop_Inc:	{loop_counter++;}
 loop_End:	{loop_counter--;}
+loop_stmt:	loop_Inc stmt loop_End
+{
+	$$ = $2;
+};
 
 whilestmt
-	: WHILE '(' expr ')' loop_Inc  stmt loop_End 
-	| WHILE '(' error ')' loop_Inc  stmt loop_End {  yyerrok;} 
+	: WHILE '(' expr ')' loop_stmt 	{$$ = $5;}
+	| WHILE '(' error ')' loop_stmt {  yyerrok;} 
 	;
 
 forstmt
-	: FOR '(' elist ';' expr ';' elist ')' loop_Inc  stmt loop_End
-	| FOR '(' elist ';' expr ';' ')' loop_Inc stmt loop_End
-	| FOR '(' elist ';' error ';' elist')' loop_Inc stmt loop_End	{  yyerrok;} 
-	| FOR '(' elist ';' error ';' ')' loop_Inc stmt loop_End		{  yyerrok;} 
+	: FOR '(' elist ';' expr ';' elist ')' loop_stmt	{$$ = $9;}
+	| FOR '(' elist ';' expr ';' ')' loop_stmt			{$$ = $8;}
+	| FOR '(' elist ';' error ';' elist')' loop_stmt	{  yyerrok;} 
+	| FOR '(' elist ';' error ';' ')' loop_stmt			{  yyerrok;} 
 	;
 
 returnstmt
@@ -506,6 +519,9 @@ int main(int argc,char** argv)
 	printf("%30.100s\n",ERROR_COMP ? "COMPILATION ERROR ENCOUNTERD" : "ALL FINE");
 
 	Tables_print(ost,0);
+	
+	if(ERROR_COMP == 0)
+		write_quads();
 
 	/* Close streams and clean up */
 	Tables_free();
