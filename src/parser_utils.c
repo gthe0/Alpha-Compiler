@@ -247,12 +247,12 @@ stmt_T Manage_loop_stmt(char *name,
 
 	make_stmt(stmt);
 
-	if(strcmp("break",name) == 0)
-		stmt->breakList = newlist(curr_quad_label());
-	else if(strcmp("continue",name) == 0)
-		stmt->contList  = newlist(curr_quad_label());
-
 	emit(jump_i,NULL,NULL,NULL,yylineno,0);
+
+	if(strcmp("break",name) == 0)
+		stmt->breakList = curr_quad_label();
+	else if(strcmp("continue",name) == 0)
+		stmt->contList  = curr_quad_label();
 
 	return stmt;
 }
