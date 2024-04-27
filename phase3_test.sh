@@ -7,24 +7,16 @@ result_dir="test_results/Phase3"
 rm -rf test_results
 # Create the 'result' subdirectory if it doesn't exist
 mkdir -p "$result_dir/Logs"
+mkdir -p "$result_dir/Quads"
 
-# Loop through all subdirectories within the parent directory
-for subdir in "$parent_dir"/*/; do
-    # Extract the base directory name (without path)
-    base_dirname=$(basename "$subdir")
+for input_file in "$subdir"/*.asc; do
+# Extract the base filename (without extension)
+	base_filename=$(basename "$input_file" .asc)
+
+	printf "%-3d %-25.25s: " "$i" "$base_filename"
+	i=$((i+1))
 	
-	i=0
-	echo "=================== $base_dirname ======================"
-
-    # Loop through all .asc files in the current subdirectory
-    for input_file in "$subdir"/*.asc; do
-        # Extract the base filename (without extension)
-        base_filename=$(basename "$input_file" .asc)
-
-		printf "%-3d %-25.25s: " "$i" "$base_filename"
-		i=$((i+1))
-
-		# Run the program with the input file
-       ./bin/parser.out "$input_file" "$result_dir/${base_dirname}/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
-    done
+	# Run the program with the input file
+	./bin/parser.out "$input_file" "$result_dir/Quads/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
+	mv quads.txt $result_dir/Quads/$base_filename
 done
