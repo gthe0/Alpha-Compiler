@@ -76,7 +76,7 @@
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
 %type <statement> 	stmt_list stmt block loop_stmt returnstmt funcbody
-%type <expression>	const primary expr lvalue member
+%type <expression>	const primary expr lvalue member term
 %type <unsignedVal> prebody funcstart
 
 %destructor {free($$);} <statement>
@@ -190,17 +190,17 @@ expr: assginexpr				{$$ = NULL ;}
 	| expr NE_OP expr			{$$ = NULL ;}
 	| expr AND expr				{$$ = NULL ;}
 	| expr OR expr				{$$ = NULL ;}
-	| term						{$$ = NULL ;}
+	| term						{$$ = $1 ;}
 	; 
 
-term: '(' expr ')'
-	| '-' expr	%prec UNARY_MINUS
-	| NOT expr
-	| INC_OP lvalue 	{if($2 != NULL)eval_lvalue($2->sym,"++",yylineno);}
-	| lvalue INC_OP		{if($1 != NULL)eval_lvalue($1->sym,"++",yylineno);}
-	| DEC_OP lvalue		{if($2 != NULL)eval_lvalue($2->sym,"--",yylineno);}
-	| lvalue DEC_OP		{if($1 != NULL)eval_lvalue($1->sym,"--",yylineno);}
-	| primary
+term: '(' expr ')'{$$ = NULL;}
+	| '-' expr	%prec UNARY_MINUS{$$ = NULL;}
+	| NOT expr			{$$ = NULL;}
+	| INC_OP lvalue 	{if($2 != NULL)eval_lvalue($2->sym,"++",yylineno);$$= NULL;}
+	| lvalue INC_OP		{if($1 != NULL)eval_lvalue($1->sym,"++",yylineno);$$= NULL;}
+	| DEC_OP lvalue		{if($2 != NULL)eval_lvalue($2->sym,"--",yylineno);$$= NULL;}
+	| lvalue DEC_OP		{if($1 != NULL)eval_lvalue($1->sym,"--",yylineno);$$= NULL;}
+	| primary			{$$ = $1;}
 	;
 
 assginexpr
