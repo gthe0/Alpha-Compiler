@@ -77,7 +77,7 @@
 %type <string> 		func_name
 %type <statement> 	stmt_list stmt block loop_stmt whilestmt forstmt
 %type <expression>	const primary expr lvalue member
-%type <unsignedVal> funcbody
+%type <unsignedVal> funcbody funcstart
 
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
@@ -352,6 +352,11 @@ block
 	}
 	;
 
+funcstart: {
+	$$ = curr_quad_label();
+	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+}
+
 funcpref
 	:	FUNC func_name 
 	{
@@ -386,19 +391,18 @@ funcbody
 	;
 
 funcdef
-	: funcpref
-	  funcargs
-	  funcbody			
+	: funcstart funcpref funcargs funcbody			
 	{
 		exitscopespace();
-		set_total_locals($1,$3);
+		set_total_locals($2,$4);
 
 		IntStack_Pop(oScopeStack);
 		restore_curr_scope_offset(IntStack_Pop(offsetStack));
-		$$ = $1;
+		$$ = $2;
 		/* JUMP OUT OF FUNCTION SCOPE */
 
 		emit(funcend_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
+		patchlabel($1,curr_quad_label());
 	}
 	;
 
@@ -520,8 +524,8 @@ int main(int argc,char** argv)
 
 	Tables_print(ost,0);
 	
-	//if(ERROR_COMP == 0)
-	//	write_quads();
+	if(ERROR_COMP == 0)
+		write_quads();
 
 	/* Close streams and clean up */
 	Tables_free();

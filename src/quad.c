@@ -106,6 +106,7 @@ static void quad_decode(FILE *ost, unsigned i)
 		return;
 	}
 
+	fprintf(ost,"%u ",i);
 
 	switch (quad_table[i].op)
 	{
