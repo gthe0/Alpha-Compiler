@@ -4,12 +4,12 @@
 parent_dir="test/phase3_tests"
 result_dir="test_results/Phase3"
 
-rm -rf test_results
+rm -rf $result_dir
 # Create the 'result' subdirectory if it doesn't exist
 mkdir -p "$result_dir/Logs"
 mkdir -p "$result_dir/Quads"
 
-for input_file in "$subdir"/*.asc; do
+for input_file in "$parent_dir"/*; do
 # Extract the base filename (without extension)
 	base_filename=$(basename "$input_file" .asc)
 

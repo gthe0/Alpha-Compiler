@@ -238,7 +238,7 @@ int eval_lvalue(SymEntry_T entry, char *operation, int yylineno)
 /*========================= MANAGE FUNCTIONS =======================*/
 
 /* Manages break; and continue; statements */
-stmt_T Manage_loop_stmt(char *name,
+stmt_T Manage_loop_token(char *name,
 						int loop_counter,
 						unsigned int yylineno)
 {

@@ -75,10 +75,11 @@
 
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
-%type <statement> 	stmt_list stmt block loop_stmt whilestmt forstmt returnstmt funcbody
+%type <statement> 	stmt_list stmt block loop_stmt returnstmt funcbody
 %type <expression>	const primary expr lvalue member
 %type <unsignedVal> prebody funcstart
 
+%destructor {free($$);} <statement>
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR
@@ -151,12 +152,12 @@ stmt: expr ';'
 	| BREAK ';' 	
 	{
 		reset_temp();
-		$$ = Manage_loop_stmt("break",loop_counter,yylineno);
+		$$ = Manage_loop_token("break",loop_counter,yylineno);
 	}
 	| CONTINUE ';'	
 	{
 		reset_temp();
-		$$ = Manage_loop_stmt("continue",loop_counter,yylineno);
+		$$ = Manage_loop_token("continue",loop_counter,yylineno);
 	}
 	| block
 	{
@@ -432,13 +433,19 @@ loop_stmt:	loop_Inc stmt loop_End
 };
 
 whilestmt
-	: WHILE '(' expr ')' loop_stmt 	{$$ = $5;}
+	: WHILE '(' expr ')' loop_stmt 	
 	| WHILE '(' error ')' loop_stmt {  yyerrok;} 
 	;
 
 forstmt
-	: FOR '(' elist ';' expr ';' elist ')' loop_stmt	{$$ = $9;}
-	| FOR '(' elist ';' expr ';' ')' loop_stmt			{$$ = $8;}
+	: FOR '(' elist ';' expr ';' elist ')' loop_stmt	{
+		patchlist($9->breaklist,curr_quad_label());
+		patchlist($9->contlist,curr_quad_label());
+	}
+	| FOR '(' elist ';' expr ';' ')' loop_stmt			{
+		patchlist($8->breaklist,curr_quad_label());
+		patchlist($8->contlist,curr_quad_label());
+	}
 	| FOR '(' elist ';' error ';' elist')' loop_stmt	{  yyerrok;} 
 	| FOR '(' elist ';' error ';' ')' loop_stmt			{  yyerrok;} 
 	;
