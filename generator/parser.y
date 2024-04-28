@@ -75,9 +75,9 @@
 
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
-%type <statement> 	stmt_list stmt block loop_stmt whilestmt forstmt
+%type <statement> 	stmt_list stmt block loop_stmt whilestmt forstmt returnstmt funcbody
 %type <expression>	const primary expr lvalue member
-%type <unsignedVal> funcbody funcstart
+%type <unsignedVal> prebody funcstart
 
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
@@ -113,61 +113,40 @@ program
 
 stmt_list
 	: stmt { $$ = $1 ; }
-	| stmt_list stmt
-	{
-		int b_list_stmt = 0,
-			c_list_stmt = 0;
-
-		/* alocate memory for a new stmt */
-		$$ = malloc(sizeof(stmt_t));
-		assert($$);
-
-		/* init_stmt */
-		make_stmt($$);
-
-		if($2)
-		{
-			b_list_stmt = $2->breaklist;
-			c_list_stmt = $2->contlist;
-		}
-
-		if($1)
-		{
-			$$->breaklist	= mergelist($1->breaklist,b_list_stmt);
-			$$->contlist	= mergelist($1->contlist,c_list_stmt);
-		}
-		else
-		{
-			$$->breaklist	= mergelist($$->breaklist,b_list_stmt);
-			$$->contlist	= mergelist($$->contlist,c_list_stmt);
-		}
+	| stmt_list stmt {
+		
+		$$ = new_stmt();
+		$$->retlist = mergelist($1->retlist,$2->retlist);
+		$$->contlist = mergelist($1->contlist,$2->contlist);
+		$$->breaklist = mergelist($1->breaklist,$2->breaklist);
+		
 	}
 	;
 	
 stmt: expr ';' 
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = new_stmt();
 	}
 	| ifstmt
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = new_stmt();
 	}
 	| whilestmt
 	{
 		reset_temp();
-		$$ = $1;
+		$$ = new_stmt();
 	}
 	| forstmt
 	{
 		reset_temp();
-		$$ = $1;
+		$$ = new_stmt();
 	}
 	| returnstmt
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = $1 ;
 	}
 	| BREAK ';' 	
 	{
@@ -187,12 +166,12 @@ stmt: expr ';'
 	| funcdef
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = new_stmt();
 	}
 	| ';'
 	{
 		reset_temp();
-		$$ = NULL;
+		$$ = new_stmt();
 	}
 	;
 
@@ -292,11 +271,7 @@ normcall
 	;
 
 methodcall
-	: DOUBLE_DOT ID '(' elist ')' 
-	{
-
-
-	}
+	: DOUBLE_DOT ID '(' elist ')' {	}
 	| DOUBLE_DOT ID '(' error ')' {  yyerrok;} 
 	| DOUBLE_DOT ID '('  ')' 
 	; // equivalent to lvalue.id(lvalue, elist)
@@ -342,11 +317,7 @@ block
 	|'{' { scope++; } '}'
 	{
 		/* alocate memory for a new stmt */
-		$$ = malloc(sizeof(stmt_t));
-		assert($$);
-
-		/* init_stmt */
-		make_stmt($$);
+		$$ = new_stmt();
 		ScopeTable_hide(scope);
 		scope--;
 	}
@@ -357,13 +328,18 @@ funcstart: {
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
 }
 
+func_name
+	: 		{ $$ =  func_name_generator(); }
+	| ID	{ $$ = $1; }
+	;
+
 funcpref
 	:	FUNC func_name 
 	{
 		$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
 		set_i_address($$,next_quad_label());
 		/* JUMP OUT OF FUNCTION SCOPE */
-		emit(funcstart_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
+		emit(funcstart_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
 		
 		IntStack_Push(&offsetStack, curr_scope_offset());
 		IntStack_Push(&oScopeStack, scope+1); 
@@ -382,16 +358,22 @@ funcargs
 	}
 	;
 
+prebody:
+	{
+		$$ = curr_scope_offset();
+	}
+	;
+
 funcbody
 	: block 
 	{
-		$$ = curr_scope_offset();
+		$$ = $1;
 		exitscopespace();
 	}
 	;
 
 funcdef
-	: funcstart funcpref funcargs funcbody			
+	: funcstart funcpref funcargs prebody funcbody			
 	{
 		exitscopespace();
 		set_total_locals($2,$4);
@@ -399,21 +381,13 @@ funcdef
 		IntStack_Pop(oScopeStack);
 		restore_curr_scope_offset(IntStack_Pop(offsetStack));
 		$$ = $2;
+
+		patchlist($5->retlist,curr_quad_label());
+		
+		emit(funcend_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
+		
 		/* JUMP OUT OF FUNCTION SCOPE */
-
-		emit(funcend_i, $$ ? lvalue_expr($$) : NULL , NULL, NULL,yylineno,0);
 		patchlabel($1,curr_quad_label());
-	}
-	;
-
-func_name
-	: 		
-	{
-		$$ =  func_name_generator();
-	}
-	| ID	
-	{
-		$$ = $1;
 	}
 	;
 
@@ -470,8 +444,8 @@ forstmt
 	;
 
 returnstmt
-	: RET expr ';'	{Valid_return(oScopeStack,yylineno);}
-	| RET ';'		{Valid_return(oScopeStack,yylineno);}
+	: RET expr ';'	{$$ = Manage_ret_stmt(oScopeStack,yylineno,$2);}
+	| RET ';'		{$$ = Manage_ret_stmt(oScopeStack,yylineno,NULL);}
 	;
 %%
 /* Same as lex */

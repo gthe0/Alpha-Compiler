@@ -14,15 +14,6 @@
 #include <quad.h>
 #include <IntegerStack.h>
 
-/**
-* @brief This Functions checks if the return statement is valid
-* 
-* @param stack The Scope Stack
-* @param yylineno The line that we found the token
-*
-* @return EXIT_FAILURE or EXIT_SUCCESS 
-*/
-int Valid_return(ScopeStack_T stack, unsigned int yylineno);
 
 /**
 * @brief Check if the Arguments are valid
@@ -129,5 +120,17 @@ char* Manage_func_name_anonymous(int scope,unsigned yylineno);
 expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
 							 iopcode op, char* context,
 							 unsigned scope, unsigned yylineno);
+
+
+/**
+* @brief This function manages the return statement
+* 
+* @param stack The Scope Stack
+* @param yylineno The line that we found the token
+* @param e	The expression that the function returns
+*
+* @return the stmt pointer 
+*/
+stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno, expr* e);
 
 #endif /* parser utilities */

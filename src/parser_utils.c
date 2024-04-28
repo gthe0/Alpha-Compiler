@@ -20,29 +20,28 @@
 
 /* Library Functions. We Insert them in the initialization of the Tables*/
 static char *LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
-{
-	"print",
-	"input",
-	"objectmemberkeys",
-	"objecttotalmembers",
-	"objectcopy",
-	"totalarguments",
-	"argument",
-	"typeof",
-	"strtonum",
-	"sqrt",
-	"cos",
-	"sin",
+	{
+		"print",
+		"input",
+		"objectmemberkeys",
+		"objecttotalmembers",
+		"objectcopy",
+		"totalarguments",
+		"argument",
+		"typeof",
+		"strtonum",
+		"sqrt",
+		"cos",
+		"sin",
 };
 
-
 /**
-* @brief Check if we shadow library Functions. 
-* 
-* @param name name of the token
-*
-* @return EXIT_SUCCESS if we do not, EXIT_FAILURE otherwise.
-*/
+ * @brief Check if we shadow library Functions.
+ *
+ * @param name name of the token
+ *
+ * @return EXIT_SUCCESS if we do not, EXIT_FAILURE otherwise.
+ */
 static int Lib_shadow_check(char *name)
 {
 	for (int i = 0; i < NO_OF_LIBFUNCTS; i++)
@@ -57,14 +56,14 @@ static int Lib_shadow_check(char *name)
 }
 
 /**
-* @brief Check if the locals are valid
-* 
-* @param name The name of the token
-* @param line The line that we found the token
-* @param scope The current Scope 
-*
-* @return the token if found or else NULL 
-*/
+ * @brief Check if the locals are valid
+ *
+ * @param name The name of the token
+ * @param line The line that we found the token
+ * @param scope The current Scope
+ *
+ * @return the token if found or else NULL
+ */
 static SymEntry_T Valid_local(char *name, unsigned int line, unsigned int scope)
 {
 	assert(SymTable_isInit());
@@ -76,24 +75,24 @@ static SymEntry_T Valid_local(char *name, unsigned int line, unsigned int scope)
 		LOG_ERROR(PARSER, ERROR, "Shadowing Library Function, line %d, token %s\n", line, name);
 		LOG_ERROR(PARSER, NOTE, "%s is a library Function\n\n", name);
 
-		return  SymTable_lookup_scope(name, 0);
+		return SymTable_lookup_scope(name, 0);
 	}
 
 	return SymTable_lookup_scope(name, scope);
 }
 
 /**
-* @brief This Functions checks if the Function Definition is valid
-* 
-* @param name The name of the token
-* @param line The line that we found the token
-* @param FromScope The current Scope 
-* @param stack The Scope Stack
-*
-* @return The entry found or NULL 
-*/
+ * @brief This Functions checks if the Function Definition is valid
+ *
+ * @param name The name of the token
+ * @param line The line that we found the token
+ * @param FromScope The current Scope
+ * @param stack The Scope Stack
+ *
+ * @return The entry found or NULL
+ */
 static SymEntry_T Valid_Function(char *name, unsigned int line,
-					 unsigned int FromScope, ScopeStack_T stack)
+								 unsigned int FromScope, ScopeStack_T stack)
 {
 	assert(SymTable_isInit());
 	assert(stack);
@@ -117,18 +116,18 @@ static SymEntry_T Valid_Function(char *name, unsigned int line,
 		{
 			if (entry->type > FORMAL)
 			{
-				LOG_ERROR(PARSER, ERROR, "Invalid redeclaration of Function %s in line %u\n", name,line);
+				LOG_ERROR(PARSER, ERROR, "Invalid redeclaration of Function %s in line %u\n", name, line);
 				LOG_ERROR(PARSER, NOTE, "Cannot Redeclare Functions\n\n");
 			}
 			else
 			{
-				LOG_ERROR(PARSER, ERROR, "Invalid redeclaration of Variable %s to a Function in line %u\n", name,line);
+				LOG_ERROR(PARSER, ERROR, "Invalid redeclaration of Variable %s to a Function in line %u\n", name, line);
 				LOG_ERROR(PARSER, NOTE, "Cannot Redeclare Variables as Functions\n\n");
 			}
 		}
 		else
 		{
-			LOG_ERROR(PARSER, ERROR, "Token %s was inserted in line %u\n", name,getLine(entry));
+			LOG_ERROR(PARSER, ERROR, "Token %s was inserted in line %u\n", name, getLine(entry));
 		}
 	}
 
@@ -156,7 +155,7 @@ int Valid_args(char *name,
 	}
 
 	/* If there is already an entry with this name, then it fails*/
-	if (entry = SymTable_lookup( name, FromScope, IntStack_Top(stack)))
+	if (entry = SymTable_lookup(name, FromScope, IntStack_Top(stack)))
 	{
 		LOG_ERROR(PARSER, ERROR, "Invalid Formal %s. Token is already inserted in the Table\n", name);
 		LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u\n\n", name, getLine(entry));
@@ -168,14 +167,14 @@ int Valid_args(char *name,
 }
 
 /**
-* @brief This Functions checks if the loop token is valid
-* 
-* @param name The name of the token
-* @param loop_counter A counter to see if we are inside a loop. 
-* @param yylineno The line that we found the token
-*
-* @return EXIT_FAILURE or EXIT_SUCCESS 
-*/
+ * @brief This Functions checks if the loop token is valid
+ *
+ * @param name The name of the token
+ * @param loop_counter A counter to see if we are inside a loop.
+ * @param yylineno The line that we found the token
+ *
+ * @return EXIT_FAILURE or EXIT_SUCCESS
+ */
 static int Valid_loop_token(char *name, int loop_counter, unsigned int yylineno)
 {
 	if (loop_counter == 0)
@@ -189,8 +188,16 @@ static int Valid_loop_token(char *name, int loop_counter, unsigned int yylineno)
 	return EXIT_SUCCESS;
 }
 
-/* Check if the return statement is valid */
-int Valid_return(ScopeStack_T stack, unsigned int yylineno)
+
+/**
+* @brief This Functions checks if the return statement is valid
+* 
+* @param stack The Scope Stack
+* @param yylineno The line that we found the token
+*
+* @return EXIT_FAILURE or EXIT_SUCCESS 
+*/
+static int Valid_return(ScopeStack_T stack, unsigned int yylineno)
 {
 	if (IntStack_isEmpty(stack))
 	{
@@ -203,15 +210,15 @@ int Valid_return(ScopeStack_T stack, unsigned int yylineno)
 	return EXIT_SUCCESS;
 }
 
-
-int eval_lvalue(SymEntry_T entry,char* operation, int yylineno)
+int eval_lvalue(SymEntry_T entry, char *operation, int yylineno)
 {
-	if(entry == NULL) return EXIT_FAILURE;
-	
+	if (entry == NULL)
+		return EXIT_FAILURE;
+
 	/* If Functions are used with a variable operator, then EXIT_FAILURE*/
 	if (entry->type == LIBFUNC)
 	{
-		LOG_ERROR(PARSER, ERROR, "Illegal usage of %s operation in line %u\n",operation,yylineno);
+		LOG_ERROR(PARSER, ERROR, "Illegal usage of %s operation in line %u\n", operation, yylineno);
 		LOG_ERROR(PARSER, NOTE, "%s is a library Function.\n\n", getName(entry));
 
 		return EXIT_FAILURE;
@@ -219,55 +226,49 @@ int eval_lvalue(SymEntry_T entry,char* operation, int yylineno)
 
 	if (entry->type == USERFUNC)
 	{
-		LOG_ERROR(PARSER, ERROR, "Illegal usage of %s operation in line %u\n",operation,yylineno);
+		LOG_ERROR(PARSER, ERROR, "Illegal usage of %s operation in line %u\n", operation, yylineno);
 		LOG_ERROR(PARSER, NOTE, "%s is a User Function.\n\n", getName(entry));
 
 		return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
-
 }
-
 
 /*========================= MANAGE FUNCTIONS =======================*/
 
-
 /* Manages break; and continue; statements */
 stmt_T Manage_loop_stmt(char *name,
-						 int loop_counter,
-						 unsigned int yylineno)
+						int loop_counter,
+						unsigned int yylineno)
 {
+	stmt_T stmt = new_stmt();
+	
 	/*Checks if it is a Valid loop token*/
-	if(Valid_loop_token(name,loop_counter,yylineno) == EXIT_FAILURE)
-		return NULL ;
+	if (Valid_loop_token(name, loop_counter, yylineno) == EXIT_FAILURE)
+		return stmt;
 
-	stmt_T stmt = malloc(sizeof(stmt_t));
-	assert(stmt);
-
-	make_stmt(stmt);
-
-	emit(jump_i,NULL,NULL,NULL,yylineno,0);
-
-	if(strcmp("break",name) == 0)
+	if (strcmp("break", name) == 0)
 		stmt->breaklist = curr_quad_label();
-	else if(strcmp("continue",name) == 0)
-		stmt->contlist  = curr_quad_label();
+	else if (strcmp("continue", name) == 0)
+		stmt->contlist = curr_quad_label();
+
+	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
 
 	return stmt;
 }
 
 /* Manage Local ID L_Value*/
-SymEntry_T Manage_lv_local (char *name,
-						 	unsigned  yylineno,
-							int scope)
+SymEntry_T Manage_lv_local(char *name,
+						   unsigned yylineno,
+						   int scope)
 {
 
 	SymEntry_T entry;
-	
-	if((entry = Valid_local(name,yylineno, scope))==NULL)
+
+	if ((entry = Valid_local(name, yylineno, scope)) == NULL)
 	{
-		entry =  SymEntry_create(scope == 0 ? GLOBAL:LOCAL,name,scope, yylineno);
+		entry = SymEntry_create(scope == 0 ? GLOBAL : LOCAL, name, scope, yylineno);
 		Tables_insert_Entry(entry);
 	}
 
@@ -276,7 +277,7 @@ SymEntry_T Manage_lv_local (char *name,
 
 /* Manage ID L_Value */
 SymEntry_T Manage_lv_ID(char *name, unsigned int line,
-							 unsigned int FromScope, ScopeStack_T stack)
+						unsigned int FromScope, ScopeStack_T stack)
 {
 	assert(SymTable_isInit());
 	assert(ScopeTable_isInit());
@@ -298,17 +299,17 @@ SymEntry_T Manage_lv_ID(char *name, unsigned int line,
 	if (entry = SymTable_lookup(name, FromScope, 0))
 	{
 		int entry_scope = getScope(entry);
-		
-		/* If stack is Empty, do nothing*/
-		if(isEmpty) return entry;
 
-		if(entry_scope < top && entry->type <= FORMAL && entry->type != GLOBAL)
+		/* If stack is Empty, do nothing*/
+		if (isEmpty)
+			return entry;
+
+		if (entry_scope < top && entry->type <= FORMAL && entry->type != GLOBAL)
 		{
 			LOG_ERROR(PARSER, ERROR, "Token %s out of scope. Function has a minimum scope of %u \n", name, top);
-			LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u with a scope of %u. "\
-			"It would have been accessible if it was a function or initialized within these scopes: %u-%u\n\n"
-			, name, getLine(entry),entry_scope,top,FromScope);
-
+			LOG_ERROR(PARSER, NOTE, "%s was inserted in line %u with a scope of %u. "
+									"It would have been accessible if it was a function or initialized within these scopes: %u-%u\n\n",
+					  name, getLine(entry), entry_scope, top, FromScope);
 		}
 
 		return entry;
@@ -319,18 +320,17 @@ SymEntry_T Manage_lv_ID(char *name, unsigned int line,
 	{
 		if (FromScope == 0)
 		{
-			entry = SymEntry_create(GLOBAL,name,FromScope,line);
+			entry = SymEntry_create(GLOBAL, name, FromScope, line);
 		}
 		else if (FromScope > 0)
 		{
-			entry = SymEntry_create(LOCAL,name,FromScope,line);
+			entry = SymEntry_create(LOCAL, name, FromScope, line);
 		}
 
 		Tables_insert_Entry(entry);
 	}
-	
-	return entry;
 
+	return entry;
 }
 
 /* Function to check if the globals exists */
@@ -352,36 +352,55 @@ SymEntry_T Manage_lv_global(char *name, unsigned int line)
 
 /* Manages function id */
 SymEntry_T Manage_func_pref(char *name, unsigned int line,
-					 unsigned int FromScope, ScopeStack_T stack)
+							unsigned int FromScope, ScopeStack_T stack)
 {
 	SymEntry_T entry;
-	
-	if((entry = Valid_Function(name,line,FromScope,stack)) == NULL)
+
+	if ((entry = Valid_Function(name, line, FromScope, stack)) == NULL)
 	{
-		entry = SymEntry_create(USERFUNC,name,FromScope,line);
+		entry = SymEntry_create(USERFUNC, name, FromScope, line);
 		Tables_insert_Entry(entry);
 
-		return entry ;
+		return entry;
 	}
-		
+
 	return NULL;
 }
 
 /* Function to manage arithmetic expressions */
-expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
-							 iopcode op, char* context,
+expr *Manage_arithmetic_expr(expr *arg1, expr *arg2,
+							 iopcode op, char *context,
 							 unsigned scope, unsigned yylineno)
 {
 
-	if(!arg1 || !arg2) return NULL ;
-	
-	check_arith(arg1,context);
-	check_arith(arg2,context);
-	
-	expr* result  = newexpr(arithexpr_e);
-	result-> sym = newtemp(scope,yylineno);
+	if (!arg1 || !arg2)
+		return NULL;
 
-	emit(op, arg1, arg2,result,yylineno,0);
+	check_arith(arg1, context);
+	check_arith(arg2, context);
+
+	expr *result = newexpr(arithexpr_e);
+	result->sym = newtemp(scope, yylineno);
+
+	emit(op, arg1, arg2, result, yylineno, 0);
 
 	return result;
+}
+
+/* Manage return statement */
+stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno,expr* e)
+{
+	stmt_T stmt = new_stmt();
+	
+	/*Checks if it is a Valid return statement */
+	if(Valid_return(stack,yylineno) == EXIT_FAILURE)
+		return stmt;
+	
+	emit(ret_i,NULL, NULL, e, yylineno, 0);
+	
+	stmt->retlist = curr_quad_label();
+	
+	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+
+	return stmt;
 }
