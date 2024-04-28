@@ -6,6 +6,9 @@
 /* Implementations of stmt.h								*/
 /*----------------------------------------------------------*/
 
+#include <stdlib.h>
+#include <assert.h>
+
 #include <stmt.h>
 #include <quad.h>
 
@@ -56,6 +59,7 @@ void make_stmt(stmt_T s)
 stmt_T new_stmt(void)
 {
 	stmt_T s = malloc(sizeof(stmt_t));
+	assert(s);
 
 	make_stmt(s);
 

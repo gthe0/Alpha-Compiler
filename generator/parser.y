@@ -107,12 +107,12 @@
 %start program
 %%
 program
-	: 
+	: /* empty production, making stmt_list optional */
 	| stmt_list /* stmt* means zero or more stmt */
 	;
 
 stmt_list
-	: stmt { $$ = $1 ; }/* empty production, making stmt_list optional */
+	: stmt { $$ = $1 ; }
 	| stmt_list stmt
 	{
 		int b_list_stmt = 0,
