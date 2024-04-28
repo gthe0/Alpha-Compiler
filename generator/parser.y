@@ -78,8 +78,8 @@
 %type <call_object> callsuffix normcall methodcall
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
-%type <statement> 	stmt_list stmt block loop_stmt returnstmt funcbody
-%type <expression>	const primary expr lvalue member term assginexpr elist
+%type <statement> whilestmt	stmt_list stmt block loop_stmt forstmt returnstmt funcbody
+%type <expression>	const primary expr lvalue member term assginexpr elist call
 %type <unsignedVal> prebody funcstart
 
 %destructor {free($$);} stmt
@@ -141,11 +141,13 @@ stmt: expr ';'
 	{
 		reset_temp();
 		$$ = new_stmt();
+		$$->retlist = $1->retlist;
 	}
 	| forstmt
 	{
 		reset_temp();
 		$$ = new_stmt();
+		$$->retlist = $1->retlist;
 	}
 	| returnstmt
 	{
@@ -258,10 +260,26 @@ member
 	;
 
 call: call '(' ')'
+	{
+		$$ = make_call($1, NULL);
+	}
 	| call '(' elist ')'
-	| lvalue callsuffix
+	{
+		$$ = make_call($1, $3);
+	}
 	| '(' funcdef ')' '(' elist ')'
-	| '(' funcdef ')' '('  ')'
+	{
+		expr* func = newexpr(programfunc_e);
+		func->sym = $2;
+		$$ = make_call(func, $5);
+	}
+	| '(' funcdef ')' '('  ')'	
+	{
+		expr* func = newexpr(programfunc_e);
+		func->sym = $2;
+		$$ = make_call(func, NULL);
+	}
+	| lvalue callsuffix
 	;
 
 callsuffix
@@ -436,16 +454,21 @@ loop_stmt:	loop_Inc stmt loop_End
 };
 
 whilestmt
-	: WHILE '(' expr ')' loop_stmt 	
+	: WHILE '(' expr ')' loop_stmt 	{		
+		$$ = $5;
+		patchlist($5->breaklist,curr_quad_label());
+		patchlist($5->contlist,curr_quad_label());}
 	| WHILE '(' error ')' loop_stmt {  yyerrok;} 
 	;
 
 forstmt
 	: FOR '(' elist ';' expr ';' elist ')' loop_stmt	{
+		$$ = $9;
 		patchlist($9->breaklist,curr_quad_label());
 		patchlist($9->contlist,curr_quad_label());
 	}
 	| FOR '(' elist ';' expr ';' ')' loop_stmt			{
+		$$ = $8;
 		patchlist($8->breaklist,curr_quad_label());
 		patchlist($8->contlist,curr_quad_label());
 	}
