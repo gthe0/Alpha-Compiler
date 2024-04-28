@@ -127,19 +127,19 @@ stmt_list
 
 		if($2)
 		{
-			b_list_stmt = $2->breakList;
-			c_list_stmt = $2->contList;
+			b_list_stmt = $2->breaklist;
+			c_list_stmt = $2->contlist;
 		}
 
 		if($1)
 		{
-			$$->breakList	= mergelist($1->breakList,b_list_stmt);
-			$$->contList	= mergelist($1->contList,c_list_stmt);
+			$$->breaklist	= mergelist($1->breaklist,b_list_stmt);
+			$$->contlist	= mergelist($1->contlist,c_list_stmt);
 		}
 		else
 		{
-			$$->breakList	= mergelist($$->breakList,b_list_stmt);
-			$$->contList	= mergelist($$->contList,c_list_stmt);
+			$$->breaklist	= mergelist($$->breaklist,b_list_stmt);
+			$$->contlist	= mergelist($$->contlist,c_list_stmt);
 		}
 	}
 	;

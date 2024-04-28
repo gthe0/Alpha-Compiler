@@ -39,15 +39,25 @@ void patchlist(int list, int label)
 	}
 }
 
-/* Initializes a statement */
-void make_stmt(stmt_t *s)
-{
-	s->breakList = s->contList = 0;
-}
-
 /* Initializes a new list member */
 int newlist(int i)
 {
 	quad_table[i].label = 0;
 	return i;
+}
+
+/* Initializes a statement */
+void make_stmt(stmt_T s)
+{
+	s->retlist = s->breaklist = s->contlist = 0;
+}
+
+/* Make a new stmt */
+stmt_T new_stmt(void)
+{
+	stmt_T s = malloc(sizeof(stmt_t));
+
+	make_stmt(s);
+
+	return s ; 
 }

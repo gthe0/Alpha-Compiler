@@ -13,7 +13,7 @@ typedef struct stmt_t stmt_t, *stmt_T;
 
 struct stmt_t
 {
-	int breakList, contList;
+	int breaklist, contlist, retlist;
 };
 
 
@@ -39,6 +39,16 @@ void patchlist(int list, int label);
 
 
 /**
+* @brief Initializes new list
+* 
+* @param i Index of stmt in the quad_table
+* 
+* @return i index unmodified 
+*/
+int newlist(int i);
+
+
+/**
 * @brief Initializes new statement 
 * 
 * @param label Pointer to the statement
@@ -48,12 +58,11 @@ void make_stmt(stmt_t *s);
 
 
 /**
-* @brief Initializes new list
+* @brief Makes a new stm_T 
 * 
-* @param i Index of stmt in the quad_table
+* @return s, The new statement initialized with 0s
 * 
-* @return i index unmodified 
 */
-int newlist(int i);
+stmt_T new_stmt(void);
 
 #endif

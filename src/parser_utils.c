@@ -250,9 +250,9 @@ stmt_T Manage_loop_stmt(char *name,
 	emit(jump_i,NULL,NULL,NULL,yylineno,0);
 
 	if(strcmp("break",name) == 0)
-		stmt->breakList = curr_quad_label();
+		stmt->breaklist = curr_quad_label();
 	else if(strcmp("continue",name) == 0)
-		stmt->contList  = curr_quad_label();
+		stmt->contlist  = curr_quad_label();
 
 	return stmt;
 }
