@@ -133,4 +133,16 @@ expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
 */
 stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno, expr* e);
 
+/**
+* @brief This function manages the return statement
+* 
+* @param stack The Scope Stack
+* @param yylineno The line that we found the token
+* @param e	The expression that the function returns
+*
+* @return the stmt pointer 
+*/
+expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
+						unsigned int scope,
+						 unsigned int yylineno);
 #endif /* parser utilities */

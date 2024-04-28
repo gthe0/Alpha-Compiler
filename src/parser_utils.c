@@ -404,3 +404,44 @@ stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno,expr* e)
 
 	return stmt;
 }
+
+/* Manage assignment */
+expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
+						unsigned int scope,
+						 unsigned int yylineno){
+
+	expr* assignexpr = NULL ;
+	assert(lvalue);
+	assert(rvalue);
+
+	eval_lvalue(lvalue->sym,"assignment",yylineno);
+	
+	if(lvalue->type == tableitem_e)
+	{
+		emit(tablesetelem_i,
+			lvalue,
+			lvalue->index,
+			rvalue,
+			yylineno,
+			0);
+
+		assignexpr 			= emit_iftableitem(lvalue);
+		assignexpr->type 	= assignexpr_e;
+	}
+	else
+	{
+		emit(assign_i,
+			rvalue,
+			NULL,
+			lvalue,
+			yylineno,
+			0);
+
+		assignexpr = newexpr(assignexpr_e);
+		assignexpr->sym = newtemp(scope,yylineno);
+
+		emit(assign_i,lvalue,NULL,assignexpr,yylineno,0);
+	}
+
+	return assignexpr;
+}

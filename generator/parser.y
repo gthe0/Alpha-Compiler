@@ -16,6 +16,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
+	#include <call.h>
 	#include <stmt.h>
 	#include <expr.h>
 	#include <log.h>
@@ -67,19 +68,21 @@
 	expr* expression;
 	SymEntry_T entry;
 	stmt_T statement;
+	call_T call_object;
 }
 
 %token <string> 	ID STRING 
 %token <intVal> 	INT
 %token <floatVal> 	FLOAT
 
+%type <call_object> callsuffix normcall methodcall
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
 %type <statement> 	stmt_list stmt block loop_stmt returnstmt funcbody
-%type <expression>	const primary expr lvalue member term
+%type <expression>	const primary expr lvalue member term assginexpr elist
 %type <unsignedVal> prebody funcstart
 
-%destructor {free($$);} <statement>
+%destructor {free($$);} stmt
 
 %token IF  ELSE  WHILE  FOR  FUNC  RET  BREAK  CONTINUE  
 %token AND  NOT  OR
@@ -176,7 +179,7 @@ stmt: expr ';'
 	}
 	;
 
-expr: assginexpr				{$$ = NULL ;}
+expr: assginexpr				{$$ = $1 ;}
 	| expr '+' expr				{$$ = Manage_arithmetic_expr($1,$3,add_i,"ADDITION",scope,yylineno);}
 	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"SUBTRACTIOM",scope,yylineno);}
 	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"MULTIPLICATIOn",scope,yylineno);}
@@ -204,7 +207,7 @@ term: '(' expr ')'{$$ = NULL;}
 	;
 
 assginexpr
-	: lvalue '=' expr 	{if($1 != NULL)eval_lvalue($1->sym,"assignment",yylineno);}
+	: lvalue '=' expr 	{if($1 != NULL && $3 != NULL) $$ = Manage_assignexpr($1,$3,scope,yylineno);}
 	| error '=' expr 	{LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
 	;
 
@@ -262,20 +265,20 @@ call: call '(' ')'
 	;
 
 callsuffix
-	: normcall
-	| methodcall 
+	: normcall			{$$ = $1;}
+	| methodcall 		{$$ = $1;}
 	;
 
 normcall
-	: '(' elist ')'
-	| '(' ')'
+	: '(' elist ')' { $$ = new_call($2,0,NULL); }
+	| '(' ')'		{$$ = new_call(NULL,0,NULL);}
 	;
 
 methodcall
-	: DOUBLE_DOT ID '(' elist ')' {	}
-	| DOUBLE_DOT ID '(' error ')' {  yyerrok;} 
-	| DOUBLE_DOT ID '('  ')' 
-	; // equivalent to lvalue.id(lvalue, elist)
+	: DOUBLE_DOT ID '(' error ')' 	{  yyerrok;} 
+	| DOUBLE_DOT ID '(' elist ')' 	{ $$ = new_call($4,1,$2);}
+	| DOUBLE_DOT ID '('  ')' 		{ $$ = new_call(NULL,1,$2); }
+	; 
 
 elist
 	: expr 

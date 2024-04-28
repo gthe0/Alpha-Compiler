@@ -17,6 +17,7 @@
 	#include <symTableEntry.h>
 	#include <expr.h>
 	#include <stmt.h>
+	#include <call.h>
 	#include <parser.h>
 	#include <log.h>
 
