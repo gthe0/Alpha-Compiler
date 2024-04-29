@@ -124,7 +124,18 @@ void check_arith (expr* e, const char* context);
 /**
 * @brief Short circuit the expression's truth/false lists
 * @param e The expression
+* @param yylineno The line where the short circuit was triggered
 */
-void short_circuit(expr* e);
+void short_circuit(expr* e,unsigned yylineno);
+
+/**
+* @brief Create a bool expression from e
+* @param e The expression
+* @param scope The scope in which the expression was found
+* @param yylineno The line where this function was triggered
+*/
+expr* make_bool_expr(expr* e, 
+					unsigned scope,
+					unsigned yylineno);
 
 #endif /* expr.h ADT */

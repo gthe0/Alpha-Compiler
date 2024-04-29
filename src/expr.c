@@ -15,6 +15,7 @@
 #include <stmt.h>
 #include <quad.h>
 #include <log.h>
+#include <tables.h>
 
 /* Creates a new expression */
 expr *newexpr(expr_t t)
@@ -113,7 +114,47 @@ void check_arith (expr* e, const char* context)
 	return ;
 }
 
-void short_circuit(expr* e)
+/* short_circuit boolean logic */
+void short_circuit(expr* e,unsigned yylineno)
 {
-	assert(e && e->type == boolexpr_e);
+	assert(e);
+
+	if(e->type != boolexpr_e)
+		return ;
+
+	patchlist(e->true_list,curr_quad_label());
+
+	emit(assign_i,new_bool_expr(1),NULL,e,yylineno,0);
+	emit(jump_i,NULL,NULL,NULL,yylineno,next_quad_label()+1);
+
+	patchlist(e->false_list,curr_quad_label());
+
+	emit(assign_i,new_bool_expr(0),NULL,e,yylineno,0);
+}
+
+
+
+expr* make_bool_expr(expr* e, 
+					unsigned scope,
+					unsigned yylineno)
+{
+	assert(e);
+
+	if(e->type == boolexpr_e)
+		return e;
+
+
+	expr* bool_e = newexpr(boolexpr_e);
+	bool_e->sym = newtemp(scope,yylineno);
+
+
+	bool_e->true_list = curr_quad_label();
+	emit(if_eq_i, e, newexpr_constbool(1), NULL, yylineno, 0);
+	
+	
+	bool_e->false_list = curr_quad_label();
+	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+
+
+	return bool_e ;
 }
