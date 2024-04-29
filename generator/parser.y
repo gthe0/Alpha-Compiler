@@ -183,7 +183,7 @@ stmt: expr ';'
 
 expr: assginexpr				{$$ = $1 ;}
 	| expr '+' expr				{$$ = Manage_arithmetic_expr($1,$3,add_i,"ADDITION",scope,yylineno);}
-	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"SUBTRACTIOM",scope,yylineno);}
+	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"SUBTRACTION",scope,yylineno);}
 	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"MULTIPLICATIOn",scope,yylineno);}
 	| expr '%' expr				{$$ = Manage_arithmetic_expr($1,$3,div_i,"DIVISION",scope,yylineno);}
 	| expr '/' expr				{$$ = Manage_arithmetic_expr($1,$3,mod_i,"MODULO",scope,yylineno);}
@@ -214,13 +214,14 @@ assginexpr
 	;
 
 primary
-	: lvalue
-	{ 
-    	$$ = emit_iftableitem($1);
-	}  
-	| call 					{$$ = NULL ;}
+	: lvalue				{$$ = emit_iftableitem($1);}  
+	| call 					{$$ = emit_iftableitem($1);}
 	| objectdef				{$$ = NULL ;}
-	| '(' funcdef ')'		{$$ = NULL ;}
+	| '(' funcdef ')'		
+	{
+		$$ = newexpr(programfunc_e);
+	 	$$->sym = $2 ;
+ }
 	| const					{$$ = $1;	}
 	;
 
@@ -244,19 +245,10 @@ lvalue
 	;
 
 member
-	: call '.' ID	{$$ = NULL ;}
-	| lvalue '.' ID
-	{
-		$$ = member_item($1,$3);
-	}
-	| call '[' expr ']'	{$$ = NULL ;}
-	| lvalue '[' expr ']'
-	{
-		$1 = emit_iftableitem($1);
-		$$ = newexpr(tableitem_e);
-		$$->sym = $1->sym;
-		$$->index = $3;
-	}
+	: call '.' ID			{$$ = member_item($1,$3) ;}
+	| lvalue '.' ID			{$$ = member_item($1,$3) ;}
+	| call '[' expr ']'		{$$ = Manage_member($1,$3) ;}
+	| lvalue '[' expr ']'	{$$ = Manage_member($1,$3) ;}
 	;
 
 call: call '(' ')'
@@ -279,7 +271,7 @@ call: call '(' ')'
 		func->sym = $2;
 		$$ = make_call(func, NULL);
 	}
-	| lvalue callsuffix
+	| lvalue callsuffix {$$ = Manage_call_lv_suffix($1,$2);}
 	;
 
 callsuffix

@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <log.h>
+#include <call.h>
 #include <symTable.h>
 #include <name_gen.h>
 #include <parser_utils.h>
@@ -444,4 +445,54 @@ expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
 	}
 
 	return assignexpr;
+}
+
+/* Manage call->lvalue callsuffix*/
+expr* Manage_call_lv_suffix(expr* lvalue, call_T call_suffix){
+
+	expr 	*list = NULL,
+			*curr = NULL, 
+			*prev = NULL;
+
+	assert(lvalue && call_suffix);
+
+	lvalue = emit_iftableitem(lvalue);
+
+	if(call_suffix->method == 1)
+	{
+			list = lvalue;
+    		curr = call_suffix->elist;
+			lvalue = emit_iftableitem(member_item(list,call_suffix->name));
+	
+		while (curr)
+		{
+			prev = curr;
+			curr = curr->next;
+		}
+
+		if(curr == NULL)
+		{
+			call_suffix->elist = list;
+		}
+		else
+		{
+			prev-> next = list;
+		}
+	
+	}
+
+	return make_call(lvalue, call_suffix->elist);;
+}
+
+
+/*Manage member*/
+expr* Manage_member(expr* call, expr* index)
+{
+	call = emit_iftableitem(call);
+
+	expr* temp = newexpr(tableitem_e);
+	temp->sym = call->sym;
+	temp->index = index;
+
+	return temp;
 }
