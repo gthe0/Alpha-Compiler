@@ -526,3 +526,32 @@ expr* Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylinen
 	
 	return t;
 }
+
+
+
+expr* Manage_unary_minus(expr* val, unsigned scope, unsigned yylineno)
+{
+
+  	expr *new_expr;
+    new_expr = newexpr(arithexpr_e);
+
+    check_arith(val,"unary minus");
+
+    new_expr->sym = newtemp(scope,yylineno);
+
+    emit(uminus_i, val, NULL, new_expr, yylineno, 0);
+
+    return new_expr;
+
+}
+
+
+
+expr* Manage_not_expr(expr* val, unsigned scope, unsigned yylineno)
+{
+	expr* term = newexpr(boolexpr_e);
+	term->sym = newtemp(scope,yylineno);
+	emit(not_i,val, NULL, term, yylineno, 0);
+
+	return term;
+}

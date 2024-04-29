@@ -149,9 +149,10 @@ expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
 						 unsigned int yylineno);
 
 expr* Manage_call_lv_suffix(expr* lvalue, call_T call_suffix);
-
 expr* Manage_member(expr* call, expr* index);
 expr* Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno);
 expr* Manage_obj_elist(expr* elist, unsigned scope, unsigned yylineno);
+expr* Manage_unary_minus(expr* val, unsigned scope, unsigned yylineno);
+expr* Manage_not_expr(expr* val, unsigned scope, unsigned yylineno);
 
 #endif /* parser utilities */

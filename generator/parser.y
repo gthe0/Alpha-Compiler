@@ -83,7 +83,7 @@
 %type <string> 		func_name
 %type <statement> whilestmt	stmt_list stmt block loop_stmt forstmt returnstmt funcbody
 %type <expression>	const primary expr lvalue member term assginexpr elist call object_list objectdef
-%type <unsignedVal> prebody funcstart
+%type <unsignedVal> NQ funcstart
 %type <pair_list_o>  indexed
 %type <index_pair_o>  indexedelem
 
@@ -187,11 +187,11 @@ stmt: expr ';'
 	;
 
 expr: assginexpr				{$$ = $1 ;}
-	| expr '+' expr				{$$ = Manage_arithmetic_expr($1,$3,add_i,"ADDITION",scope,yylineno);}
-	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"SUBTRACTION",scope,yylineno);}
-	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"MULTIPLICATIOn",scope,yylineno);}
-	| expr '%' expr				{$$ = Manage_arithmetic_expr($1,$3,div_i,"DIVISION",scope,yylineno);}
-	| expr '/' expr				{$$ = Manage_arithmetic_expr($1,$3,mod_i,"MODULO",scope,yylineno);}
+	| expr '+' expr				{$$ = Manage_arithmetic_expr($1,$3,add_i,"addition",scope,yylineno);}
+	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"subtraction",scope,yylineno);}
+	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"multiplication",scope,yylineno);}
+	| expr '%' expr				{$$ = Manage_arithmetic_expr($1,$3,div_i,"division",scope,yylineno);}
+	| expr '/' expr				{$$ = Manage_arithmetic_expr($1,$3,mod_i,"modulo",scope,yylineno);}
 	| expr '>' expr				{$$ = NULL ;}
 	| expr '<' expr				{$$ = NULL ;}
 	| expr GE_OP expr			{$$ = NULL ;}
@@ -324,6 +324,8 @@ indexedelem
 	| '{' expr error expr '}'		{ yyerrok;} 
 	;
 
+NQ: { $$ = curr_scope_offset(); };
+
 block
 	:'{' { scope++; } 
 	stmt_list 
@@ -377,11 +379,6 @@ funcargs
 	}
 	;
 
-prebody:
-	{
-		$$ = curr_scope_offset();
-	}
-	;
 
 funcbody
 	: block 
@@ -392,7 +389,7 @@ funcbody
 	;
 
 funcdef
-	: funcstart funcpref funcargs prebody funcbody			
+	: funcstart funcpref funcargs NQ funcbody			
 	{
 		exitscopespace();
 		set_total_locals($2,$4);
