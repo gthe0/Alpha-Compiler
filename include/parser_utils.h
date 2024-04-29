@@ -12,6 +12,7 @@
 #include <tables.h>
 #include <stmt.h>
 #include <quad.h>
+#include <indexed_pair.h>
 #include <IntegerStack.h>
 
 
@@ -150,5 +151,7 @@ expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
 expr* Manage_call_lv_suffix(expr* lvalue, call_T call_suffix);
 
 expr* Manage_member(expr* call, expr* index);
+expr* Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno);
+expr* Manage_obj_elist(expr* elist, unsigned scope, unsigned yylineno);
 
 #endif /* parser utilities */

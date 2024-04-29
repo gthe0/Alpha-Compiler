@@ -496,3 +496,33 @@ expr* Manage_member(expr* call, expr* index)
 
 	return temp;
 }
+
+
+
+expr* Manage_obj_elist(expr* elist, unsigned scope, unsigned yylineno)
+{
+	expr* t = newexpr(newtable_e);
+	t->sym = newtemp(scope,yylineno);
+	
+	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
+
+	for (int i = 0; elist; elist = elist->next)
+		emit(tablesetelem_i, t, new_num_expr(i++), elist,yylineno,0);
+	
+	return t;
+}
+
+
+
+expr* Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno)
+{
+	expr* t = newexpr(newtable_e);
+	t->sym = newtemp(scope,yylineno);
+	
+	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
+
+	for ( ;index_list; index_list = index_list->next)
+		emit(tablesetelem_i, t, index_list->pair->index, index_list->pair->value ,yylineno,0);
+	
+	return t;
+}

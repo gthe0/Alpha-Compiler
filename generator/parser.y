@@ -25,6 +25,7 @@
 	#include <symTable.h>
 	#include <scopeTable.h>
 	#include <scopeSpace.h>
+	#include <indexed_pair.h>
 	#include <IntegerStack.h>
 	#include <parser_utils.h>
 	#include <symTableEntry.h>
@@ -69,6 +70,8 @@
 	SymEntry_T entry;
 	stmt_T statement;
 	call_T call_object;
+	IndexPair_T index_pair_o;
+	PairList_T pair_list_o;
 }
 
 %token <string> 	ID STRING 
@@ -79,8 +82,10 @@
 %type <entry> 		funcpref funcdef 
 %type <string> 		func_name
 %type <statement> whilestmt	stmt_list stmt block loop_stmt forstmt returnstmt funcbody
-%type <expression>	const primary expr lvalue member term assginexpr elist call
+%type <expression>	const primary expr lvalue member term assginexpr elist call object_list objectdef
 %type <unsignedVal> prebody funcstart
+%type <pair_list_o>  indexed
+%type <index_pair_o>  indexedelem
 
 %destructor {free($$);} stmt
 
@@ -216,7 +221,7 @@ assginexpr
 primary
 	: lvalue				{$$ = emit_iftableitem($1);}  
 	| call 					{$$ = emit_iftableitem($1);}
-	| objectdef				{$$ = NULL ;}
+	| objectdef				{$$ = $1 ;}
 	| '(' funcdef ')'		
 	{
 		$$ = newexpr(programfunc_e);
@@ -291,29 +296,29 @@ methodcall
 	; 
 
 elist
-	: expr 
-	| elist ',' expr
+	: expr 				{$$ = $1;}
+	| elist ',' expr	{$$ = $3; $$->next = $1;}
 	| elist ',' error	{ yyerrok;} 
 	;
 
 objectdef
-	:	'[' object_list ']'
+	:	'[' object_list ']'	{$$ = $2;}
 	|	'[' error ']'	{  yyerrok;} 
 	;
 
 object_list
-	: elist
-	| indexed
+	: elist							{$$ = Manage_obj_elist($1,scope,yylineno);}
+	| indexed						{$$ = Manage_obj_indexed($1,scope,yylineno);}
+	|								{$$ = Manage_obj_indexed(NULL,scope,yylineno);}
 	;
 
 indexed
-	:   
-	| indexed ',' indexedelem
-	| indexedelem
+	: indexed ',' indexedelem		{$$ = PairList_insert($3,$1);}
+	| indexedelem					{$$ = PairList_insert($1,NULL);}
 	;
 
 indexedelem
-	: '{' expr  ':' expr '}'
+	: '{' expr  ':' expr '}'		{$$ = new_indexed_pair($2,$4);}
 	| '{' error ':' expr '}'		{ yyerrok;} 
 	| '{' expr  ':' error '}'		{ yyerrok;} 
 	| '{' expr error expr '}'		{ yyerrok;} 
