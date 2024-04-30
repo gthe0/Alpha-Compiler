@@ -402,13 +402,9 @@ expr *Manage_rel_expr(expr *arg1, expr *arg2,
 		check_arith(arg2, context);
 	}
 
-	expr *result = newexpr(boolexpr_e);
-	result->sym = newtemp(scope, yylineno);
+	expr *result = make_bool_expr(scope, yylineno);
 
-	result->true_list = curr_quad_label();
 	emit(op, arg1, arg2, NULL, yylineno, 0);
-
-	result->false_list = curr_quad_label();
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
 
 	return result;
@@ -524,6 +520,7 @@ expr *Manage_member(expr *call, expr *index)
 	return temp;
 }
 
+/* Manages rule objdef->elist */
 expr *Manage_obj_elist(expr *elist, unsigned scope, unsigned yylineno)
 {
 	expr *t = newexpr(newtable_e);
@@ -537,6 +534,7 @@ expr *Manage_obj_elist(expr *elist, unsigned scope, unsigned yylineno)
 	return t;
 }
 
+/* Manages rule objdef->indexed */
 expr *Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno)
 {
 	expr *t = newexpr(newtable_e);
@@ -550,6 +548,7 @@ expr *Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylinen
 	return t;
 }
 
+/* Manages rule term-> -expr */
 expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 {
 
@@ -565,9 +564,10 @@ expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 	return new_expr;
 }
 
+/* Manages rule term-> NOT expr */
 expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
-	val = make_bool_expr(val,scope,yylineno);
+	val = emit_if_boolean(val,scope,yylineno);
 	
 	/* Reverse truth lists */
 	int temp = val->false_list;

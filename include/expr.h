@@ -121,12 +121,24 @@ unsigned int is_temp_expr(expr* e);
 void check_arith (expr* e, const char* context);
 
 /**
-* @brief Create a bool expression from e
+* @brief Creates a new boolean expression with true and false lists
+* @param scope The scope in which the expression was found
+* @param yylineno The line where this function was triggered
+*
+* @return The new boolean expression
+*/
+expr* make_bool_expr(unsigned scope,
+					unsigned yylineno);
+
+/**
+* @brief Emits the instructions neeeded for a boolean expressions
 * @param e The expression
 * @param scope The scope in which the expression was found
 * @param yylineno The line where this function was triggered
+*
+* @return either the boolean version of e or e itself if already boolean
 */
-expr* make_bool_expr(expr* e, 
+expr* emit_if_boolean(expr* e, 
 					unsigned scope,
 					unsigned yylineno);
 

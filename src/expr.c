@@ -114,8 +114,21 @@ void check_arith (expr* e, const char* context)
 	return ;
 }
 
-/* Creates a boolean expression out of another */
-expr* make_bool_expr(expr* e, 
+/* Create a blank boolean expression */
+expr* make_bool_expr(unsigned scope,
+					unsigned yylineno)
+{
+
+	expr* bool_e = newexpr(boolexpr_e);
+	bool_e->sym = newtemp(scope,yylineno);
+	bool_e->true_list = curr_quad_label();
+	bool_e->false_list = next_quad_label();
+
+	return bool_e;
+}
+
+/* Emit the instructions of a boolean expression */
+expr* emit_if_boolean(expr* e, 
 					unsigned scope,
 					unsigned yylineno)
 {
@@ -124,18 +137,10 @@ expr* make_bool_expr(expr* e,
 	if(e->type == boolexpr_e)
 		return e;
 
+	expr* bool_e = make_bool_expr(scope,yylineno);
 
-	expr* bool_e = newexpr(boolexpr_e);
-	bool_e->sym = newtemp(scope,yylineno);
-
-
-	bool_e->true_list = curr_quad_label();
 	emit(if_eq_i, e, new_bool_expr(1), NULL, yylineno, 0);
-	
-	
-	bool_e->false_list = curr_quad_label();
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
-
 
 	return bool_e ;
 }
