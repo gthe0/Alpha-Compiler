@@ -262,4 +262,21 @@ expr *Manage_lv_arithmetic_left(expr *lvalue, iopcode op,
 								 char *context, unsigned scope,
 								 unsigned yylineno);
 
+/**
+* @brief This Functions patches things up in and & not expressions.
+*
+* @param arg1 The first argument of the expression
+* @param arg2 The second argument of the expression
+* @param op	The opcdode of the instruction
+* @param label The label which we use to patch. 
+* @param scope The current Scope 
+* @param yylineno The line that we found the token
+*
+* @return The resutling expression (term) 
+*/
+expr* Manage_conjunctions(expr* arg1, expr*arg2,
+						 iopcode op, int label,
+						 unsigned scope,
+						 unsigned yylineno);
+
 #endif /* parser utilities */

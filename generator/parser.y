@@ -205,7 +205,7 @@ expr: assginexpr				{$$ = $1 ;}
 
 term: '(' expr ')'						{$$ = $2;}
 	| '-' expr	%prec UNARY_MINUS		{$$ = Manage_unary_minus($2,scope,yylineno);}
-	| NOT expr							{$$ = NULL;}
+	| NOT expr							{$$ = Manage_not_expr($2,scope,yylineno);}
 	| INC_OP lvalue 					{$$ = Manage_lv_arithmetic_left($2,add_i,"left ++",scope,yylineno);}
 	| lvalue INC_OP						{$$ = Manage_lv_arithmetic_right($1,add_i,"right ++",scope,yylineno);}
 	| DEC_OP lvalue						{$$ = Manage_lv_arithmetic_left($2,sub_i,"left --",scope,yylineno);}

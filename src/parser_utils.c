@@ -567,11 +567,13 @@ expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 
 expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
-	expr *term = newexpr(boolexpr_e);
-	term->sym = newtemp(scope, yylineno);
-	emit(not_i, val, NULL, term, yylineno, 0);
-
-	return term;
+	val = make_bool_expr(val,scope,yylineno);
+	
+	int temp = val->false_list;
+	val->true_list = val->false_list;
+	val->false_list = temp;
+		
+	return val;
 }
 
 /* Manages lvalue++ and lvalue-- */
@@ -634,4 +636,33 @@ expr *Manage_lv_arithmetic_left(expr *lvalue, iopcode op,
 	}
 
 	return term;
+}
+
+
+/* Manage conjuctions and & or */
+expr* Manage_conjunctions(expr* arg1, expr*arg2,
+						 iopcode op, int label,
+						 unsigned scope,
+						 unsigned yylineno)
+{
+	int list_to_patch = op == and_i ?
+		arg1->true_list : arg1->false_list;
+	
+	patchlist(list_to_patch,label);
+
+	expr* new_e = newexpr(boolexpr_e);
+	new_e -> sym = newtemp(scope,yylineno);
+
+	if(op == and_i)
+	{
+		new_e -> false_list = mergelist(list_to_patch,arg2->false_list);
+		new_e -> true_list = arg2 -> true_list ;
+	}
+	else
+	{
+		new_e -> true_list = mergelist(list_to_patch,arg2->false_list);
+		new_e -> false_list = arg2 -> false_list ;
+	}
+
+	return new_e ;
 }
