@@ -569,9 +569,10 @@ expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
 	val = make_bool_expr(val,scope,yylineno);
 	
+	/* Reverse truth lists */
 	int temp = val->false_list;
-	val->true_list = val->false_list;
-	val->false_list = temp;
+	val->false_list = val->true_list;
+	val->true_list  = temp;
 		
 	return val;
 }

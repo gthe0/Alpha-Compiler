@@ -120,14 +120,6 @@ unsigned int is_temp_expr(expr* e);
 */
 void check_arith (expr* e, const char* context);
 
-
-/**
-* @brief Short circuit the expression's truth/false lists
-* @param e The expression
-* @param yylineno The line where the short circuit was triggered
-*/
-void short_circuit(expr* e,unsigned yylineno);
-
 /**
 * @brief Create a bool expression from e
 * @param e The expression

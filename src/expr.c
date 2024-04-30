@@ -114,25 +114,6 @@ void check_arith (expr* e, const char* context)
 	return ;
 }
 
-/* short_circuit boolean logic */
-void short_circuit(expr* e,unsigned yylineno)
-{
-	assert(e);
-
-	if(e->type != boolexpr_e)
-		return ;
-
-	patchlist(e->true_list,curr_quad_label());
-
-	emit(assign_i,new_bool_expr(1),NULL,e,yylineno,0);
-	emit(jump_i,NULL,NULL,NULL,yylineno,next_quad_label()+1);
-
-	patchlist(e->false_list,curr_quad_label());
-
-	emit(assign_i,new_bool_expr(0),NULL,e,yylineno,0);
-}
-
-
 /* Creates a boolean expression out of another */
 expr* make_bool_expr(expr* e, 
 					unsigned scope,
