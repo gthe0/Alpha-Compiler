@@ -395,9 +395,12 @@ expr *Manage_rel_expr(expr *arg1, expr *arg2,
 
 	if (!arg1 || !arg2)
 		return NULL;
-
-	check_arith(arg1, context);
-	check_arith(arg2, context);
+	
+	if(op != if_eq_i && op != if_noteq_i)
+	{
+		check_arith(arg1, context);
+		check_arith(arg2, context);
+	}
 
 	expr *result = newexpr(boolexpr_e);
 	result->sym = newtemp(scope, yylineno);

@@ -192,12 +192,12 @@ expr: assginexpr				{$$ = $1 ;}
 	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"multiplication",scope,yylineno);}
 	| expr '%' expr				{$$ = Manage_arithmetic_expr($1,$3,div_i,"division",scope,yylineno);}
 	| expr '/' expr				{$$ = Manage_arithmetic_expr($1,$3,mod_i,"modulo",scope,yylineno);}
-	| expr '>' expr				{$$ = NULL ;}
-	| expr '<' expr				{$$ = NULL ;}
-	| expr GE_OP expr			{$$ = NULL ;}
-	| expr LE_OP expr			{$$ = NULL ;}
-	| expr EQ_OP expr			{$$ = NULL ;}
-	| expr NE_OP expr			{$$ = NULL ;}
+	| expr '>' expr				{$$ = Manage_rel_expr($1,$3,if_greater_i,">",scope,yylineno) ;}
+	| expr '<' expr				{$$ = Manage_rel_expr($1,$3,if_less_i,"<",scope,yylineno) ;}
+	| expr GE_OP expr			{$$ = Manage_rel_expr($1,$3,if_greatereq_i,">=",scope,yylineno) ;}
+	| expr LE_OP expr			{$$ = Manage_rel_expr($1,$3,if_lesseq_i,"<=",scope,yylineno) ;}
+	| expr EQ_OP expr			{$$ = Manage_rel_expr($1,$3,if_eq_i,"==",scope,yylineno) ;}
+	| expr NE_OP expr			{$$ = Manage_rel_expr($1,$3,if_noteq_i,"!=",scope,yylineno) ;}
 	| expr AND expr				{$$ = NULL ;}
 	| expr OR expr				{$$ = NULL ;}
 	| term						{$$ = $1 ;}
@@ -214,7 +214,7 @@ term: '(' expr ')'						{$$ = $2;}
 	;
 
 assginexpr
-	: lvalue '=' expr 	{if($1 != NULL && $3 != NULL) $$ = Manage_assignexpr($1,$3,scope,yylineno);}
+	: lvalue '=' expr 	{$$ = Manage_assignexpr($1,$3,scope,yylineno);}
 	| error '=' expr 	{LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
 	;
 
@@ -226,8 +226,8 @@ primary
 	{
 		$$ = newexpr(programfunc_e);
 	 	$$->sym = $2 ;
- }
-	| const					{$$ = $1;	}
+	}
+	| const					{$$ = $1;}
 	;
 
 lvalue
@@ -436,7 +436,7 @@ idlist
 
 ifstmt
 	:  IF '(' expr ')' stmt
-	|  IF '(' expr ')' stmt ELSE stmt
+	|  IF '(' expr ')' stmt ELSE stmt	
 	|  IF '(' error ')'				 	{  yyerrok;} 
 	;
 

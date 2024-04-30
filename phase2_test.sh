@@ -4,7 +4,7 @@
 parent_dir="test/phase2_tests"
 result_dir="test_results/Phase2"
 
-rm -rf test_results
+rm -rf $result_dir
 # Create the 'result' subdirectory if it doesn't exist
 mkdir -p "$result_dir/Working"
 mkdir -p "$result_dir/Errors"
