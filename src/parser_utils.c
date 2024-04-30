@@ -189,15 +189,14 @@ static int Valid_loop_token(char *name, int loop_counter, unsigned int yylineno)
 	return EXIT_SUCCESS;
 }
 
-
 /**
-* @brief This Functions checks if the return statement is valid
-* 
-* @param stack The Scope Stack
-* @param yylineno The line that we found the token
-*
-* @return EXIT_FAILURE or EXIT_SUCCESS 
-*/
+ * @brief This Functions checks if the return statement is valid
+ *
+ * @param stack The Scope Stack
+ * @param yylineno The line that we found the token
+ *
+ * @return EXIT_FAILURE or EXIT_SUCCESS
+ */
 static int Valid_return(ScopeStack_T stack, unsigned int yylineno)
 {
 	if (IntStack_isEmpty(stack))
@@ -240,11 +239,11 @@ int eval_lvalue(SymEntry_T entry, char *operation, int yylineno)
 
 /* Manages break; and continue; statements */
 stmt_T Manage_loop_token(char *name,
-						int loop_counter,
-						unsigned int yylineno)
+						 int loop_counter,
+						 unsigned int yylineno)
 {
 	stmt_T stmt = new_stmt();
-	
+
 	/*Checks if it is a Valid loop token*/
 	if (Valid_loop_token(name, loop_counter, yylineno) == EXIT_FAILURE)
 		return stmt;
@@ -388,11 +387,10 @@ expr *Manage_arithmetic_expr(expr *arg1, expr *arg2,
 	return result;
 }
 
-
 /* Manage relation expression */
-expr* Manage_rel_expr(expr *arg1, expr *arg2,
-					iopcode op, char *context,
-					unsigned scope, unsigned yylineno)
+expr *Manage_rel_expr(expr *arg1, expr *arg2,
+					  iopcode op, char *context,
+					  unsigned scope, unsigned yylineno)
 {
 
 	if (!arg1 || !arg2)
@@ -402,185 +400,235 @@ expr* Manage_rel_expr(expr *arg1, expr *arg2,
 	check_arith(arg2, context);
 
 	expr *result = newexpr(boolexpr_e);
-	result->sym = newtemp(scope,yylineno);
-
+	result->sym = newtemp(scope, yylineno);
 
 	result->true_list = curr_quad_label();
-	emit(op,arg1, arg2, NULL, yylineno, 0);
-	
-	
+	emit(op, arg1, arg2, NULL, yylineno, 0);
+
 	result->false_list = curr_quad_label();
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
 
 	return result;
 }
 
-
-
 /* Manage return statement */
-stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno,expr* e)
+stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno, expr *e)
 {
 	stmt_T stmt = new_stmt();
-	
+
 	/*Checks if it is a Valid return statement */
-	if(Valid_return(stack,yylineno) == EXIT_FAILURE)
+	if (Valid_return(stack, yylineno) == EXIT_FAILURE)
 		return stmt;
-	
-	emit(ret_i,NULL, NULL, e, yylineno, 0);
-	
+
+	emit(ret_i, NULL, NULL, e, yylineno, 0);
+
 	stmt->retlist = curr_quad_label();
-	
+
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
 
 	return stmt;
 }
 
 /* Manage assignment */
-expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
+expr *Manage_assignexpr(expr *lvalue, expr *rvalue,
 						unsigned int scope,
-						 unsigned int yylineno){
+						unsigned int yylineno)
+{
 
-	expr* assignexpr = NULL ;
+	expr *assignexpr = NULL;
 	assert(lvalue);
 	assert(rvalue);
 
-	eval_lvalue(lvalue->sym,"assignment",yylineno);
-	
-	if(lvalue->type == tableitem_e)
+	eval_lvalue(lvalue->sym, "assignment", yylineno);
+
+	if (lvalue->type == tableitem_e)
 	{
 		emit(tablesetelem_i,
-			lvalue,
-			lvalue->index,
-			rvalue,
-			yylineno,
-			0);
+			 lvalue,
+			 lvalue->index,
+			 rvalue,
+			 yylineno,
+			 0);
 
-		assignexpr 			= emit_iftableitem(lvalue);
-		assignexpr->type 	= assignexpr_e;
+		assignexpr = emit_iftableitem(lvalue);
+		assignexpr->type = assignexpr_e;
 	}
 	else
 	{
 		emit(assign_i,
-			rvalue,
-			NULL,
-			lvalue,
-			yylineno,
-			0);
+			 rvalue,
+			 NULL,
+			 lvalue,
+			 yylineno,
+			 0);
 
 		assignexpr = newexpr(assignexpr_e);
-		assignexpr->sym = newtemp(scope,yylineno);
+		assignexpr->sym = newtemp(scope, yylineno);
 
-		emit(assign_i,lvalue,NULL,assignexpr,yylineno,0);
+		emit(assign_i, lvalue, NULL, assignexpr, yylineno, 0);
 	}
 
 	return assignexpr;
 }
 
 /* Manage call->lvalue callsuffix*/
-expr* Manage_call_lv_suffix(expr* lvalue, call_T call_suffix){
+expr *Manage_call_lv_suffix(expr *lvalue, call_T call_suffix)
+{
 
-	expr 	*list = NULL,
-			*curr = NULL, 
-			*prev = NULL;
+	expr *list = NULL,
+		 *curr = NULL,
+		 *prev = NULL;
 
 	assert(lvalue && call_suffix);
 
 	lvalue = emit_iftableitem(lvalue);
 
-	if(call_suffix->method == 1)
+	if (call_suffix->method == 1)
 	{
-			list = lvalue;
-    		curr = call_suffix->elist;
-			lvalue = emit_iftableitem(member_item(list,call_suffix->name));
-	
+		list = lvalue;
+		curr = call_suffix->elist;
+		lvalue = emit_iftableitem(member_item(list, call_suffix->name));
+
 		while (curr)
 		{
 			prev = curr;
 			curr = curr->next;
 		}
 
-		if(curr == NULL)
+		if (curr == NULL)
 		{
 			call_suffix->elist = list;
 		}
 		else
 		{
-			prev-> next = list;
+			prev->next = list;
 		}
-	
 	}
 
-	return make_call(lvalue, call_suffix->elist);;
+	return make_call(lvalue, call_suffix->elist);
+	;
 }
 
-
 /*Manage member*/
-expr* Manage_member(expr* call, expr* index)
+expr *Manage_member(expr *call, expr *index)
 {
 	call = emit_iftableitem(call);
 
-	expr* temp = newexpr(tableitem_e);
+	expr *temp = newexpr(tableitem_e);
 	temp->sym = call->sym;
 	temp->index = index;
 
 	return temp;
 }
 
-
-
-expr* Manage_obj_elist(expr* elist, unsigned scope, unsigned yylineno)
+expr *Manage_obj_elist(expr *elist, unsigned scope, unsigned yylineno)
 {
-	expr* t = newexpr(newtable_e);
-	t->sym = newtemp(scope,yylineno);
-	
+	expr *t = newexpr(newtable_e);
+	t->sym = newtemp(scope, yylineno);
+
 	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
 
 	for (int i = 0; elist; elist = elist->next)
-		emit(tablesetelem_i, t, new_num_expr(i++), elist,yylineno,0);
-	
+		emit(tablesetelem_i, t, new_num_expr(i++), elist, yylineno, 0);
+
 	return t;
 }
 
-
-
-expr* Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno)
+expr *Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno)
 {
-	expr* t = newexpr(newtable_e);
-	t->sym = newtemp(scope,yylineno);
-	
+	expr *t = newexpr(newtable_e);
+	t->sym = newtemp(scope, yylineno);
+
 	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
 
-	for ( ;index_list; index_list = index_list->next)
-		emit(tablesetelem_i, t, index_list->pair->index, index_list->pair->value ,yylineno,0);
-	
+	for (; index_list; index_list = index_list->next)
+		emit(tablesetelem_i, t, index_list->pair->index, index_list->pair->value, yylineno, 0);
+
 	return t;
 }
 
-
-
-expr* Manage_unary_minus(expr* val, unsigned scope, unsigned yylineno)
+expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 {
 
-  	expr *new_expr;
-    new_expr = newexpr(arithexpr_e);
+	expr *new_expr;
+	new_expr = newexpr(arithexpr_e);
 
-    check_arith(val,"unary minus");
+	check_arith(val, "unary minus");
 
-    new_expr->sym = newtemp(scope,yylineno);
+	new_expr->sym = newtemp(scope, yylineno);
 
-    emit(uminus_i, val, NULL, new_expr, yylineno, 0);
+	emit(uminus_i, val, NULL, new_expr, yylineno, 0);
 
-    return new_expr;
-
+	return new_expr;
 }
 
-
-
-expr* Manage_not_expr(expr* val, unsigned scope, unsigned yylineno)
+expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
-	expr* term = newexpr(boolexpr_e);
-	term->sym = newtemp(scope,yylineno);
-	emit(not_i,val, NULL, term, yylineno, 0);
+	expr *term = newexpr(boolexpr_e);
+	term->sym = newtemp(scope, yylineno);
+	emit(not_i, val, NULL, term, yylineno, 0);
+
+	return term;
+}
+
+/* Manages lvalue++ and lvalue-- */
+expr *Manage_lv_arithmetic_right(expr *lvalue, iopcode op,
+								 char *context, unsigned scope,
+								 unsigned yylineno)
+{
+
+	assert(lvalue);
+
+	eval_lvalue(lvalue->sym,context,yylineno);
+	check_arith(lvalue, context);
+
+	expr *term = newexpr(var_e);
+	term->sym = newtemp(scope, yylineno);
+
+	if (lvalue->type == tableitem_e)
+	{
+
+		expr *val = emit_iftableitem(lvalue);
+
+		emit(assign_i, val, NULL, term, yylineno, 0);
+		emit(op, val, new_num_expr(1), val, yylineno, 0);
+		emit(tablesetelem_i, lvalue, lvalue->index, val, yylineno, 0);
+	}
+	else
+	{
+		emit(assign_i, lvalue, NULL, term, yylineno, 0);
+		emit(op, lvalue, new_num_expr(1), lvalue, yylineno, 0);
+	}
+
+	return term;
+}
+
+/* Manages ++lvalue and --lvalue */
+expr *Manage_lv_arithmetic_left(expr *lvalue, iopcode op,
+								 char *context, unsigned scope,
+								 unsigned yylineno)
+{
+
+	assert(lvalue);
+
+	eval_lvalue(lvalue->sym,context,yylineno);
+	check_arith(lvalue, context);
+
+	expr *term = NULL;
+
+	if (lvalue->type == tableitem_e)
+	{
+		term = emit_iftableitem(lvalue);
+		emit(op, term, new_num_expr(1), term, yylineno, 0);
+		emit(tablesetelem_i, lvalue, lvalue->index, term, yylineno, 0);
+	}
+	else
+	{
+		emit(op, lvalue, new_num_expr(1), lvalue, yylineno, 0);
+		term = newexpr(arithexpr_e);
+		term->sym = newtemp(scope,yylineno);
+		emit(assign_i, lvalue, NULL, term, yylineno, 0);
+	}
 
 	return term;
 }

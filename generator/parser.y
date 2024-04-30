@@ -203,14 +203,14 @@ expr: assginexpr				{$$ = $1 ;}
 	| term						{$$ = $1 ;}
 	; 
 
-term: '(' expr ')'{$$ = NULL;}
-	| '-' expr	%prec UNARY_MINUS{$$ = NULL;}
-	| NOT expr			{$$ = NULL;}
-	| INC_OP lvalue 	{if($2 != NULL)eval_lvalue($2->sym,"++",yylineno);$$= NULL;}
-	| lvalue INC_OP		{if($1 != NULL)eval_lvalue($1->sym,"++",yylineno);$$= NULL;}
-	| DEC_OP lvalue		{if($2 != NULL)eval_lvalue($2->sym,"--",yylineno);$$= NULL;}
-	| lvalue DEC_OP		{if($1 != NULL)eval_lvalue($1->sym,"--",yylineno);$$= NULL;}
-	| primary			{$$ = $1;}
+term: '(' expr ')'						{$$ = $2;}
+	| '-' expr	%prec UNARY_MINUS		{$$ = Manage_unary_minus($2,scope,yylineno);}
+	| NOT expr							{$$ = NULL;}
+	| INC_OP lvalue 					{$$ = Manage_lv_arithmetic_left($2,add_i,"left ++",scope,yylineno);}
+	| lvalue INC_OP						{$$ = Manage_lv_arithmetic_right($1,add_i,"right ++",scope,yylineno);}
+	| DEC_OP lvalue						{$$ = Manage_lv_arithmetic_left($2,sub_i,"left --",scope,yylineno);}
+	| lvalue DEC_OP						{$$ = Manage_lv_arithmetic_right($1,sub_i,"right --",scope,yylineno);}
+	| primary							{$$ = $1;}
 	;
 
 assginexpr
