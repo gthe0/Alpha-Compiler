@@ -133,7 +133,7 @@ void short_circuit(expr* e,unsigned yylineno)
 }
 
 
-
+/* Creates a boolean expression out of another */
 expr* make_bool_expr(expr* e, 
 					unsigned scope,
 					unsigned yylineno)
@@ -149,7 +149,7 @@ expr* make_bool_expr(expr* e,
 
 
 	bool_e->true_list = curr_quad_label();
-	emit(if_eq_i, e, newexpr_constbool(1), NULL, yylineno, 0);
+	emit(if_eq_i, e, new_bool_expr(1), NULL, yylineno, 0);
 	
 	
 	bool_e->false_list = curr_quad_label();

@@ -107,7 +107,7 @@ char* Manage_func_name_anonymous(int scope,unsigned yylineno);
 
 
 /**
-* @brief This Functions checks Manages the anonymous function definition
+* @brief This Functions checks and manages the arithmetic expressions
 *
 * @param arg1 The first argument of the expression
 * @param arg2 The second argument of the expression
@@ -148,11 +148,86 @@ expr* Manage_assignexpr(expr* lvalue, expr* rvalue,
 						unsigned int scope,
 						 unsigned int yylineno);
 
+/**
+* @brief This function manages the call->lvalue callsuffix rule
+* 
+* @param lvalue The l-value of the assignment
+* @param call_suffix The Information of the call struct
+*
+* @return the result 
+*/
 expr* Manage_call_lv_suffix(expr* lvalue, call_T call_suffix);
+
+/**
+* @brief This function manages the members of the tables
+* 
+* @param call The result of the call rule
+* @param index The index expression of the table
+*
+* @return the result 
+*/
 expr* Manage_member(expr* call, expr* index);
+
+
+/**
+* @brief This function manages obj_list->indexed rule
+* 
+* @param index_list The list of the tables index-value pairs
+* @param scope The current Scope 
+* @param yylineno The current line
+*
+* @return the result 
+*/
 expr* Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylineno);
+
+/**
+* @brief This function manages obj_list->elist rule
+* 
+* @param elist The list of the various expression/members of the table
+* @param scope The current Scope 
+* @param yylineno The current line
+*
+* @return the result 
+*/
 expr* Manage_obj_elist(expr* elist, unsigned scope, unsigned yylineno);
+
+/**
+* @brief This function manages unary minus rule
+* 
+* @param val The expression we want to negate
+* @param scope The current Scope 
+* @param yylineno The current line
+*
+* @return the result 
+*/
 expr* Manage_unary_minus(expr* val, unsigned scope, unsigned yylineno);
+
+/**
+* @brief This function manages not expression
+* 
+* @param val The expression we want to turn into a not boolean expression
+* @param scope The current Scope 
+* @param yylineno The current line
+*
+* @return the result 
+*/
 expr* Manage_not_expr(expr* val, unsigned scope, unsigned yylineno);
+
+
+/**
+* @brief This Functions checks and manages the relationship expressions
+*
+* @param arg1 The first argument of the expression
+* @param arg2 The second argument of the expression
+* @param op	The opcdode of the instruction
+* @param context The context in which it was used. 
+* @param scope The current Scope 
+* @param yylineno The line that we found the token
+*
+* @return The function symbol 
+*/
+expr* Manage_rel_expr(expr *arg1, expr *arg2,
+					iopcode op, char *context,
+					unsigned scope, unsigned yylineno);
 
 #endif /* parser utilities */

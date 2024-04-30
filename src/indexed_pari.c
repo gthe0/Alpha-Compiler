@@ -1,3 +1,11 @@
+/*----------------------------------------------------------*/
+/* Authors: csd4881, csd4988, csd5038						*/
+/* 														    */
+/* indexed_pari.c											*/
+/* 														    */
+/* Implementation of the indexed_pair.h's various ADTs		*/
+/*----------------------------------------------------------*/
+
 #include <indexed_pair.h>
 
 #include <stdlib.h>
@@ -5,7 +13,7 @@
 #include <assert.h>
 
 
-
+/* Creates a new pair filled with the values passed */
 IndexPair_T new_indexed_pair(expr* index, expr* value)
 {
 	IndexPair_T new_pair = malloc(sizeof(indexed_pair_t));
@@ -19,7 +27,7 @@ IndexPair_T new_indexed_pair(expr* index, expr* value)
 
 
 
-
+/* Creates a new node for the pair list */
 PairList_T PairList_new(void)
 {
 	PairList_T new_bind = malloc(sizeof(Pair_list_t));
@@ -33,7 +41,7 @@ PairList_T PairList_new(void)
 
 
 
-
+/* Inserts a new node in the pair list */
 PairList_T PairList_insert(IndexPair_T pair, PairList_T next)
 {
 	PairList_T list = PairList_new();

@@ -388,6 +388,35 @@ expr *Manage_arithmetic_expr(expr *arg1, expr *arg2,
 	return result;
 }
 
+
+/* Manage relation expression */
+expr* Manage_rel_expr(expr *arg1, expr *arg2,
+					iopcode op, char *context,
+					unsigned scope, unsigned yylineno)
+{
+
+	if (!arg1 || !arg2)
+		return NULL;
+
+	check_arith(arg1, context);
+	check_arith(arg2, context);
+
+	expr *result = newexpr(boolexpr_e);
+	result->sym = newtemp(scope,yylineno);
+
+
+	result->true_list = curr_quad_label();
+	emit(op,arg1, arg2, NULL, yylineno, 0);
+	
+	
+	result->false_list = curr_quad_label();
+	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+
+	return result;
+}
+
+
+
 /* Manage return statement */
 stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno,expr* e)
 {

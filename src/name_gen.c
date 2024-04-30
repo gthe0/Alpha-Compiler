@@ -1,3 +1,12 @@
+/*----------------------------------------------------------*/
+/* Authors: csd4881, csd4988, csd5038						*/
+/* 														    */
+/* name_gen.c		            							*/
+/* 														    */
+/* Implementation of name_gen.h lib							*/
+/*----------------------------------------------------------*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
