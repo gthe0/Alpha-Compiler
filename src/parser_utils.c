@@ -645,6 +645,8 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 						 unsigned scope,
 						 unsigned yylineno)
 {
+	assert(arg1 && arg2 && (op == and_i || op == or_i));
+
 	int list_to_patch = op == and_i ?
 		arg1->true_list : arg1->false_list;
 	

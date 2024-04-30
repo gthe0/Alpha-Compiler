@@ -198,8 +198,8 @@ expr: assginexpr				{$$ = $1 ;}
 	| expr LE_OP expr			{$$ = Manage_rel_expr($1,$3,if_lesseq_i,"<=",scope,yylineno) ;}
 	| expr EQ_OP expr			{$$ = Manage_rel_expr($1,$3,if_eq_i,"==",scope,yylineno) ;}
 	| expr NE_OP expr			{$$ = Manage_rel_expr($1,$3,if_noteq_i,"!=",scope,yylineno) ;}
-	| expr AND expr				{$$ = NULL ;}
-	| expr OR expr				{$$ = NULL ;}
+	| expr AND expr				{$$ = Manage_conjunctions($1,$3,and_i,curr_quad_label(),scope,yylineno) ;}
+	| expr OR expr				{$$ = Manage_conjunctions($1,$3,or_i,curr_quad_label(),scope,yylineno) ;}
 	| term						{$$ = $1 ;}
 	; 
 
