@@ -653,18 +653,17 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 	
 	patchlist(list_to_patch,label);
 
-	expr* new_e = newexpr(boolexpr_e);
-	new_e -> sym = newtemp(scope,yylineno);
+	expr* new_e = make_bool_expr(scope,yylineno);
 
 	if(op == and_i)
 	{
-		new_e -> false_list = mergelist(list_to_patch,arg2->false_list);
-		new_e -> true_list = arg2 -> true_list ;
+		new_e -> false_list = mergelist(arg1->false_list , arg2->false_list);
+		new_e -> true_list = arg2->true_list ;
 	}
 	else
 	{
-		new_e -> true_list = mergelist(list_to_patch,arg2->false_list);
-		new_e -> false_list = arg2 -> false_list ;
+		new_e -> true_list = mergelist(arg1->true_list,arg2->true_list);
+		new_e -> false_list = arg2->false_list ;
 	}
 
 	return new_e ;
