@@ -186,25 +186,25 @@ stmt: expr ';'
 	}
 	;
 
-expr: assginexpr				{$$ = $1 ;}
-	| expr '+' expr				{$$ = Manage_arithmetic_expr($1,$3,add_i,"addition",scope,yylineno);}
-	| expr '-' expr				{$$ = Manage_arithmetic_expr($1,$3,sub_i,"subtraction",scope,yylineno);}
-	| expr '*' expr				{$$ = Manage_arithmetic_expr($1,$3,mul_i,"multiplication",scope,yylineno);}
-	| expr '%' expr				{$$ = Manage_arithmetic_expr($1,$3,div_i,"division",scope,yylineno);}
-	| expr '/' expr				{$$ = Manage_arithmetic_expr($1,$3,mod_i,"modulo",scope,yylineno);}
-	| expr '>' expr				{$$ = Manage_rel_expr($1,$3,if_greater_i,">",scope,yylineno) ;}
-	| expr '<' expr				{$$ = Manage_rel_expr($1,$3,if_less_i,"<",scope,yylineno) ;}
-	| expr GE_OP expr			{$$ = Manage_rel_expr($1,$3,if_greatereq_i,">=",scope,yylineno) ;}
-	| expr LE_OP expr			{$$ = Manage_rel_expr($1,$3,if_lesseq_i,"<=",scope,yylineno) ;}
-	| expr EQ_OP expr			{$$ = Manage_rel_expr($1,$3,if_eq_i,"==",scope,yylineno) ;}
-	| expr NE_OP expr			{$$ = Manage_rel_expr($1,$3,if_noteq_i,"!=",scope,yylineno) ;}
-	| expr AND					{$1 = emit_if_boolean($1,scope,yylineno);} 
-	expr						{$4 = emit_if_boolean($4,scope,yylineno);
-								 $$ = Manage_conjunctions($1,$4,and_i,curr_quad_label(),scope,yylineno) ;}
-	| expr OR 					{$1 = emit_if_boolean($1,scope,yylineno);} 
-	expr 						{$4 = emit_if_boolean($4,scope,yylineno);
-								 $$ = Manage_conjunctions($1,$4,or_i,curr_quad_label(),scope,yylineno) ;}
-	| term						{$$ = $1 ;}
+expr: assginexpr						{$$ = $1 ;}
+	| expr '+' expr						{$$ = Manage_arithmetic_expr($1,$3,add_i,"addition",scope,yylineno);}
+	| expr '-' expr						{$$ = Manage_arithmetic_expr($1,$3,sub_i,"subtraction",scope,yylineno);}
+	| expr '*' expr						{$$ = Manage_arithmetic_expr($1,$3,mul_i,"multiplication",scope,yylineno);}
+	| expr '%' expr						{$$ = Manage_arithmetic_expr($1,$3,div_i,"division",scope,yylineno);}
+	| expr '/' expr						{$$ = Manage_arithmetic_expr($1,$3,mod_i,"modulo",scope,yylineno);}
+	| expr '>' expr						{$$ = Manage_rel_expr($1,$3,if_greater_i,">",scope,yylineno) ;}
+	| expr '<' expr						{$$ = Manage_rel_expr($1,$3,if_less_i,"<",scope,yylineno) ;}
+	| expr GE_OP expr					{$$ = Manage_rel_expr($1,$3,if_greatereq_i,">=",scope,yylineno) ;}
+	| expr LE_OP expr					{$$ = Manage_rel_expr($1,$3,if_lesseq_i,"<=",scope,yylineno) ;}
+	| expr EQ_OP expr					{$$ = Manage_rel_expr($1,$3,if_eq_i,"==",scope,yylineno) ;}
+	| expr NE_OP expr					{$$ = Manage_rel_expr($1,$3,if_noteq_i,"!=",scope,yylineno) ;}
+	| expr AND							{$1 = emit_if_boolean($1,scope,yylineno);} 
+	expr								{$4 = emit_if_boolean($4,scope,yylineno);
+										 $$ = Manage_conjunctions($1,$4,and_i,curr_quad_label(),scope,yylineno) ;}
+	| expr OR 							{$1 = emit_if_boolean($1,scope,yylineno);} 
+	expr 								{$4 = emit_if_boolean($4,scope,yylineno);
+										 $$ = Manage_conjunctions($1,$4,or_i,curr_quad_label(),scope,yylineno) ;}
+	| term								{$$ = $1 ;}
 	; 
 
 term: '(' expr ')'						{$$ = $2;}
@@ -218,46 +218,30 @@ term: '(' expr ')'						{$$ = $2;}
 	;
 
 assginexpr
-	: lvalue '=' expr 	{$$ = Manage_assignexpr($1,$3,scope,yylineno);}
-	| error '=' expr 	{LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
+	: lvalue '=' expr 					{$$ = Manage_assignexpr($1,$3,scope,yylineno);}
+	| error '=' expr 					{LOG_ERROR(PARSER,NOTE,"Wrong lvalue in assignment, line %u\n",yylineno); yyerrok;} 
 	;
 
 primary
-	: lvalue				{$$ = emit_iftableitem($1);}  
-	| call 					{$$ = emit_iftableitem($1);}
-	| objectdef				{$$ = $1 ;}
-	| '(' funcdef ')'		
-	{
-		$$ = newexpr(programfunc_e);
-	 	$$->sym = $2 ;
-	}
-	| const					{$$ = $1;}
+	: lvalue							{$$ = emit_iftableitem($1);}  
+	| call 								{$$ = emit_iftableitem($1);}
+	| objectdef							{$$ = $1 ;}
+	| '(' funcdef ')'					{ $$ = newexpr(programfunc_e); $$->sym = $2 ; }
+	| const								{$$ = $1;}
 	;
 
 lvalue
-	: ID	
-	{
-		$$ = lvalue_expr(Manage_lv_ID($1,yylineno, scope ,oScopeStack));
-	}
-	| LOC ID
-	{
-		$$ =  lvalue_expr(Manage_lv_local($2,yylineno,scope));
-	}
-	| DOUBLE_COL ID	
-	{
-		$$ = lvalue_expr(Manage_lv_global($2,yylineno));
-	}
-	| member	
-	{
-		$$ = $1;
-	}
+	: ID								{ $$ = lvalue_expr(Manage_lv_ID($1,yylineno, scope ,oScopeStack)); }
+	| LOC ID 							{ $$ =  lvalue_expr(Manage_lv_local($2,yylineno,scope)); }
+	| DOUBLE_COL ID						{ $$ = lvalue_expr(Manage_lv_global($2,yylineno)); }
+	| member 							{ $$ = $1;	}
 	;
 
 member
-	: call '.' ID			{$$ = member_item($1,$3) ;}
-	| lvalue '.' ID			{$$ = member_item($1,$3) ;}
-	| call '[' expr ']'		{$$ = Manage_member($1,$3) ;}
-	| lvalue '[' expr ']'	{$$ = Manage_member($1,$3) ;}
+	: call '.' ID						{$$ = member_item($1,$3) ;}
+	| lvalue '.' ID						{$$ = member_item($1,$3) ;}
+	| call '[' expr ']'					{$$ = Manage_member($1,$3) ;}
+	| lvalue '[' expr ']'				{$$ = Manage_member($1,$3) ;}
 	;
 
 call: call '(' ')'
