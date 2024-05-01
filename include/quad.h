@@ -43,7 +43,8 @@ enum iopcode{
     tablecreate_i,
     tablegetelem_i,
     tablesetelem_i,
-    jump_i
+    jump_i,
+	blank_i
 };
 
 

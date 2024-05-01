@@ -521,6 +521,7 @@ int main(int argc,char** argv)
 	offsetStack = IntStack_init();
 
 	expand();
+	emit(blank_i,NULL , NULL, NULL, 0, 0);
 	Tables_init();
 	/* Call the Parser */
 	yyparse();

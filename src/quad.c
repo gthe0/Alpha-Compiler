@@ -188,6 +188,8 @@ static void quad_decode(FILE *ost, unsigned i)
 		case jump_i:
 			fprintf(ost,"JUMP ");
 			break;
+		case blank_i:
+			break;
 		default:
 			fprintf(ost,"UNKNOWN ");
 			break;
@@ -258,7 +260,7 @@ int write_quads(void)
 		return EXIT_FAILURE;
 	}
 
-	for (unsigned i = 0; i < currQuad; i++)
+	for (unsigned i = 1; i < currQuad; i++)
 		quad_decode(ost, i);
 
 	return EXIT_SUCCESS;
