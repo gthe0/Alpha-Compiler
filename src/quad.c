@@ -194,14 +194,31 @@ static void quad_decode(FILE *ost, unsigned i)
 			fprintf(ost,"UNKNOWN ");
 			break;
 	}
-		if (quad_table[i].result && quad_table[i].result->sym)
-			fprintf(ost,"%s ", getName(quad_table[i].result->sym));
 		if (quad_table[i].arg1 && quad_table[i].arg1->sym)
 			fprintf(ost,"%s ", getName(quad_table[i].arg1->sym));
 		if (quad_table[i].arg2 && quad_table[i].arg2->sym)
 			fprintf(ost,"%s ", getName(quad_table[i].arg2->sym));
+		if (quad_table[i].arg1 && quad_table[i].arg1->strConst)
+			fprintf(ost," \"%s\"  ", quad_table[i].arg1->strConst);
+		if (quad_table[i].result && quad_table[i].result->strConst)
+			fprintf(ost," result \"%s\" ", quad_table[i].result->strConst);
+
+		if (quad_table[i].arg2 && quad_table[i].arg2->strConst)
+			fprintf(ost," arg2 \"%s\" ", quad_table[i].arg2->strConst);
+
+		if (quad_table[i].arg1)
+			fprintf(ost," %lf ",quad_table[i].arg1->numConst);
+		if(quad_table[i].arg2)
+			fprintf(ost," %lf ",quad_table[i].arg1->numConst);
+		if(quad_table[i].result)
+			fprintf(ost," %lf ",quad_table[i].result->numConst);
+
+		if (quad_table[i].result && quad_table[i].result->sym)
+			fprintf(ost,"%s ", getName(quad_table[i].result->sym));
+
 			fprintf(ost,"label %d ", quad_table[i].label);
 			fprintf(ost,"line %d ", quad_table[i].line);
+
 
 	fprintf(ost,"\n");
 	return;

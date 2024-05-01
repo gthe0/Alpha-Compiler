@@ -226,13 +226,13 @@ primary
 	: lvalue							{$$ = emit_iftableitem($1);}  
 	| call 								{$$ = emit_iftableitem($1);}
 	| objectdef							{$$ = $1 ;}
-	| '(' funcdef ')'					{ $$ = newexpr(programfunc_e); $$->sym = $2 ; }
+	| '(' funcdef ')'					{$$ = newexpr(programfunc_e); $$->sym = $2 ;}
 	| const								{$$ = $1;}
 	;
 
 lvalue
 	: ID								{ $$ = lvalue_expr(Manage_lv_ID($1,yylineno, scope ,oScopeStack)); }
-	| LOC ID 							{ $$ =  lvalue_expr(Manage_lv_local($2,yylineno,scope)); }
+	| LOC ID 							{ $$ = lvalue_expr(Manage_lv_local($2,yylineno,scope)); }
 	| DOUBLE_COL ID						{ $$ = lvalue_expr(Manage_lv_global($2,yylineno)); }
 	| member 							{ $$ = $1;	}
 	;
@@ -244,164 +244,149 @@ member
 	| lvalue '[' expr ']'				{$$ = Manage_member($1,$3) ;}
 	;
 
-call: call '(' ')'
-	{
-		$$ = make_call($1, NULL);
-	}
-	| call '(' elist ')'
-	{
-		$$ = make_call($1, $3);
-	}
-	| '(' funcdef ')' '(' elist ')'
-	{
-		expr* func = newexpr(programfunc_e);
-		func->sym = $2;
-		$$ = make_call(func, $5);
-	}
-	| '(' funcdef ')' '('  ')'	
-	{
-		expr* func = newexpr(programfunc_e);
-		func->sym = $2;
-		$$ = make_call(func, NULL);
-	}
-	| lvalue callsuffix {$$ = Manage_call_lv_suffix($1,$2);}
+call: call '(' ')'						{$$ = make_call($1, NULL);}
+	| call '(' elist ')'				{$$ = make_call($1, $3);}
+	| lvalue callsuffix 				{$$ = Manage_call_lv_suffix($1,$2);}
+	| '(' funcdef ')' '(' elist ')'		{
+											expr* func = newexpr(programfunc_e);
+											func->sym = $2;
+											$$ = make_call(func, $5);
+										}
+	| '(' funcdef ')' '('  ')'			{
+											expr* func = newexpr(programfunc_e);
+											func->sym = $2;
+											$$ = make_call(func, NULL);
+										}
 	;
 
 callsuffix
-	: normcall			{$$ = $1;}
-	| methodcall 		{$$ = $1;}
+	: normcall							{$$ = $1;}
+	| methodcall 						{$$ = $1;}
 	;
 
 normcall
-	: '(' elist ')' { $$ = new_call($2,0,NULL); }
-	| '(' ')'		{$$ = new_call(NULL,0,NULL);}
+	: '(' elist ')' 					{$$ = new_call($2,0,NULL);}
+	| '(' ')'							{$$ = new_call(NULL,0,NULL);}
 	;
 
 methodcall
-	: DOUBLE_DOT ID '(' error ')' 	{  yyerrok;} 
-	| DOUBLE_DOT ID '(' elist ')' 	{ $$ = new_call($4,1,$2);}
-	| DOUBLE_DOT ID '('  ')' 		{ $$ = new_call(NULL,1,$2); }
+	: DOUBLE_DOT ID '(' error ')' 		{yyerrok;} 
+	| DOUBLE_DOT ID '(' elist ')' 		{ $$ = new_call($4,1,$2);}
+	| DOUBLE_DOT ID '('  ')' 			{ $$ = new_call(NULL,1,$2); }
 	; 
 
 elist
-	: expr 				{$$ = $1;}
-	| elist ',' expr	{$$ = $3; $$->next = $1;}
-	| elist ',' error	{ yyerrok;} 
+	: expr 								{$1->next = NULL;  $$ = $1;}
+	| elist ',' expr					{$3->next = $1; $$ = $3;}
+	| elist ',' error					{ yyerrok;} 
 	;
 
 objectdef
-	:	'[' object_list ']'	{$$ = $2;}
-	|	'[' error ']'	{  yyerrok;} 
+	:	'[' object_list ']'				{$$ = $2;}
+	|	'[' error ']'					{ yyerrok;} 
 	;
 
 object_list
-	: elist							{$$ = Manage_obj_elist($1,scope,yylineno);}
-	| indexed						{$$ = Manage_obj_indexed($1,scope,yylineno);}
-	|								{$$ = Manage_obj_indexed(NULL,scope,yylineno);}
+	: elist								{$$ = Manage_obj_elist($1,scope,yylineno);}
+	| indexed							{$$ = Manage_obj_indexed($1,scope,yylineno);}
+	|									{$$ = Manage_obj_indexed(NULL,scope,yylineno);}
 	;
 
 indexed
-	: indexed ',' indexedelem		{$$ = PairList_insert($3,$1);}
-	| indexedelem					{$$ = PairList_insert($1,NULL);}
+	: indexed ',' indexedelem			{$$ = PairList_insert($3,$1);}
+	| indexedelem						{$$ = PairList_insert($1,NULL);}
 	;
 
 indexedelem
-	: '{' expr  ':' expr '}'		{$$ = new_indexed_pair($2,$4);}
-	| '{' error ':' expr '}'		{ yyerrok;} 
-	| '{' expr  ':' error '}'		{ yyerrok;} 
-	| '{' expr error expr '}'		{ yyerrok;} 
+	: '{' expr  ':' expr '}'			{$$ = new_indexed_pair($2,$4);}
+	| '{' error ':' expr '}'			{ yyerrok;} 
+	| '{' expr  ':' error '}'			{ yyerrok;} 
+	| '{' expr error expr '}'			{ yyerrok;} 
 	;
 
-NQ: { $$ = curr_scope_offset(); };
+NQ: 									{ $$ = curr_scope_offset(); };
 
 block
-	:'{' { scope++; } 
-	stmt_list 
-	'}'
-	{
-		$$ = $3;
-		ScopeTable_hide(scope);
-		scope--;
-	}
-	|'{' { scope++; } '}'
-	{
-		/* alocate memory for a new stmt */
-		$$ = new_stmt();
-		ScopeTable_hide(scope);
-		scope--;
-	}
+	:'{'	{ scope++; } stmt_list '}'	{
+											$$ = $3;
+											ScopeTable_hide(scope);
+											scope--;
+										}
+	
+	|'{'	{ scope++; }			'}'	{
+											/* alocate memory for a new stmt */
+											$$ = new_stmt();
+											ScopeTable_hide(scope);
+											scope--;
+										}
 	;
 
-funcstart: {
-	$$ = curr_quad_label();
-	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
-}
+funcstart: 								{
+											$$ = curr_quad_label();
+											emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+										}
 
 func_name
-	: 		{ $$ =  func_name_generator(); }
-	| ID	{ $$ = $1; }
+	: 									{ $$ =  func_name_generator(); }
+	| ID								{ $$ = $1; }
 	;
 
 funcpref
-	:	FUNC func_name 
-	{
-		$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
-		set_i_address($$,next_quad_label());
-		/* JUMP OUT OF FUNCTION SCOPE */
-		emit(funcstart_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
-		
-		IntStack_Push(&offsetStack, curr_scope_offset());
-		IntStack_Push(&oScopeStack, scope+1); 
-		
-		enterscopespace(); 
-		resetformalargoffset();
-	}
+	:	FUNC func_name 					{
+											$$ = Manage_func_pref($2,yylineno,scope,oScopeStack);
+											set_i_address($$,next_quad_label());
+											/* JUMP OUT OF FUNCTION SCOPE */
+											emit(funcstart_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
+
+											IntStack_Push(&offsetStack, curr_scope_offset());
+											IntStack_Push(&oScopeStack, scope+1); 
+
+											enterscopespace(); 
+											resetformalargoffset();
+										}
 	;
 
 funcargs
-	: '(' {scope++;} idlist ')'
-	{
-		resetfunctionlocaloffset();
-		enterscopespace(); 
-		scope--;
-	}
+	: '(' {scope++;} idlist ')'			{
+											resetfunctionlocaloffset();
+											enterscopespace(); 
+											scope--;
+										}
 	;
 
 
 funcbody
-	: block 
-	{
-		$$ = $1;
-		exitscopespace();
-	}
+	: block 							{
+											$$ = $1;
+											exitscopespace();
+										}
 	;
 
 funcdef
-	: funcstart funcpref funcargs NQ funcbody			
-	{
-		exitscopespace();
-		set_total_locals($2,$4);
+	: funcstart funcpref funcargs NQ funcbody	{
+													exitscopespace();
+													set_total_locals($2,$4);
 
-		IntStack_Pop(oScopeStack);
-		restore_curr_scope_offset(IntStack_Pop(offsetStack));
-		$$ = $2;
+													IntStack_Pop(oScopeStack);
+													restore_curr_scope_offset(IntStack_Pop(offsetStack));
+													$$ = $2;
 
-		patchlist($5->retlist,curr_quad_label());
-		
-		emit(funcend_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
-		
-		/* JUMP OUT OF FUNCTION SCOPE */
-		patchlabel($1,curr_quad_label());
-	}
+													patchlist($5->retlist,curr_quad_label());
+
+													emit(funcend_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
+
+													/* JUMP OUT OF FUNCTION SCOPE */
+													patchlabel($1,curr_quad_label());
+												}
 	;
 
 const
-	: INT 		{ $$ = new_num_expr($1); }
-	| FLOAT 	{ $$ = new_num_expr($1); }
-	| NIL 		{ $$ = new_nil_expr(  ); }
-	| TRUE 		{ $$ = new_bool_expr(1); }
-	| FALSE 	{ $$ = new_bool_expr(0); }
-	| STRING 	{ $$ = new_string_expr($1);}
+	: INT 										{ $$ = new_num_expr($1); }
+	| FLOAT 									{ $$ = new_num_expr($1); }
+	| NIL 										{ $$ = new_nil_expr(  ); }
+	| TRUE 										{ $$ = new_bool_expr(1); }
+	| FALSE 									{ $$ = new_bool_expr(0); }
+	| STRING 									{ $$ = new_string_expr($1);}
 	;
 
 idlist

@@ -53,11 +53,11 @@ PairList_T PairList_new(void);
 /**
 * @brief Creates a new, filled pair lsit.
 * @param pair The pair to be inserted in the list.
-* @param next The next node of the list.
+* @param head The head node of the list.
 *
 * @return The new head of the Pair list.
 */
-PairList_T PairList_insert(IndexPair_T pair, PairList_T next);
+PairList_T PairList_insert(IndexPair_T pair, PairList_T head);
 
 
 #endif /* indexed pair and pair list ADTs */

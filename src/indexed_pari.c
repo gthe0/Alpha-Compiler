@@ -42,12 +42,22 @@ PairList_T PairList_new(void)
 
 
 /* Inserts a new node in the pair list */
-PairList_T PairList_insert(IndexPair_T pair, PairList_T next)
+PairList_T PairList_insert(IndexPair_T pair, PairList_T head)
 {
-	PairList_T list = PairList_new();
+    PairList_T new_node = PairList_new();
+    new_node->pair = pair;
+    new_node->next = NULL;
 
-	list->pair = pair;
-	list->next = next;
+    if (head == NULL) 
+        return new_node;
 
-	return list;
+    PairList_T current = head;
+    
+	while (current->next != NULL)
+		current = current->next;
+    
+
+    current->next = new_node;
+
+    return head; // Return the updated head.
 }

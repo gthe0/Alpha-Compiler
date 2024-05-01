@@ -36,6 +36,25 @@ static char *LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
 		"sin",
 };
 
+static expr* reverse_elist(expr* elist)
+{
+	expr* prev = NULL;
+	expr* next = NULL;
+
+	while(elist)
+	{
+
+		next = elist->next;
+		elist->next = prev;
+
+		prev = elist;
+		elist = next;
+	}
+
+	return prev;
+}
+
+
 /**
  * @brief Check if we shadow library Functions.
  *
@@ -475,8 +494,7 @@ expr *Manage_call_lv_suffix(expr *lvalue, call_T call_suffix)
 {
 
 	expr *list = NULL,
-		 *curr = NULL,
-		 *prev = NULL;
+		 *curr = NULL;
 
 	assert(lvalue && call_suffix);
 
@@ -488,11 +506,8 @@ expr *Manage_call_lv_suffix(expr *lvalue, call_T call_suffix)
 		curr = call_suffix->elist;
 		lvalue = emit_iftableitem(member_item(list, call_suffix->name));
 
-		while (curr)
-		{
-			prev = curr;
+		while (curr && curr->next)
 			curr = curr->next;
-		}
 
 		if (curr == NULL)
 		{
@@ -500,12 +515,11 @@ expr *Manage_call_lv_suffix(expr *lvalue, call_T call_suffix)
 		}
 		else
 		{
-			prev->next = list;
+			curr->next = list;
 		}
 	}
 
 	return make_call(lvalue, call_suffix->elist);
-	;
 }
 
 /*Manage member*/
@@ -527,6 +541,8 @@ expr *Manage_obj_elist(expr *elist, unsigned scope, unsigned yylineno)
 	t->sym = newtemp(scope, yylineno);
 
 	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
+
+	elist = reverse_elist(elist);
 
 	for (int i = 0; elist; elist = elist->next)
 		emit(tablesetelem_i, t, new_num_expr(i++), elist, yylineno, 0);
