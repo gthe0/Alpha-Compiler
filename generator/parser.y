@@ -111,6 +111,7 @@
 %nonassoc EQ_OP  NE_OP
 %nonassoc '<' '>' GE_OP  LE_OP
 
+%precedence then
 %precedence ELSE
 
 %start program
@@ -411,7 +412,7 @@ elseprefix
 	;
 
 ifstmt
-    :  ifprefix stmt							{patchlabel($1,curr_quad_label()); $$ = $2;}
+    :  ifprefix stmt then						{patchlabel($1,curr_quad_label()); $$ = $2;}
     |  ifprefix  stmt elseprefix stmt			{$$ = Manage_if_else($1,$2,$3,$4, yylineno);}
     ;		
 
