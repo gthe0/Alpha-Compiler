@@ -6,6 +6,7 @@
 /* Implementation of the expression ADT						*/
 /*----------------------------------------------------------*/
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +17,50 @@
 #include <quad.h>
 #include <log.h>
 #include <tables.h>
+
+#define MAX_DOUBLE_LENGTH 25
+
+/**
+* @brief This function turns doubles into strings, removing trailing zeroes 
+* 
+* @param num The double to be turned to string 
+* 
+* @return The generated string 
+*/
+static char* double_to_string(double num)
+{
+	char string_num[MAX_DOUBLE_LENGTH];
+	sprintf(string_num, "%lf", num);
+
+	int is_decimal = 0;
+	char* head = string_num;
+	
+	/* If it is a float remove trailing decimals */
+	while(*head != '\0')
+		if(*head++ == '.')
+			is_decimal = 1;
+	
+	/* Go inside the string */
+	head-- ;
+
+	/* Do not overextend */
+	while (is_decimal && *head == '0' && head != string_num)
+		head-- ;
+
+	if(is_decimal)
+		if(*head == '.')
+			*head = '\0';
+		else if(*head != '0' && head != string_num)
+			*++head = '\0';
+	
+	char *generated_string = malloc((strlen(string_num)) * sizeof(char) + 1);
+	assert(generated_string);
+
+	strcpy(generated_string, string_num);
+
+	return generated_string;
+}
+
 
 /* Creates a new expression */
 expr *newexpr(expr_t t)
@@ -45,9 +90,9 @@ expr* new_nil_expr(void)
 
 
 /*Creates a new boolean expression*/
-expr* new_bool_expr(bool boolConst)
+expr* new_bool_expr(unsigned char boolConst)
 {
-	expr* e = newexpr(boolexpr_e);
+	expr* e = newexpr(constbool_e);
 	e->boolConst = boolConst;
 	return e;
 }
@@ -143,4 +188,36 @@ expr* emit_if_boolean(expr* e,
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
 
 	return bool_e ;
+}
+
+/* Used to decode the expressions and return their strings */
+const char* expr_decode(expr* e)
+{
+	if(e == NULL)
+		return NULL;
+
+	switch(e->type)
+	{
+		case var_e:
+		case tableitem_e:
+		case programfunc_e:
+		case libraryfunc_e:
+		case arithexpr_e:
+		case boolexpr_e:
+		case assignexpr_e:
+		case newtable_e:
+			return e->sym ? getName(e->sym) : NULL;
+		case constnum_e:
+			return double_to_string(e->numConst);
+		case constbool_e:
+			return e->boolConst ? strdup("true") : strdup("false");
+		case conststring_e:
+			return "\"%s\"",e->strConst; 
+		case nil_e:
+			return "nil";
+		default:
+			return NULL;
+	}
+
+	return NULL;
 }

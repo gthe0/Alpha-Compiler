@@ -98,129 +98,120 @@ unsigned int curr_quad_label(void)
 	return (currQuad);
 }
 
-static void quad_decode(FILE *ost, unsigned i)
+static void quad_print(FILE *ost, unsigned i)
 {
+	iopcode op = quad_table[i].op;
+	
+	const char* arg1 = expr_decode(quad_table[i].arg1),
+				* arg2 = expr_decode(quad_table[i].arg2),
+				* result = expr_decode(quad_table[i].result);
+
 	if (!ost)
 	{
 		LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n", QUAD_FILE);
 		return;
 	}
 
-	fprintf(ost,"%u ",i);
+	fprintf(ost,"#%-3u ",i);
 
-	switch (quad_table[i].op)
+	switch (op)
 	{
 		case assign_i:
-			fprintf(ost,"ASSIGN ");
+			fprintf(ost,"%-16s","assign");
 			break;
 		case add_i:
-			fprintf(ost,"ADD ");
+			fprintf(ost,"%-16s","add");
 			break;
 		case sub_i:
-			fprintf(ost,"SUB ");
+			fprintf(ost,"%-16s","sub");
 			break;
 		case mul_i:
-			fprintf(ost,"MUL ");
+			fprintf(ost,"%-16s","mul");
 			break;
 		case div_i:
-			fprintf(ost,"DIV ");
+			fprintf(ost,"%-16s","div");
 			break;
 		case mod_i:
-			fprintf(ost,"MOD ");
+			fprintf(ost,"%-16s","mod");
 			break;
 		case uminus_i:
-			fprintf(ost,"UMINUS ");
+			fprintf(ost,"%-16s","uminus");
 			break;
 		case and_i:
-			fprintf(ost,"AND ");
+			fprintf(ost,"%-16s","and");
 			break;
 		case or_i:
-			fprintf(ost,"OR ");
+			fprintf(ost,"%-16s","or");
 			break;
 		case not_i:
-			fprintf(ost,"NOT ");
+			fprintf(ost,"%-16s","not");
 			break;
 		case if_eq_i:
-			fprintf(ost,"IF_EQ ");
+			fprintf(ost,"%-16s","if_eq");
 			break;
 		case if_noteq_i:
-			fprintf(ost,"IF_NOTEQ ");
+			fprintf(ost,"%-16s","if_noteq");
 			break;
 		case if_lesseq_i:
-			fprintf(ost,"IF_LESSEQ ");
+			fprintf(ost,"%-16s","if_lesseq");
 			break;
 		case if_greatereq_i:
-			fprintf(ost,"IF_GREATEREQ ");
+			fprintf(ost,"%-16s","if_greatereq");
 			break;
 		case if_less_i:
-			fprintf(ost,"IF_LESS ");
+			fprintf(ost,"%-16s","if_less");
 			break;
 		case if_greater_i:
-			fprintf(ost,"IF_GREATER ");
+			fprintf(ost,"%-16s","if_greater");
 			break;
 		case call_i:
-			fprintf(ost,"CALL ");
+			fprintf(ost,"%-16s","call");
 			break;
 		case param_i:
-			fprintf(ost,"PARAM ");
+			fprintf(ost,"%-16s","param");
 			break;
 		case ret_i:
-			fprintf(ost,"RETURN ");
+			fprintf(ost,"%-16s","return");
 			break;
 		case getretval_i:
-			fprintf(ost,"GETRETVAL ");
+			fprintf(ost,"%-16s","getretval");
 			break;
 		case funcstart_i:
-			fprintf(ost,"FUNCSTART ");
+			fprintf(ost,"%-16s","funcstart");
 			break;
 		case funcend_i:
-			fprintf(ost,"FUNCEND ");
+			fprintf(ost,"%-16s","funcend");
 			break;
 		case tablecreate_i:
-			fprintf(ost,"TABLECREATE ");
+			fprintf(ost,"%-16s","tablecreate");
 			break;
 		case tablegetelem_i:
-			fprintf(ost,"TABLEGETELEM ");
+			fprintf(ost,"%-16s","tablegetelem");
 			break;
 		case tablesetelem_i:
-			fprintf(ost,"TABLESETELEM ");
+			fprintf(ost,"%-16s","tablesetelem");
 			break;
 		case jump_i:
-			fprintf(ost,"JUMP ");
+			fprintf(ost,"%-16s","jump");
 			break;
 		case blank_i:
 			break;
 		default:
-			fprintf(ost,"UNKNOWN ");
+			fprintf(ost,"%-16s","unknown");
 			break;
 	}
-		if (quad_table[i].arg1 && quad_table[i].arg1->sym)
-			fprintf(ost,"%s ", getName(quad_table[i].arg1->sym));
-		if (quad_table[i].arg2 && quad_table[i].arg2->sym)
-			fprintf(ost,"%s ", getName(quad_table[i].arg2->sym));
-		if (quad_table[i].arg1 && quad_table[i].arg1->strConst)
-			fprintf(ost," \"%s\"  ", quad_table[i].arg1->strConst);
-		if (quad_table[i].result && quad_table[i].result->strConst)
-			fprintf(ost," result \"%s\" ", quad_table[i].result->strConst);
 
-		if (quad_table[i].arg2 && quad_table[i].arg2->strConst)
-			fprintf(ost," arg2 \"%s\" ", quad_table[i].arg2->strConst);
+	fprintf(ost,"%-10s",arg1 ? arg1 : "");
+	fprintf(ost,"%-10s ",arg2 ? arg2 : "");
+	fprintf(ost,"%-10s",result ? result : "");
 
-		if (quad_table[i].arg1)
-			fprintf(ost," %lf ",quad_table[i].arg1->numConst);
-		if(quad_table[i].arg2)
-			fprintf(ost," %lf ",quad_table[i].arg1->numConst);
-		if(quad_table[i].result)
-			fprintf(ost," %lf ",quad_table[i].result->numConst);
+	if(op >= if_eq_i)
+		fprintf(ost,"%-4u ",quad_table[i].label);
+	else
+		fprintf(ost,"%-5s","");
 
-		if (quad_table[i].result && quad_table[i].result->sym)
-			fprintf(ost,"%s ", getName(quad_table[i].result->sym));
+	fprintf(ost,"[line %u]\n",quad_table[i].line);
 
-			fprintf(ost,"label %d ", quad_table[i].label);
-			fprintf(ost,"line %d ", quad_table[i].line);
-
-
-	fprintf(ost,"\n");
 	return;
 }
 
@@ -278,7 +269,7 @@ int write_quads(void)
 	}
 
 	for (unsigned i = 1; i < currQuad; i++)
-		quad_decode(ost, i);
+		quad_print(ost, i);
 
 	return EXIT_SUCCESS;
 }

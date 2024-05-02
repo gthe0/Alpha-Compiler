@@ -77,7 +77,7 @@ expr* new_string_expr(char* strConst);
 *
 * @return The boolean expression
 */
-expr* new_bool_expr(bool boolConst);
+expr* new_bool_expr(unsigned char boolConst);
 
 /**
 * @brief Creates a new nil expression 
@@ -141,5 +141,13 @@ expr* make_bool_expr(unsigned scope,
 expr* emit_if_boolean(expr* e, 
 					unsigned scope,
 					unsigned yylineno);
+
+/**
+* @brief Decodes the expression and gets based on its type the part to be printed (Used in write_quads)
+* @param e The expression
+*
+* @return The string of the field that is to be printed based on the type of the expression
+*/
+const char* expr_decode(expr* e);
 
 #endif /* expr.h ADT */
