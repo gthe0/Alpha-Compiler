@@ -49,10 +49,10 @@ $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
 FLEX_RULES: $(SCRIPTS)/RuleGen.py scripts/misc/list
 	python3 $(SCRIPTS)/RuleGen.py < $(SCRIPTS)/misc/list_path > output.txt
 
-test_2: $(SCRIPTS)/phase2_test.sh
+test2: $(SCRIPTS)/phase2_test.sh
 	$(SCRIPTS)/phase2_test.sh
 
-test_3: $(SCRIPTS)/phase3_test.sh
+test3: $(SCRIPTS)/phase3_test.sh
 	$(SCRIPTS)/phase3_test.sh
 
 ##########################################################################################
@@ -62,7 +62,7 @@ test_3: $(SCRIPTS)/phase3_test.sh
 # Clean up build artifacts
 clean:
 	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt\
-		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode quads.txt test_results/**
+		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode quads.txt test_results
 
 # Ensure that the build and bin directories exist
 $(BUILD_DIR):

@@ -38,3 +38,5 @@ for subdir in "$parent_dir"/*/; do
        "$parentDir"/bin/parser.out "$input_file" "$result_dir/${base_dirname}/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
     done
 done
+
+rm quads.txt
