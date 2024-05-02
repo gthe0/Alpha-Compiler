@@ -7,6 +7,11 @@ parentDir="$(dirname "$scriptDir")"
 parent_dir="$parentDir/test/phase2_tests"
 result_dir="$parentDir/test_results/Phase2"
 
+if [ ! -d $parent_dir ]; then
+	echo "test dir $parent_dir does not exist"
+	exit 1
+fi
+
 rm -rf $result_dir
 # Create the 'result' subdirectory if it doesn't exist
 mkdir -p "$result_dir/Working"

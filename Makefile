@@ -49,11 +49,11 @@ $(BUILD_DIR)/%.o: $(SRC)/%.c | $(BUILD_DIR)
 FLEX_RULES: $(SCRIPTS)/RuleGen.py scripts/misc/list
 	python3 $(SCRIPTS)/RuleGen.py < $(SCRIPTS)/misc/list_path > output.txt
 
-phase3_test: $(SCRIPTS)/phase3_test.sh
-	$(SCRIPTS)/phase3_test.sh
-
-phase2_test: $(SCRIPTS)/phase2_test.sh
+test_2: $(SCRIPTS)/phase2_test.sh
 	$(SCRIPTS)/phase2_test.sh
+
+test_3: $(SCRIPTS)/phase3_test.sh
+	$(SCRIPTS)/phase3_test.sh
 
 ##########################################################################################
 #	UTILITIES
