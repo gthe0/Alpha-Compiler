@@ -183,8 +183,8 @@ expr: assginexpr								{$$ = $1 ;}
     | expr '+' expr								{$$ = Manage_arithmetic_expr($1,$3,add_i,"addition",scope,yylineno);}
     | expr '-' expr								{$$ = Manage_arithmetic_expr($1,$3,sub_i,"subtraction",scope,yylineno);}
     | expr '*' expr								{$$ = Manage_arithmetic_expr($1,$3,mul_i,"multiplication",scope,yylineno);}
-    | expr '%' expr								{$$ = Manage_arithmetic_expr($1,$3,div_i,"division",scope,yylineno);}
-    | expr '/' expr								{$$ = Manage_arithmetic_expr($1,$3,mod_i,"modulo",scope,yylineno);}
+    | expr '%' expr								{$$ = Manage_arithmetic_expr($1,$3,mod_i,"modulo",scope,yylineno);}
+    | expr '/' expr								{$$ = Manage_arithmetic_expr($1,$3,div_i,"division",scope,yylineno);}
     | expr '>' expr								{$$ = Manage_rel_expr($1,$3,if_greater_i,">",scope,yylineno) ;}
     | expr '<' expr								{$$ = Manage_rel_expr($1,$3,if_less_i,"<",scope,yylineno) ;}
     | expr GE_OP expr							{$$ = Manage_rel_expr($1,$3,if_greatereq_i,">=",scope,yylineno) ;}
