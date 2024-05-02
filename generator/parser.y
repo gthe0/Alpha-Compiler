@@ -83,7 +83,7 @@
 %type <string> 			func_name
 %type <statement> 		whilestmt stmt_list stmt block loop_stmt forstmt returnstmt funcbody ifstmt
 %type <expression>		const primary expr lvalue member term assginexpr elist call object_list objectdef
-%type <unsignedVal> 	NQ funcstart
+%type <unsignedVal> 	NQ MQ funcstart whilecond whilestart ifprefix elseprefix
 %type <pair_list_o>  	indexed
 %type <index_pair_o>  	indexedelem
 
@@ -121,15 +121,8 @@ program
     ;
 
 stmt_list
-    : stmt { $$ = $1 ; }
-    | stmt_list stmt {
-        
-        $$ = new_stmt();
-        $$->retlist = mergelist($1->retlist,$2->retlist);
-        $$->contlist = mergelist($1->contlist,$2->contlist);
-        $$->breaklist = mergelist($1->breaklist,$2->breaklist);
-        
-    }
+    : stmt 				{ $$ = $1 ; }
+    | stmt_list stmt 	{ $$ = Merge_stmt($1,$2); }
     ;
     
 stmt: expr ';' 
@@ -305,6 +298,10 @@ indexedelem
     ;		
 
 NQ: 											{ $$ = curr_scope_offset(); };
+MQ:												{ 
+													$$ = curr_scope_offset(); 
+													emit(jump_i,NULL,NULL,NULL,yylineno,0);
+												};
 
 block
     :'{'	{ scope++; } stmt_list '}'			{
@@ -401,25 +398,36 @@ idlist
                                                 }
     ;
 
-ifstmt
-    :  IF '(' expr ')' stmt						{$$ = $5;}
-    |  IF '(' expr ')' stmt ELSE stmt			{$$ = $5;}
-    |  IF '(' error ')'				 			{  yyerrok;} 
+ifprefix
+    :  IF '(' expr ')' 							{$$ = Manage_cond($3,yylineno);}
+    |  IF '(' error ')'							{yyerrok;} 
     ;
 
-loop_Inc:	{loop_counter++;}
-loop_End:	{loop_counter--;}
-loop_stmt:	loop_Inc stmt loop_End
-{
-    $$ = $2;
-};
+elseprefix
+	: ELSE 										{ 
+													$$ = curr_quad_label();
+											 		emit(jump_i,NULL,NULL,NULL,yylineno,0);
+												}
+	;
+
+ifstmt
+    :  ifprefix stmt							{patchlabel($1,curr_quad_label()); $$ = $2;}
+    |  ifprefix  stmt elseprefix stmt			{$$ = Manage_if_else($1,$2,$3,$4, yylineno);}
+    ;		
+
+loop_Inc:										{loop_counter++;};
+loop_End:										{loop_counter--;};
+loop_stmt:	loop_Inc stmt loop_End 				{ $$ = $2; };
+
+whilestart: WHILE 								{ $$ = curr_quad_label(); };
+whilecond: 	'(' expr ')'						{ $$ = Manage_cond($2,yylineno); }				
+		|	'(' error ')'						{yyerrok;}
+		;
 
 whilestmt
-    : WHILE '(' expr ')' loop_stmt 	{		
-        $$ = $5;
-        patchlist($5->breaklist,curr_quad_label());
-        patchlist($5->contlist,curr_quad_label());}
-    | WHILE '(' error ')' loop_stmt {  yyerrok;} 
+    : whilestart whilecond loop_stmt 	{		
+		$$ = Manage_while_stmt($1,$2,$3, yylineno);
+	}
     ;
 
 forstmt

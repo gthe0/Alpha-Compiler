@@ -65,4 +65,14 @@ void make_stmt(stmt_t *s);
 */
 stmt_T new_stmt(void);
 
+/**
+* @brief Merges two statements lists into a single one 
+* 
+* @param stmt1 The first statement
+* @param stmt2 The second statement
+*
+* @return A new, merged statement 
+*/
+stmt_T Merge_stmt(stmt_T stmt1, stmt_T stmt2);
+
 #endif

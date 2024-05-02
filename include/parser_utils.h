@@ -279,4 +279,47 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 						 unsigned scope,
 						 unsigned yylineno);
 
+
+/**
+* @brief This function manages the condition of various rules
+* 
+* @param condition The expression of the condition 
+* @param yylineno The line that the rule was met
+*
+* @return the quad of the jump that we emit 
+*/
+unsigned int Manage_cond(expr* condition, 
+						unsigned int yylineno);
+
+
+/**
+* @brief This function manages the whilestmt rule
+* 
+* @param start The label in which the while stmt started 
+* @param cond The label of the condition
+* @param loop_stmt The stmt struct that was created in the body
+* @param yylineno The line that the rule ends
+*
+* @return the loop_stmt itself 
+*/
+stmt_T Manage_while_stmt(unsigned start,unsigned cond,
+						stmt_T loop_stmt,unsigned yylineno);
+
+
+/**
+* @brief Manages the if ... else ... rule
+* 
+* @param ifpref The label at which the if stmt started 
+* @param if_stmt The body of the if statement
+* @param elsepref The label at which the else stmt started 
+* @param else_stmt The body of the else statement
+* @param yylineno The line that the rule ends
+*
+* @return A merged stmt struct from the if and else statements. 
+*/
+stmt_T Manage_if_else(unsigned ifpref,stmt_T if_stmt,
+						unsigned elsepref, stmt_T else_stmt,
+						unsigned yylineno);
+
+
 #endif /* parser utilities */

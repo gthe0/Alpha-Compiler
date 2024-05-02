@@ -65,3 +65,14 @@ stmt_T new_stmt(void)
 
 	return s ; 
 }
+
+/* Merges two statements */
+stmt_T Merge_stmt(stmt_T stmt1, stmt_T stmt2)
+{
+    stmt_T merged_stmt = new_stmt();
+    merged_stmt ->retlist = mergelist(stmt1->retlist,stmt2->retlist);
+    merged_stmt ->contlist = mergelist(stmt1->contlist,stmt2->contlist);
+    merged_stmt ->breaklist = mergelist(stmt1->breaklist,stmt2->breaklist);
+	
+	return merged_stmt;
+}

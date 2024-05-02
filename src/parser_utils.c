@@ -684,3 +684,42 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 
 	return new_e ;
 }
+
+/* Manages while_cond rule */
+unsigned int Manage_cond(expr* condition, 
+								unsigned int yylineno)
+{
+	emit(if_eq_i,
+		condition,
+		new_bool_expr(1),
+		NULL,
+		yylineno,
+		next_quad_label()+1);
+
+	emit(jump_i,NULL,NULL,NULL,yylineno,0);
+
+	return curr_quad_label() - 1;
+}
+
+/*Manages while statement*/
+stmt_T Manage_while_stmt(unsigned start,unsigned cond,
+						stmt_T loop_stmt,unsigned yylineno)
+{
+	emit(jump_i,NULL,NULL,NULL,yylineno,start);
+	patchlabel(cond,curr_quad_label());
+    patchlist(loop_stmt->breaklist,curr_quad_label());
+    patchlist(loop_stmt->contlist,start);
+	
+	return loop_stmt;
+}
+
+/* Manages if/else statement */
+stmt_T Manage_if_else(unsigned ifpref,stmt_T if_stmt,
+						unsigned elsepref, stmt_T else_stmt,
+						unsigned yylineno)
+{
+	patchlabel(ifpref,elsepref+1);
+	patchlabel(elsepref,curr_quad_label());
+
+	return Merge_stmt(if_stmt, else_stmt);
+}
