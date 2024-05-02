@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Define the parent directory containing 'working' and 'error'
-parent_dir="test/phase2_tests"
-result_dir="test_results/Phase2"
+scriptDir="$(dirname $(readlink -f $0))"
+parentDir="$(dirname "$scriptDir")"
+
+parent_dir="$parentDir/test/phase2_tests"
+result_dir="$parentDir/test_results/Phase2"
 
 rm -rf $result_dir
 # Create the 'result' subdirectory if it doesn't exist
@@ -27,6 +30,6 @@ for subdir in "$parent_dir"/*/; do
 		i=$((i+1))
 
 		# Run the program with the input file
-       ./bin/parser.out "$input_file" "$result_dir/${base_dirname}/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
+       "$parentDir"/bin/parser.out "$input_file" "$result_dir/${base_dirname}/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
     done
 done

@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Define the parent directory containing 'working' and 'error'
-parent_dir="test/phase3_tests"
-result_dir="test_results/Phase3"
+scriptDir="$(dirname $(readlink -f $0))"
+parentDir="$(dirname "$scriptDir")"
+
+parent_dir="$parentDir/test/phase3_tests"
+result_dir="$parentDir/test_results/Phase3"
 
 rm -rf $result_dir
 # Create the 'result' subdirectory if it doesn't exist
@@ -18,6 +21,6 @@ for input_file in "$parent_dir"/*; do
 	i=$((i+1))
 	
 	# Run the program with the input file
-	./bin/parser.out "$input_file" "$result_dir/SymTable/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
+	$parentDir/bin/parser.out "$input_file" "$result_dir/SymTable/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
 	mv quads.txt $result_dir/Quads/$base_filename.quad
 done

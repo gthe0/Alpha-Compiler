@@ -74,18 +74,18 @@
     PairList_T pair_list_o;
 }
 
-%token <string> 	ID STRING 
-%token <intVal> 	INT
-%token <floatVal> 	FLOAT
+%token <string> 		ID STRING 
+%token <intVal> 		INT
+%token <floatVal> 		FLOAT
 
-%type <call_object> callsuffix normcall methodcall
-%type <entry> 		funcpref funcdef 
-%type <string> 		func_name
-%type <statement> whilestmt	stmt_list stmt block loop_stmt forstmt returnstmt funcbody
-%type <expression>	const primary expr lvalue member term assginexpr elist call object_list objectdef
-%type <unsignedVal> NQ funcstart
-%type <pair_list_o>  indexed
-%type <index_pair_o>  indexedelem
+%type <call_object>		callsuffix normcall methodcall
+%type <entry> 			funcpref funcdef 
+%type <string> 			func_name
+%type <statement> 		whilestmt stmt_list stmt block loop_stmt forstmt returnstmt funcbody ifstmt
+%type <expression>		const primary expr lvalue member term assginexpr elist call object_list objectdef
+%type <unsignedVal> 	NQ funcstart
+%type <pair_list_o>  	indexed
+%type <index_pair_o>  	indexedelem
 
 %destructor {free($$);} stmt
 
@@ -140,7 +140,7 @@ stmt: expr ';'
     | ifstmt
     {
         reset_temp();
-        $$ = new_stmt();
+        $$ = $1;
     }
     | whilestmt
     {
@@ -402,8 +402,8 @@ idlist
     ;
 
 ifstmt
-    :  IF '(' expr ')' stmt
-    |  IF '(' expr ')' stmt ELSE stmt	
+    :  IF '(' expr ')' stmt						{$$ = $5;}
+    |  IF '(' expr ')' stmt ELSE stmt			{$$ = $5;}
     |  IF '(' error ')'				 			{  yyerrok;} 
     ;
 
