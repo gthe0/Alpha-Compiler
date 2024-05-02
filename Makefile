@@ -22,11 +22,12 @@ object: $(OBJ_FILES)
 
 # Compile the parser
 compile: $(INCLUDE) $(SRC)/scanner.c $(SRC)/parser.c $(BIN)
-	gcc -g -I $(INCLUDE) $(SOURCE_FILES) -o $(BIN)/parser.out
+	gcc -g -I $(INCLUDE) src/**.c -o $(BIN)/parser.out
 	@rm parser.output
 	
 # Generate the scanner and parser
 generate: flex bison
+	$(eval SOURCE_FILES = $(wildcard $(SRC)/*.c))
 
 # Lexical analysis target
 flex: $(GENERATOR)/lex.l

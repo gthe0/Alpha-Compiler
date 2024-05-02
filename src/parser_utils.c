@@ -454,8 +454,8 @@ expr *Manage_assignexpr(expr *lvalue, expr *rvalue,
 {
 
 	expr *assignexpr = NULL;
-	assert(lvalue);
-	assert(rvalue);
+	if(!lvalue || !rvalue)
+		return NULL;
 
 	eval_lvalue(lvalue->sym, "assignment", yylineno);
 
