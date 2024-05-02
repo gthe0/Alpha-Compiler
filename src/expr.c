@@ -62,6 +62,21 @@ static char* double_to_string(double num)
 }
 
 
+/**
+* @brief Gets strConst and adds ""
+* 
+* @param e The expression 
+* 
+* @return "strConst"
+*/
+static char* get_stringConst(expr* e)
+{
+	char* strConst = malloc(strlen(e->strConst)*sizeof(char)+3);
+	sprintf(strConst,"\"%s\"",e->strConst);
+	return strConst;
+}
+
+
 /* Creates a new expression */
 expr *newexpr(expr_t t)
 {
@@ -212,7 +227,7 @@ const char* expr_decode(expr* e)
 		case constbool_e:
 			return e->boolConst ? strdup("true") : strdup("false");
 		case conststring_e:
-			return "\"%s\"",e->strConst; 
+			return get_stringConst(e); 
 		case nil_e:
 			return "nil";
 		default:
