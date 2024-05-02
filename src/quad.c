@@ -201,9 +201,9 @@ static void quad_print(FILE *ost, unsigned i)
 			break;
 	}
 
-	fprintf(ost,"%-10s",arg1 ? arg1 : "");
-	fprintf(ost,"%-10s ",arg2 ? arg2 : "");
-	fprintf(ost,"%-10s",result ? result : "");
+	fprintf(ost,"%-12s",arg1 ? arg1 : "");
+	fprintf(ost,"%-12s ",arg2 ? arg2 : "");
+	fprintf(ost,"%-12s",result ? result : "");
 
 	if(op >= if_eq_i)
 		fprintf(ost,"%-4u ",quad_table[i].label);
