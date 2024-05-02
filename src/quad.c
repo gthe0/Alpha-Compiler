@@ -82,7 +82,8 @@ void expand(void)
 /* patch label */
 void patchlabel(unsigned quadNo, unsigned label)
 {
-	assert(quadNo < currQuad && !quad_table[quadNo].label);
+	assert(quadNo < currQuad);
+	assert(!quad_table[quadNo].label);
 	quad_table[quadNo].label = label;
 }
 

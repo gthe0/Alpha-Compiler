@@ -12,6 +12,7 @@
 #include <tables.h>
 #include <stmt.h>
 #include <quad.h>
+#include <forpref.h>
 #include <indexed_pair.h>
 #include <IntegerStack.h>
 
@@ -321,5 +322,7 @@ stmt_T Manage_if_else(unsigned ifpref,stmt_T if_stmt,
 						unsigned elsepref, stmt_T else_stmt,
 						unsigned yylineno);
 
+stmt_T Manage_for_stmt(forpref_T for_prefix, unsigned N1,
+						unsigned N2, stmt_T loopstmt, unsigned N3);
 
 #endif /* parser utilities */

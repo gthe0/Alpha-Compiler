@@ -540,7 +540,7 @@ expr *Manage_obj_elist(expr *elist, unsigned scope, unsigned yylineno)
 	expr *t = newexpr(newtable_e);
 	t->sym = newtemp(scope, yylineno);
 
-	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
+	emit(tablecreate_i, t, NULL, NULL, yylineno, 0);
 
 	elist = reverse_elist(elist);
 
@@ -556,7 +556,7 @@ expr *Manage_obj_indexed(PairList_T index_list, unsigned scope, unsigned yylinen
 	expr *t = newexpr(newtable_e);
 	t->sym = newtemp(scope, yylineno);
 
-	emit(tablecreate_i, t, NULL, NULL, yylineno, scope);
+	emit(tablecreate_i, t, NULL, NULL, yylineno, 0);
 
 	for (; index_list; index_list = index_list->next)
 		emit(tablesetelem_i, t, index_list->pair->index, index_list->pair->value, yylineno, 0);
@@ -722,4 +722,19 @@ stmt_T Manage_if_else(unsigned ifpref,stmt_T if_stmt,
 	patchlabel(elsepref,curr_quad_label());
 
 	return Merge_stmt(if_stmt, else_stmt);
+}
+
+
+stmt_T Manage_for_stmt(forpref_T for_prefix, unsigned N1,
+						unsigned N2, stmt_T loopstmt, unsigned N3)
+{
+	patchlabel(for_prefix->enter,N2+1);
+	patchlabel(N1,curr_quad_label());
+	patchlabel(N2,for_prefix->test);
+	patchlabel(N3,N1+1);
+
+	patchlist(loopstmt->breaklist,curr_quad_label());
+	patchlist(loopstmt->contlist,N1+1);
+
+	return loopstmt;
 }

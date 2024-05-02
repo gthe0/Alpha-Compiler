@@ -21,6 +21,7 @@
     #include <expr.h>
     #include <log.h>
     #include <tables.h>
+	#include <forpref.h>
     #include <name_gen.h>
     #include <symTable.h>
     #include <scopeTable.h>
@@ -72,6 +73,7 @@
     call_T call_object;
     IndexPair_T index_pair_o;
     PairList_T pair_list_o;
+	forpref_T forprefix_o;
 }
 
 %token <string> 		ID STRING 
@@ -83,9 +85,10 @@
 %type <string> 			func_name
 %type <statement> 		whilestmt stmt_list stmt block loop_stmt forstmt returnstmt funcbody ifstmt
 %type <expression>		const primary expr lvalue member term assginexpr elist call object_list objectdef
-%type <unsignedVal> 	NQ MQ funcstart whilecond whilestart ifprefix elseprefix
+%type <unsignedVal> 	NQ MQ funcstart whilecond whilestart ifprefix elseprefix LQ
 %type <pair_list_o>  	indexed
 %type <index_pair_o>  	indexedelem
+%type <forprefix_o>		forprefix
 
 %destructor {free($$);} stmt
 
@@ -298,8 +301,9 @@ indexedelem
     ;		
 
 NQ: 											{ $$ = curr_scope_offset(); };
+LQ: 											{ $$ = curr_quad_label(); };
 MQ:												{ 
-													$$ = curr_scope_offset(); 
+													$$ = curr_quad_label(); 
 													emit(jump_i,NULL,NULL,NULL,yylineno,0);
 												};
 
@@ -387,7 +391,7 @@ const
     ;
 
 idlist
-    : 
+    :
     | ID										{
                                                     if((Valid_args($1,yylineno,scope, oScopeStack))== EXIT_SUCCESS)
                                                         Tables_insert(FORMAL,$1,scope,yylineno);
@@ -430,19 +434,20 @@ whilestmt
 	}
     ;
 
+forprefix: FOR '(' elist ';' LQ expr ';'
+{
+	$$ = Manage_forpref($5,$6,yylineno);
+}
+| FOR '(' elist ';' error ';'		{  yyerrok;} 
+;
+
 forstmt
-    : FOR '(' elist ';' expr ';' elist ')' loop_stmt	{
-        $$ = $9;
-        patchlist($9->breaklist,curr_quad_label());
-        patchlist($9->contlist,curr_quad_label());
+    : forprefix MQ elist ')' MQ loop_stmt MQ {
+        $$ = Manage_for_stmt($1, $2, $5, $6, $7);
     }
-    | FOR '(' elist ';' expr ';' ')' loop_stmt			{
-        $$ = $8;
-        patchlist($8->breaklist,curr_quad_label());
-        patchlist($8->contlist,curr_quad_label());
+    | forprefix MQ ')' MQ loop_stmt	MQ {
+        $$ = Manage_for_stmt($1, $2, $4, $5, $6);
     }
-    | FOR '(' elist ';' error ';' elist')' loop_stmt	{  yyerrok;} 
-    | FOR '(' elist ';' error ';' ')' loop_stmt			{  yyerrok;} 
     ;
 
 returnstmt

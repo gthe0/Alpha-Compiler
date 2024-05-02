@@ -19,6 +19,7 @@
 	#include <stmt.h>
 	#include <call.h>
 	#include <indexed_pair.h>
+	#include <forpref.h>
 	#include <parser.h>
 	#include <log.h>
 
