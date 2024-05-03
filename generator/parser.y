@@ -21,7 +21,7 @@
     #include <expr.h>
     #include <log.h>
     #include <tables.h>
-	#include <forpref.h>
+    #include <forpref.h>
     #include <name_gen.h>
     #include <symTable.h>
     #include <scopeTable.h>
@@ -73,7 +73,7 @@
     call_T call_object;
     IndexPair_T index_pair_o;
     PairList_T pair_list_o;
-	forpref_T forprefix_o;
+    forpref_T forprefix_o;
 }
 
 %token <string> 		ID STRING 
@@ -303,9 +303,9 @@ indexedelem
 NQ: 											{ $$ = curr_scope_offset(); };
 LQ: 											{ $$ = curr_quad_label(); };
 MQ:												{ 
-													$$ = curr_quad_label(); 
-													emit(jump_i,NULL,NULL,NULL,yylineno,0);
-												};
+                                                    $$ = curr_quad_label(); 
+                                                    emit(jump_i,NULL,NULL,NULL,yylineno,0);
+                                                };
 
 block
     :'{'	{ scope++; } stmt_list '}'			{
@@ -408,11 +408,11 @@ ifprefix
     ;
 
 elseprefix
-	: ELSE 										{ 
-													$$ = curr_quad_label();
-											 		emit(jump_i,NULL,NULL,NULL,yylineno,0);
-												}
-	;
+    : ELSE 										{ 
+                                                    $$ = curr_quad_label();
+                                                     emit(jump_i,NULL,NULL,NULL,yylineno,0);
+                                                }
+    ;
 
 ifstmt
     :  ifprefix stmt 							{patchlabel($1,curr_quad_label()); $$ = $2;}
@@ -425,29 +425,19 @@ loop_stmt:	loop_Inc stmt loop_End 				{ $$ = $2; };
 
 whilestart: WHILE 								{ $$ = curr_quad_label(); };
 whilecond: 	'(' expr ')'						{ $$ = Manage_cond($2,yylineno); }				
-		|	'(' error ')'						{yyerrok;}
-		;
+        |	'(' error ')'						{yyerrok;}
+        ;
 
-whilestmt
-    : whilestart whilecond loop_stmt 	{		
-		$$ = Manage_while_stmt($1,$2,$3, yylineno);
-	}
+whilestmt: whilestart whilecond loop_stmt 		{ $$ = Manage_while_stmt($1,$2,$3, yylineno);}
     ;
 
-forprefix: FOR '(' elist ';' LQ expr ';'
-{
-	$$ = Manage_forpref($5,$6,yylineno);
-}
-| FOR '(' elist ';' error ';'		{  yyerrok;} 
+forprefix: FOR '(' elist ';' LQ expr ';'		{$$ = Manage_forpref($5,$6,yylineno);}
+| FOR '(' elist ';' error ';'					{  yyerrok;} 
 ;
 
 forstmt
-    : forprefix MQ elist ')' MQ loop_stmt MQ {
-        $$ = Manage_for_stmt($1, $2, $5, $6, $7);
-    }
-    | forprefix MQ ')' MQ loop_stmt	MQ {
-        $$ = Manage_for_stmt($1, $2, $4, $5, $6);
-    }
+    : forprefix MQ elist ')' MQ loop_stmt MQ	{$$ = Manage_for_stmt($1, $2, $5, $6, $7);}
+    | forprefix MQ ')' MQ loop_stmt	MQ 			{$$ = Manage_for_stmt($1, $2, $4, $5, $6);}
     ;
 
 returnstmt
