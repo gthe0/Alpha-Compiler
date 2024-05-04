@@ -187,8 +187,8 @@ expr* make_bool_expr(unsigned scope,
 	return bool_e;
 }
 
-/* Emit the instructions of a boolean expression */
-expr* emit_if_boolean(expr* e, 
+/* Emit the instructions and create a boolean expression */
+expr* boolean_create(expr* e, 
 					unsigned scope,
 					unsigned yylineno)
 {

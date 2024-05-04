@@ -138,7 +138,7 @@ expr* make_bool_expr(unsigned scope,
 *
 * @return either the boolean version of e or e itself if already boolean
 */
-expr* emit_if_boolean(expr* e, 
+expr* boolean_create(expr* e, 
 					unsigned scope,
 					unsigned yylineno);
 

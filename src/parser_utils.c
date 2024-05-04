@@ -583,7 +583,7 @@ expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 /* Manages rule term-> NOT expr */
 expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
-	val = emit_if_boolean(val,scope,yylineno);
+	val = boolean_create(val,scope,yylineno);
 	
 	/* Reverse truth lists */
 	int temp = val->false_list;

@@ -85,7 +85,7 @@
 %type <string> 			func_name
 %type <statement> 		whilestmt stmt_list stmt block loop_stmt forstmt returnstmt funcbody ifstmt
 %type <expression>		const primary expr lvalue member term assginexpr elist call object_list objectdef
-%type <unsignedVal> 	NQ MQ funcstart whilecond whilestart ifprefix elseprefix LQ
+%type <unsignedVal> 	LQ NQ MQ funcstart whilecond whilestart ifprefix elseprefix
 %type <pair_list_o>  	indexed
 %type <index_pair_o>  	indexedelem
 %type <forprefix_o>		forprefix
@@ -194,11 +194,11 @@ expr: assginexpr								{$$ = $1 ;}
     | expr LE_OP expr							{$$ = Manage_rel_expr($1,$3,if_lesseq_i,"<=",scope,yylineno) ;}
     | expr EQ_OP expr							{$$ = Manage_rel_expr($1,$3,if_eq_i,"==",scope,yylineno) ;}
     | expr NE_OP expr							{$$ = Manage_rel_expr($1,$3,if_noteq_i,"!=",scope,yylineno) ;}
-    | expr AND LQ								{$1 = emit_if_boolean($1,scope,yylineno);} 
-    expr										{$5 = emit_if_boolean($5,scope,yylineno);
+    | expr AND LQ								{$1 = boolean_create($1,scope,yylineno);} 
+    expr										{$5 = boolean_create($5,scope,yylineno);
                                                  $$ = Manage_conjunctions($1,$5,and_i,$3,scope,yylineno) ;}
-    | expr OR  LQ								{$1 = emit_if_boolean($1,scope,yylineno);} 
-    expr 										{$5 = emit_if_boolean($5,scope,yylineno);
+    | expr OR  LQ								{$1 = boolean_create($1,scope,yylineno);} 
+    expr 										{$5 = boolean_create($5,scope,yylineno);
                                                  $$ = Manage_conjunctions($1,$5,or_i,$3,scope,yylineno) ;}
     | term										{$$ = $1 ;}
     ; 		
