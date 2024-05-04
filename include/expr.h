@@ -150,4 +150,15 @@ expr* boolean_create(expr* e,
 */
 const char* expr_decode(expr* e);
 
+/**
+* @brief Backpatches lists and emits evaluation instructions 
+* @param e The final boolean expression
+* @param scope The scope in which the expression was found
+* @param yylineno The line where this function was triggered
+*
+*/
+void short_circuit_eval(expr* e, 
+						unsigned scope,
+						unsigned yylineno);
+
 #endif /* expr.h ADT */

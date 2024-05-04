@@ -205,6 +205,25 @@ expr* boolean_create(expr* e,
 	return bool_e ;
 }
 
+/* Short circuit logic evaluation */
+void short_circuit_eval(expr* e, 
+						unsigned scope,
+						unsigned yylineno)
+{
+	if(!e || e->type != boolexpr_e)
+		return ;
+
+	patchlist(e->true_list, curr_quad_label());
+	patchlist(e->false_list, curr_quad_label()+2);
+
+    emit(assign_i, new_bool_expr(1), NULL, e, yylineno, 0);
+    emit(jump_i, NULL, NULL, NULL, yylineno, next_quad_label() + 1);
+    
+    emit(assign_i, new_bool_expr(0), NULL, e, yylineno,0);
+
+	return ;
+}
+
 /* Used to decode the expressions and return their strings */
 const char* expr_decode(expr* e)
 {
