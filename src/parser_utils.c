@@ -411,16 +411,27 @@ expr *Manage_rel_expr(expr *arg1, expr *arg2,
 					  iopcode op, char *context,
 					  unsigned scope, unsigned yylineno)
 {
-
-	if (!arg1 || !arg2)
-		return NULL;
+	assert(arg1 && arg2);
 	
-	if(op != if_eq_i && op != if_noteq_i)
-	{
-		check_arith(arg1, context);
-		check_arith(arg2, context);
-	}
+	check_arith(arg1, context);
+	check_arith(arg2, context);
 
+	expr *result = make_bool_expr(scope, yylineno);
+
+	emit(op, arg1, arg2, NULL, yylineno, 0);
+	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+
+	return result;
+}
+
+expr* Manage_eq_expr(expr *arg1, expr *arg2,
+					  iopcode op, char *context,
+					  unsigned scope, unsigned yylineno)
+{
+	assert(arg1 && arg2);
+	
+	short_circuit_eval(arg2,scope,yylineno);
+	
 	expr *result = make_bool_expr(scope, yylineno);
 
 	emit(op, arg1, arg2, NULL, yylineno, 0);
@@ -660,7 +671,7 @@ expr *Manage_lv_arithmetic_left(expr *lvalue, iopcode op,
 }
 
 
-/* Manage conjuctions and & or */
+/* Manage conjunctions and & or */
 expr* Manage_conjunctions(expr* arg1, expr*arg2,
 						 iopcode op, int label,
 						 unsigned scope,

@@ -193,14 +193,16 @@ expr: assginexpr								{$$ = $1 ;}
     | expr '<' expr								{$$ = Manage_rel_expr($1,$3,if_less_i,"<",scope,yylineno) ;}
     | expr GE_OP expr							{$$ = Manage_rel_expr($1,$3,if_greatereq_i,">=",scope,yylineno) ;}
     | expr LE_OP expr							{$$ = Manage_rel_expr($1,$3,if_lesseq_i,"<=",scope,yylineno) ;}
-    | expr EQ_OP expr							{$$ = Manage_rel_expr($1,$3,if_eq_i,"==",scope,yylineno) ;}
-    | expr NE_OP expr							{$$ = Manage_rel_expr($1,$3,if_noteq_i,"!=",scope,yylineno) ;}
-    | expr AND LQ								{$1 = boolean_create($1,scope,yylineno);} 
-    expr										{$5 = boolean_create($5,scope,yylineno);
-                                                 $$ = Manage_conjunctions($1,$5,and_i,$3,scope,yylineno) ;}
-    | expr OR  LQ								{$1 = boolean_create($1,scope,yylineno);} 
-    expr 										{$5 = boolean_create($5,scope,yylineno);
-                                                 $$ = Manage_conjunctions($1,$5,or_i,$3,scope,yylineno) ;}
+    | expr EQ_OP								{short_circuit_eval($1,scope,yylineno);}
+	 expr										{$$ = Manage_eq_expr($1,$4,if_eq_i,"==",scope,yylineno) ;}
+    | expr NE_OP								{short_circuit_eval($1,scope,yylineno);}
+     expr										{$$ = Manage_eq_expr($1,$4,if_noteq_i,"!=",scope,yylineno) ;}
+    | expr AND 									{$1 = boolean_create($1,scope,yylineno);}  
+	LQ expr										{$5 = boolean_create($5,scope,yylineno);
+                                                 $$ = Manage_conjunctions($1,$5,and_i,$4,scope,yylineno) ;}
+    | expr OR 									{$1 = boolean_create($1,scope,yylineno);}
+	 LQ	expr 									{$5 = boolean_create($5,scope,yylineno);
+                                                 $$ = Manage_conjunctions($1,$5,or_i,$4,scope,yylineno) ;}
     | term										{$$ = $1 ;}
     ; 		
 
@@ -433,7 +435,7 @@ whilestmt: whilestart whilecond loop_stmt 		{ $$ = Manage_while_stmt($1,$2,$3, y
     ;
 
 forprefix: FOR '(' elist ';' LQ expr ';'		{$$ = Manage_forpref($5,$6,scope,yylineno);}
-| FOR '(' elist ';' error ';'					{  yyerrok;} 
+| FOR '(' elist ';'LQ error ';'					{  yyerrok;} 
 ;
 
 forstmt
