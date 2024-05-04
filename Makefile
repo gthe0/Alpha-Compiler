@@ -27,7 +27,6 @@ compile: $(INCLUDE) $(SRC)/scanner.c $(SRC)/parser.c $(BIN)
 	
 # Generate the scanner and parser
 generate: flex bison
-	$(eval SOURCE_FILES = $(wildcard $(SRC)/*.c))
 
 # Lexical analysis target
 flex: $(GENERATOR)/lex.l
@@ -36,7 +35,7 @@ flex: $(GENERATOR)/lex.l
 
 # Syntax analysis target
 bison: $(GENERATOR)/parser.y
-	bison -v -t --defines -Wconflicts-sr -Wcounterexamples --output=parser.c $(GENERATOR)/parser.y
+	bison -v -t --defines -Wconflicts-sr --output=parser.c $(GENERATOR)/parser.y
 	mv parser.h $(INCLUDE)/parser.h
 	mv parser.c $(SRC)/parser.c
 

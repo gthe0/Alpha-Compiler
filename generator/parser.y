@@ -60,6 +60,8 @@
 %}
 
 %define parse.error verbose
+/* expect 1 shift/reduce warning (dangling else) */
+%expect 1
 
 %union
 {
