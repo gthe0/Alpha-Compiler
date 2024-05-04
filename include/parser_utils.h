@@ -133,7 +133,7 @@ expr* Manage_arithmetic_expr(expr* arg1, expr* arg2,
 *
 * @return the stmt pointer 
 */
-stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno, expr* e);
+stmt_T Manage_ret_stmt(ScopeStack_T stack,unsigned scope, unsigned yylineno, expr* e);
 
 /**
 * @brief This function manages the assignexpr
@@ -289,7 +289,8 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 *
 * @return the quad of the jump that we emit 
 */
-unsigned int Manage_cond(expr* condition, 
+unsigned int Manage_cond(expr* condition,
+						unsigned scope,
 						unsigned int yylineno);
 
 

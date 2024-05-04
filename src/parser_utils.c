@@ -430,13 +430,15 @@ expr *Manage_rel_expr(expr *arg1, expr *arg2,
 }
 
 /* Manage return statement */
-stmt_T Manage_ret_stmt(ScopeStack_T stack, unsigned yylineno, expr *e)
+stmt_T Manage_ret_stmt(ScopeStack_T stack,unsigned scope , unsigned yylineno, expr *e)
 {
 	stmt_T stmt = new_stmt();
 
 	/*Checks if it is a Valid return statement */
 	if (Valid_return(stack, yylineno) == EXIT_FAILURE)
 		return stmt;
+
+	short_circuit_eval(e,scope,yylineno);
 
 	emit(ret_i, NULL, NULL, e, yylineno, 0);
 
@@ -458,6 +460,8 @@ expr *Manage_assignexpr(expr *lvalue, expr *rvalue,
 		return NULL;
 
 	eval_lvalue(lvalue->sym, "assignment", yylineno);
+
+	short_circuit_eval(rvalue,scope,yylineno);
 
 	if (lvalue->type == tableitem_e)
 	{
@@ -686,9 +690,12 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 }
 
 /* Manages while_cond rule */
-unsigned int Manage_cond(expr* condition, 
-								unsigned int yylineno)
+unsigned int Manage_cond(expr* condition,
+						unsigned scope,
+						unsigned int yylineno)
 {
+	short_circuit_eval(condition,scope,yylineno);
+	
 	emit(if_eq_i,
 		condition,
 		new_bool_expr(1),

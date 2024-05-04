@@ -131,6 +131,7 @@ stmt_list
 stmt: expr ';' 
     {
         reset_temp();
+		short_circuit_eval($1,scope,yylineno);
         $$ = new_stmt();
     }
     | ifstmt
@@ -272,8 +273,8 @@ methodcall
     ; 		
 
 elist		
-    : expr 										{$1->next = NULL;  $$ = $1;}
-    | elist ',' expr							{$3->next = $1; $$ = $3;}
+    : expr 										{$1->next = NULL;  $$ = $1; short_circuit_eval($1,scope,yylineno);}
+    | elist ',' expr							{$3->next = $1; $$ = $3;	short_circuit_eval($3,scope,yylineno);}
     | elist ',' error							{ yyerrok;} 
     ;		
 
@@ -294,7 +295,7 @@ indexed
     ;
 
 indexedelem
-    : '{' expr  ':' expr '}'					{$$ = new_indexed_pair($2,$4);}
+    : '{' expr  ':' expr '}'					{$$ = new_indexed_pair($2,$4,scope,yylineno);}
     | '{' error ':' expr '}'					{ yyerrok;} 
     | '{' expr  ':' error '}'					{ yyerrok;} 
     | '{' expr error expr '}'					{ yyerrok;} 
@@ -403,7 +404,7 @@ idlist
     ;
 
 ifprefix
-    :  IF '(' expr ')' 							{$$ = Manage_cond($3,yylineno);}
+    :  IF '(' expr ')' 							{$$ = Manage_cond($3,scope,yylineno);}
     |  IF '(' error ')'							{yyerrok;} 
     ;
 
@@ -424,14 +425,14 @@ loop_End:										{loop_counter--;};
 loop_stmt:	loop_Inc stmt loop_End 				{ $$ = $2; };
 
 whilestart: WHILE 								{ $$ = curr_quad_label(); };
-whilecond: 	'(' expr ')'						{ $$ = Manage_cond($2,yylineno); }				
+whilecond: 	'(' expr ')'						{ $$ = Manage_cond($2,scope,yylineno); }				
         |	'(' error ')'						{yyerrok;}
         ;
 
 whilestmt: whilestart whilecond loop_stmt 		{ $$ = Manage_while_stmt($1,$2,$3, yylineno);}
     ;
 
-forprefix: FOR '(' elist ';' LQ expr ';'		{$$ = Manage_forpref($5,$6,yylineno);}
+forprefix: FOR '(' elist ';' LQ expr ';'		{$$ = Manage_forpref($5,$6,scope,yylineno);}
 | FOR '(' elist ';' error ';'					{  yyerrok;} 
 ;
 
@@ -441,8 +442,8 @@ forstmt
     ;
 
 returnstmt
-    : RET expr ';'	{$$ = Manage_ret_stmt(oScopeStack,yylineno,$2);}
-    | RET ';'		{$$ = Manage_ret_stmt(oScopeStack,yylineno,NULL);}
+    : RET expr ';'	{$$ = Manage_ret_stmt(oScopeStack,scope,yylineno,$2);}
+    | RET ';'		{$$ = Manage_ret_stmt(oScopeStack,scope,yylineno,NULL);}
     ;
 %%
 /* Same as lex */

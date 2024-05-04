@@ -39,7 +39,8 @@ struct Pair_list
 *
 * @return The Pair created
 */
-IndexPair_T new_indexed_pair(expr* index, expr* value);
+IndexPair_T new_indexed_pair(expr* index, expr* value,
+							unsigned scope, unsigned yylineno);
 
 
 /**

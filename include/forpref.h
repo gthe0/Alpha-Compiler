@@ -33,6 +33,7 @@ struct forprefix
 */
 forpref_T Manage_forpref(unsigned test,
 						expr* e,
+						unsigned scope,
 						unsigned yylineno);
 
 #endif /*call ADT*/

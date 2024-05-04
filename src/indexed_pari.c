@@ -14,8 +14,12 @@
 
 
 /* Creates a new pair filled with the values passed */
-IndexPair_T new_indexed_pair(expr* index, expr* value)
+IndexPair_T new_indexed_pair(expr* index, expr* value,
+							unsigned scope, unsigned yylineno)
 {
+	short_circuit_eval(index,scope,yylineno);
+	short_circuit_eval(value,scope,yylineno);
+
 	IndexPair_T new_pair = malloc(sizeof(indexed_pair_t));
 	assert(new_pair);
 
