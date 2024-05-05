@@ -588,7 +588,7 @@ expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 
 	check_arith(val, "unary minus");
 
-	new_expr->sym = newtemp(scope, yylineno);
+	new_expr->sym = is_temp_expr(val) ? val->sym :newtemp(scope, yylineno);
 
 	emit(uminus_i, val, NULL, new_expr, yylineno, 0);
 
