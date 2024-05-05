@@ -169,7 +169,7 @@ void check_arith (expr* e, const char* context)
 		e->type == boolexpr_e		||
 		e->type == nil_e
 	)
-	LOG_ERROR(PARSER,ERROR,"Illegal expr used in %s!",context);	
+	LOG_ERROR(PARSER,ERROR,"Illegal expr used in %s!\n",context);	
 
 	return ;
 }
