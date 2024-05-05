@@ -103,8 +103,10 @@
 %token '[' ']' '(' ')' '{' '}' '<' '>'
 
 %right '='
-%left AND
 %left OR
+%left AND
+%nonassoc EQ_OP  NE_OP
+%nonassoc '<' '>' GE_OP  LE_OP
 %left '+' '-'
 %left '*' '/' '%'
 %nonassoc UNARY_MINUS
@@ -113,8 +115,6 @@
 %left '[' ']'
 %left '(' ')'
 
-%nonassoc EQ_OP  NE_OP
-%nonassoc '<' '>' GE_OP  LE_OP
 
 %precedence ELSE
 
