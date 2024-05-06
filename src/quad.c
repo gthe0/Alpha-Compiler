@@ -202,9 +202,9 @@ static void quad_print(FILE *ost, unsigned i)
 			break;
 	}
 
+	fprintf(ost,"%-12s",result ? result : "");
 	fprintf(ost,"%-12s",arg1 ? arg1 : "");
 	fprintf(ost,"%-12s ",arg2 ? arg2 : "");
-	fprintf(ost,"%-12s",result ? result : "");
 
 	if(op >= if_eq_i)
 		fprintf(ost,"%-4u ",quad_table[i].label);
@@ -268,6 +268,8 @@ int write_quads(void)
 		LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n", QUAD_FILE);
 		return EXIT_FAILURE;
 	}
+
+	fprintf(ost,"%-5s%-16s%-12s%-12s%-12s%s\n\n","NO.","OPCODE","RESULT","ARG1","ARG2","LABEL");
 
 	for (unsigned i = 1; i < currQuad; i++)
 		quad_print(ost, i);
