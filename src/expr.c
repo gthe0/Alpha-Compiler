@@ -152,8 +152,9 @@ static unsigned int istempname(const char* s)
 /* Checks if the expression is temporary */
 unsigned int is_temp_expr(expr* e)
 {
-	assert(e->sym->type < USERFUNC);
-	return e->sym && istempname(e->sym->value.varVal->name);
+	return 	e && e->sym && 
+			e->sym->type < USERFUNC &&
+			istempname(e->sym->value.varVal->name);
 }
 
 /* Checks whether arithmetic is valid or not */
