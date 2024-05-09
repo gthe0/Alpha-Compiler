@@ -464,9 +464,10 @@ int yyerror(const char* s)
 int main(int argc,char** argv)
 {
 
-#ifdef YYDEBUG
-	yydebug = 1;
-#endif
+	#ifdef YYDEBUG
+		yydebug = 1;
+	#endif
+
     FILE* ost;
 
     if(argc == 1)

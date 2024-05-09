@@ -399,7 +399,13 @@ expr *Manage_arithmetic_expr(expr *arg1, expr *arg2,
 	check_arith(arg2, context);
 
 	expr *result = newexpr(arithexpr_e);
-	result->sym = newtemp(scope, yylineno);
+
+	expr* e = NULL;
+
+	if(is_temp_expr(arg1)) e = arg1;
+	else if(is_temp_expr(arg2)) e = arg2;
+
+	result->sym = e != NULL ? e->sym : newtemp(scope, yylineno);
 
 	emit(op, arg1, arg2, result, yylineno, 0);
 
@@ -684,11 +690,7 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 	
 	patchlist(list_to_patch,label);
 
-	expr* e = NULL;
-	if(is_temp_expr(arg1))	e = arg1;
-	else if(is_temp_expr(arg2))	e = arg2;
-
-	expr* new_e = make_bool_expr(e,scope, yylineno,1);
+	expr* new_e = make_bool_expr(NULL,scope, yylineno,0);
 
 	if(op == and_i)
 	{
