@@ -45,7 +45,6 @@ char *new_temp_name(void)
 
 	strcpy(generated_name, name);
 	strcat(generated_name, var_number);
-
 	return generated_name;
 }
 

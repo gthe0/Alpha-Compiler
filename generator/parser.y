@@ -36,6 +36,8 @@
     static int isatty(int i) {return 0;}
     #endif
 
+	#define YYDEBUG 1 /* Make 1 to enable debugging */
+
     /* The various stacks that we will use */
     static ScopeStack_T  	oScopeStack = NULL;
     static OffsetStack_T  	offsetStack = NULL;
@@ -132,8 +134,8 @@ stmt_list
     
 stmt: expr ';' 
     {
-        reset_temp();
 		short_circuit_eval($1,scope,yylineno);
+        reset_temp();
         $$ = new_stmt();
     }
     | ifstmt
@@ -199,11 +201,11 @@ expr: assginexpr								{$$ = $1 ;}
 	 expr										{$$ = Manage_eq_expr($1,$4,if_eq_i,"==",scope,yylineno) ;}
     | expr NE_OP								{short_circuit_eval($1,scope,yylineno);}
      expr										{$$ = Manage_eq_expr($1,$4,if_noteq_i,"!=",scope,yylineno) ;}
-    | expr AND 									{$1 = boolean_create($1,scope,yylineno);}  
-	LQ expr										{$5 = boolean_create($5,scope,yylineno);
+    | expr AND 									{$1 = boolean_create($1,scope,yylineno,0);}  
+	LQ expr										{$5 = boolean_create($5,scope,yylineno,0);
                                                  $$ = Manage_conjunctions($1,$5,and_i,$4,scope,yylineno) ;}
-    | expr OR 									{$1 = boolean_create($1,scope,yylineno);}
-	 LQ	expr 									{$5 = boolean_create($5,scope,yylineno);
+    | expr OR 									{$1 = boolean_create($1,scope,yylineno,0);}
+	 LQ	expr 									{$5 = boolean_create($5,scope,yylineno,0);
                                                  $$ = Manage_conjunctions($1,$5,or_i,$4,scope,yylineno) ;}
     | term										{$$ = $1 ;}
     ; 		
@@ -461,6 +463,10 @@ int yyerror(const char* s)
 /* main */
 int main(int argc,char** argv)
 {
+
+#ifdef YYDEBUG
+	yydebug = 1;
+#endif
     FILE* ost;
 
     if(argc == 1)

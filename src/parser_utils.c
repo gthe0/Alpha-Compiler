@@ -416,7 +416,7 @@ expr *Manage_rel_expr(expr *arg1, expr *arg2,
 	check_arith(arg1, context);
 	check_arith(arg2, context);
 
-	expr *result = make_bool_expr(scope, yylineno);
+	expr *result = make_bool_expr(NULL,scope, yylineno,0);
 
 	emit(op, arg1, arg2, NULL, yylineno, 0);
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
@@ -429,10 +429,10 @@ expr* Manage_eq_expr(expr *arg1, expr *arg2,
 					  unsigned scope, unsigned yylineno)
 {
 	assert(arg1 && arg2);
-	
+
 	short_circuit_eval(arg2,scope,yylineno);
-	
-	expr *result = make_bool_expr(scope, yylineno);
+
+	expr *result = make_bool_expr(NULL,scope, yylineno,0);
 
 	emit(op, arg1, arg2, NULL, yylineno, 0);
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
@@ -598,7 +598,7 @@ expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 /* Manages rule term-> NOT expr */
 expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
-	val = boolean_create(val,scope,yylineno);
+	val = boolean_create(val,scope,yylineno,0);
 	
 	/* Reverse truth lists */
 	int temp = val->false_list;
@@ -684,7 +684,11 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 	
 	patchlist(list_to_patch,label);
 
-	expr* new_e = make_bool_expr(scope,yylineno);
+	expr* e = NULL;
+	if(is_temp_expr(arg1))	e = arg1;
+	else if(is_temp_expr(arg2))	e = arg2;
+
+	expr* new_e = make_bool_expr(e,scope, yylineno,1);
 
 	if(op == and_i)
 	{

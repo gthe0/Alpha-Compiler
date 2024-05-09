@@ -176,12 +176,16 @@ void check_arith (expr* e, const char* context)
 }
 
 /* Create a blank boolean expression */
-expr* make_bool_expr(unsigned scope,
-					unsigned yylineno)
+expr* make_bool_expr(expr* e,
+					unsigned scope,
+					unsigned yylineno,
+					int createSym)
 {
 
 	expr* bool_e = newexpr(boolexpr_e);
-	bool_e->sym = newtemp(scope,yylineno);
+
+	if(createSym != 0) bool_e->sym = is_temp_expr(e)  ? e->sym : newtemp(scope,yylineno);
+
 	bool_e->true_list = curr_quad_label();
 	bool_e->false_list = next_quad_label();
 
@@ -191,14 +195,15 @@ expr* make_bool_expr(unsigned scope,
 /* Emit the instructions and create a boolean expression */
 expr* boolean_create(expr* e, 
 					unsigned scope,
-					unsigned yylineno)
+					unsigned yylineno,
+					int createSym)
 {
 	assert(e);
 
 	if(e->type == boolexpr_e)
 		return e;
 
-	expr* bool_e = make_bool_expr(scope,yylineno);
+	expr* bool_e = make_bool_expr(e,scope,yylineno,createSym);
 
 	emit(if_eq_i, e, new_bool_expr(1), NULL, yylineno, 0);
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
@@ -213,6 +218,8 @@ void short_circuit_eval(expr* e,
 {
 	if(!e || e->type != boolexpr_e)
 		return ;
+
+	if(!e->sym) e->sym = newtemp(scope,yylineno);
 
 	patchlist(e->true_list, curr_quad_label());
 	patchlist(e->false_list, curr_quad_label()+2);
