@@ -10,6 +10,7 @@
 #define __INTEGER_STACK__
 
 typedef struct IntStack IntStack, *IntStack_T;
+typedef struct IntStack LoopStack, *LoopStack_T;
 typedef struct IntStack ScopeStack, *ScopeStack_T;
 typedef struct IntStack OffsetStack, *OffsetStack_T;
 

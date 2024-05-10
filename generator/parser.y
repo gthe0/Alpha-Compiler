@@ -41,6 +41,7 @@
     /* The various stacks that we will use */
     static ScopeStack_T  	oScopeStack = NULL;
     static OffsetStack_T  	offsetStack = NULL;
+    static LoopStack_T  	oloopStack	= NULL;
 
     /* If Compilation Error is
      encountered, it will be set to 1 */
@@ -332,6 +333,8 @@ block
 funcstart: 										{
                                                     $$ = curr_quad_label();
                                                     emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+													IntStack_Push(&oloopStack,loop_counter);
+													loop_counter = 0;
                                                 }
 
 func_name
@@ -385,6 +388,7 @@ funcdef
 
                                                     /* JUMP OUT OF FUNCTION SCOPE */
                                                     patchlabel($1,curr_quad_label());
+													loop_counter = IntStack_Pop(oloopStack);
                                                 }
     ;
 
@@ -497,6 +501,7 @@ int main(int argc,char** argv)
     /* Initializes tables and stack */
     oScopeStack = IntStack_init();
     offsetStack = IntStack_init();
+    oloopStack	= IntStack_init();
 
     expand();
     emit(blank_i,NULL , NULL, NULL, 0, 0);
@@ -513,7 +518,10 @@ int main(int argc,char** argv)
 
     /* Close streams and clean up */
     Tables_free();
+
     IntStack_free(oScopeStack);
+    IntStack_free(offsetStack);
+    IntStack_free(oloopStack);
 
     fclose(ost);
     fclose(yyin);
