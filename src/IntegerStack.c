@@ -21,7 +21,7 @@ IntStack_T IntStack_init(void)
 	assert(new);
 
 	new->prev = NULL;
-	new->scope = 0u;
+	new->num = 0u;
 	new->isEmpty = 1;
 
 	return new;
@@ -50,7 +50,7 @@ void IntStack_Push(IntStack_T* stack, unsigned int scope)
 	/* If malloc fails abort */	
 	assert(head);
 
-	head->scope = scope;
+	head->num = scope;
 	head->prev = *stack;
 	head->isEmpty = 0;
 
@@ -63,7 +63,7 @@ void IntStack_Push(IntStack_T* stack, unsigned int scope)
 unsigned int IntStack_Top(IntStack_T stack)
 {
 	assert(stack);
-	return stack->scope;
+	return stack->num;
 }
 
 /* Pop the top of the stack */

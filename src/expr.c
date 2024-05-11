@@ -175,16 +175,19 @@ void check_arith (expr* e, const char* context)
 	return ;
 }
 
-/* Create a blank boolean expression */
-expr* make_bool_expr(expr* e,
-					unsigned scope,
-					unsigned yylineno,
-					int createSym)
+/*
+* We do not need to create a new symbol due to the partial evaluation and variable reusage.
+* For example, if we have a big boolean/propositional expression such as,
+* a or b or c and not d etc. a,b,c and d will be turned into boolean expressions,
+* pairs of ifeq and jumps will be emited with their args being a,b,c or d and only
+* at the very end the results will be assigned to a temp variable _tx. 
+* Thus, we do not want to create temp variables for a,b,c or d at all!
+*/
+expr* make_bool_expr(unsigned scope,
+					unsigned yylineno)
 {
 
 	expr* bool_e = newexpr(boolexpr_e);
-
-	if(createSym != 0) bool_e->sym = is_temp_expr(e)  ? e->sym : newtemp(scope,yylineno);
 
 	bool_e->true_list = curr_quad_label();
 	bool_e->false_list = next_quad_label();
@@ -192,18 +195,30 @@ expr* make_bool_expr(expr* e,
 	return bool_e;
 }
 
-/* Emit the instructions and create a boolean expression */
+/*
+* Whenever an expression is encountered that can be evaluated as a boolean,
+* we need to emit some instructions and store somewhere their quads for shortcircuiting.
+* We do that by making a new boolexpr_e that acts as an accecptance flag in short_circuit_eval.
+*/
 expr* boolean_create(expr* e, 
 					unsigned scope,
-					unsigned yylineno,
-					int createSym)
+					unsigned yylineno)
 {
 	assert(e);
 
+	/* If the type is boolexpr_e, then we do not need to
+	* do anything because the needed instructions needed 
+	* and its truth lists were already created.
+	*/
 	if(e->type == boolexpr_e)
 		return e;
 
-	expr* bool_e = make_bool_expr(e,scope,yylineno,createSym);
+	/*
+	* Create a new boolean expression with its:
+	*	# truth_list == quad of if_eq_i
+	*	# false_list == quaf of jump
+	*/
+	expr* bool_e = make_bool_expr(scope,yylineno);
 
 	emit(if_eq_i, e, new_bool_expr(1), NULL, yylineno, 0);
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
@@ -211,7 +226,11 @@ expr* boolean_create(expr* e,
 	return bool_e ;
 }
 
-/* Short circuit logic evaluation */
+/*
+* Here we patch the true lists and flase lists.
+* We also create a new temporary symbol to use
+* as a result storage for when we emit the quads that we need.
+*/
 void short_circuit_eval(expr* e, 
 						unsigned scope,
 						unsigned yylineno)
@@ -219,6 +238,10 @@ void short_circuit_eval(expr* e,
 	if(!e || e->type != boolexpr_e)
 		return ;
 
+	/*
+	* Useless check but I do not want to remove it.
+	* Let BTP take care of it...
+	*/
 	if(!e->sym) e->sym = newtemp(scope,yylineno);
 
 	patchlist(e->true_list, curr_quad_label());
@@ -256,7 +279,7 @@ const char* expr_decode(expr* e)
 		case conststring_e:
 			return get_stringConst(e); 
 		case nil_e:
-			return "nil";
+			return strdup("nil");
 		default:
 			return NULL;
 	}

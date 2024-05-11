@@ -17,6 +17,7 @@
 IndexPair_T new_indexed_pair(expr* index, expr* value,
 							unsigned scope, unsigned yylineno)
 {
+	/* We evaluate the expressions in case of them being boolean */
 	short_circuit_eval(index,scope,yylineno);
 	short_circuit_eval(value,scope,yylineno);
 
@@ -45,7 +46,12 @@ PairList_T PairList_new(void)
 
 
 
-/* Inserts a new node in the pair list */
+/*
+* This function, as you can see, inserts a new Indexed Parir 
+* in the end of the list. This is because the Indexed Pair list
+* is used only when creating tables and there we need the nodes to
+* be in used in order of parsing. 
+*/
 PairList_T PairList_insert(IndexPair_T pair, PairList_T head)
 {
     PairList_T new_node = PairList_new();
@@ -63,5 +69,5 @@ PairList_T PairList_insert(IndexPair_T pair, PairList_T head)
 
     current->next = new_node;
 
-    return head; // Return the updated head.
+    return head; /* Return the updated head. */
 }

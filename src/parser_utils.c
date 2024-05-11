@@ -36,6 +36,14 @@ static char *LIB_FUNCTIONS[NO_OF_LIBFUNCTS] =
 		"sin",
 };
 
+
+/**
+ * @brief A utility function used in Manage_obj_elist to reverse elist.
+ *
+ * @param name name of the token
+ *
+ * @return EXIT_SUCCESS if we do not, EXIT_FAILURE otherwise.
+ */
 static expr* reverse_elist(expr* elist)
 {
 	expr* prev = NULL;
@@ -400,6 +408,7 @@ expr *Manage_arithmetic_expr(expr *arg1, expr *arg2,
 
 	expr *result = newexpr(arithexpr_e);
 
+	/* Check if the previous expression was using a temp sym to reuse*/
 	expr* e = NULL;
 
 	if(is_temp_expr(arg1)) e = arg1;
@@ -422,7 +431,7 @@ expr *Manage_rel_expr(expr *arg1, expr *arg2,
 	check_arith(arg1, context);
 	check_arith(arg2, context);
 
-	expr *result = make_bool_expr(NULL,scope, yylineno,0);
+	expr *result = make_bool_expr(scope, yylineno);
 
 	emit(op, arg1, arg2, NULL, yylineno, 0);
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
@@ -438,7 +447,7 @@ expr* Manage_eq_expr(expr *arg1, expr *arg2,
 
 	short_circuit_eval(arg2,scope,yylineno);
 
-	expr *result = make_bool_expr(NULL,scope, yylineno,0);
+	expr *result = make_bool_expr(scope, yylineno);
 
 	emit(op, arg1, arg2, NULL, yylineno, 0);
 	emit(jump_i, NULL, NULL, NULL, yylineno, 0);
@@ -515,7 +524,7 @@ expr *Manage_call_lv_suffix(expr *lvalue, call_T call_suffix)
 {
 
 	expr *list = NULL,
-		 *curr = NULL;
+		 *head = NULL;
 
 	assert(lvalue && call_suffix);
 
@@ -524,19 +533,23 @@ expr *Manage_call_lv_suffix(expr *lvalue, call_T call_suffix)
 	if (call_suffix->method == 1)
 	{
 		list = lvalue;
-		curr = call_suffix->elist;
+		head = call_suffix->elist;
 		lvalue = emit_iftableitem(member_item(list, call_suffix->name));
 
-		while (curr && curr->next)
-			curr = curr->next;
+		/*
+		* The list was passed in reverse order (order of insertion),
+		* thus the new elements must be inserted in the very end, making it the first...
+		*/		
+		while (head && head->next)
+			head = head->next;
 
-		if (curr == NULL)
+		if (head == NULL)
 		{
 			call_suffix->elist = list;
 		}
 		else
 		{
-			curr->next = list;
+			head->next = list;
 		}
 	}
 
@@ -604,7 +617,7 @@ expr *Manage_unary_minus(expr *val, unsigned scope, unsigned yylineno)
 /* Manages rule term-> NOT expr */
 expr *Manage_not_expr(expr *val, unsigned scope, unsigned yylineno)
 {
-	val = boolean_create(val,scope,yylineno,0);
+	val = boolean_create(val,scope,yylineno);
 	
 	/* Reverse truth lists */
 	int temp = val->false_list;
@@ -690,7 +703,7 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 	
 	patchlist(list_to_patch,label);
 
-	expr* new_e = make_bool_expr(NULL,scope, yylineno,0);
+	expr* new_e = make_bool_expr(scope, yylineno);
 
 	if(op == and_i)
 	{
@@ -706,7 +719,7 @@ expr* Manage_conjunctions(expr* arg1, expr*arg2,
 	return new_e ;
 }
 
-/* Manages while_cond rule */
+/* Manages while_cond and ifprefix rules */
 unsigned int Manage_cond(expr* condition,
 						unsigned scope,
 						unsigned int yylineno)

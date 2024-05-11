@@ -99,10 +99,17 @@ unsigned int curr_quad_label(void)
 	return (currQuad);
 }
 
+/**
+* @brief Helper function to print a single quad
+* 
+* @param ost The file stream to which to print
+* @param i The index of the quad in the quad_table.
+*/
 static void quad_print(FILE *ost, unsigned i)
 {
 	iopcode op = quad_table[i].op;
 	
+	/* We decode each expression of the quad to print it later */
 	const char* arg1 = expr_decode(quad_table[i].arg1),
 				* arg2 = expr_decode(quad_table[i].arg2),
 				* result = expr_decode(quad_table[i].result);
@@ -115,6 +122,7 @@ static void quad_print(FILE *ost, unsigned i)
 
 	fprintf(ost,"#%-3u ",i);
 
+	/* Print first the operation */
 	switch (op)
 	{
 		case assign_i:
@@ -202,15 +210,18 @@ static void quad_print(FILE *ost, unsigned i)
 			break;
 	}
 
+	/* Print the strings decode from the expression, if any */
 	fprintf(ost,"%-12s",result ? result : "");
 	fprintf(ost,"%-12s",arg1 ? arg1 : "");
 	fprintf(ost,"%-12s ",arg2 ? arg2 : "");
 
+	/* If the instruction is a branch or jump, print label, else don't */
 	if(op >= if_eq_i)
 		fprintf(ost,"%-4u ",quad_table[i].label);
 	else
 		fprintf(ost,"%-5s","");
 
+	/* Print the line */
 	fprintf(ost,"[line %u]\n",quad_table[i].line);
 
 	return;
@@ -269,8 +280,10 @@ int write_quads(void)
 		return EXIT_FAILURE;
 	}
 
+	/* This will be removed in the next phase of the project */
 	fprintf(ost,"%-5s%-16s%-12s%-12s%-12s%s\n\n","NO.","OPCODE","RESULT","ARG1","ARG2","LABEL");
 
+	/* Loop over all the quads and print them one by one */
 	for (unsigned i = 1; i < currQuad; i++)
 		quad_print(ost, i);
 

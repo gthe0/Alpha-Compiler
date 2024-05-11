@@ -12,6 +12,7 @@
 
 #include <log.h>
 
+/* This varaible is set to 1 when an ERROR is Logged, preventing compilation */
 extern unsigned ERROR_COMP;
 
 /*
@@ -43,7 +44,7 @@ void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 		case OTHER: strcpy(o_name,"OTHER"); break;
 		case LEXER: strcpy(o_name,"LEXER"); break;
 		case PARSER: strcpy(o_name,"PARSER"); break;
-		default:
+		default:;
 	}
 
 	switch (log_t) 
@@ -52,7 +53,7 @@ void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 		case ERROR: fprintf(stderr,"%s[%s] > ERROR: %s",RED,o_name,reset); break;
 		case USAGE: fprintf(stderr,"%s[%s] > Usage: %s",YEL,o_name,reset); break;
 		case NOTE: fprintf(stderr,"%s[%s] > note: %s",CYAN,o_name,reset); break;
-		default:
+		default:;
 	}
 
 	/* Initialize arguments */

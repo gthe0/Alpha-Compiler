@@ -16,8 +16,8 @@ typedef struct IntStack OffsetStack, *OffsetStack_T;
 
 struct  IntStack
 {
-	int isEmpty;
-	unsigned int scope;
+	int isEmpty;			/* It equals 1 in the guaed node, else it equals 0 */
+	unsigned int num;
 	IntStack_T prev;
 };
 

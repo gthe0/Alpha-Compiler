@@ -123,31 +123,25 @@ void check_arith (expr* e, const char* context);
 /**
 * @brief Creates a new boolean expression with true and false lists
 *
-* @param e The expression
 * @param scope The scope in which the expression was found
 * @param yylineno The line where this function was triggered
-* @param createSym Flag to tell if it is fine to create an expression with sym or not
 *
 * @return The new boolean expression
 */
-expr* make_bool_expr(expr*e,
-					unsigned scope,
-					unsigned yylineno,
-					int createSym);
+expr* make_bool_expr(unsigned scope,
+					unsigned yylineno);
 
 /**
 * @brief Emits the instructions neeeded for a boolean expressions
 * @param e The expression
 * @param scope The scope in which the expression was found
 * @param yylineno The line where this function was triggered
-* @param createSym Flag to tell if it is fine to create an expression with sym or not
 *
 * @return either the boolean version of e or e itself if already boolean
 */
 expr* boolean_create(expr* e, 
 					unsigned scope,
-					unsigned yylineno,
-					int createSym);
+					unsigned yylineno);
 
 /**
 * @brief Decodes the expression and gets based on its type the part to be printed (Used in write_quads)

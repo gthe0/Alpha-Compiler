@@ -202,11 +202,11 @@ expr: assginexpr								{$$ = $1 ;}
 	 expr										{$$ = Manage_eq_expr($1,$4,if_eq_i,"==",scope,yylineno) ;}
     | expr NE_OP								{short_circuit_eval($1,scope,yylineno);}
      expr										{$$ = Manage_eq_expr($1,$4,if_noteq_i,"!=",scope,yylineno) ;}
-    | expr AND 									{$1 = boolean_create($1,scope,yylineno,0);}  
-	LQ expr										{$5 = boolean_create($5,scope,yylineno,0);
+    | expr AND 									{$1 = boolean_create($1,scope,yylineno);}  
+	LQ expr										{$5 = boolean_create($5,scope,yylineno);
                                                  $$ = Manage_conjunctions($1,$5,and_i,$4,scope,yylineno) ;}
-    | expr OR 									{$1 = boolean_create($1,scope,yylineno,0);}
-	 LQ	expr 									{$5 = boolean_create($5,scope,yylineno,0);
+    | expr OR 									{$1 = boolean_create($1,scope,yylineno);}
+	 LQ	expr 									{$5 = boolean_create($5,scope,yylineno);
                                                  $$ = Manage_conjunctions($1,$5,or_i,$4,scope,yylineno) ;}
     | term										{$$ = $1 ;}
     ; 		
@@ -279,9 +279,21 @@ methodcall
     | DOUBLE_DOT ID '('  ')' 					{ $$ = new_call(NULL,1,$2); }
     ; 		
 
-elist		
-    : expr 										{$1->next = NULL;  $$ = $1; short_circuit_eval($1,scope,yylineno);}
-    | elist ',' expr							{$3->next = $1; $$ = $3;	short_circuit_eval($3,scope,yylineno);}
+elist											
+    : expr 										{
+													/* Most rules need the elist reversed,
+													only object_list needs it in order of parsing...*/
+													$1->next = NULL;
+													$$ = $1;
+													short_circuit_eval($1,scope,yylineno);
+												} 
+    | elist ',' expr							{
+													/* ...so we insert new expression in the head of the list, 
+													making it reversed from the start */
+													$3->next = $1;
+													$$ = $3;
+													short_circuit_eval($3,scope,yylineno);
+												}
     | elist ',' error							{ yyerrok;} 
     ;		
 
@@ -333,6 +345,11 @@ block
 funcstart: 										{
                                                     $$ = curr_quad_label();
                                                     emit(jump_i, NULL, NULL, NULL, yylineno, 0);
+													
+													/*
+													* Reset loop counter in function definitions
+													* to prevent illegal breaks and continues
+													*/
 													IntStack_Push(&oloopStack,loop_counter);
 													loop_counter = 0;
                                                 }
@@ -468,10 +485,7 @@ int yyerror(const char* s)
 int main(int argc,char** argv)
 {
 
-	#ifdef YYDEBUG
-		yydebug = 1;
-	#endif
-
+	yydebug = 0; /* If you want debuging make it 1 */
     FILE* ost;
 
     if(argc == 1)
@@ -508,8 +522,6 @@ int main(int argc,char** argv)
     Tables_init();
     /* Call the Parser */
     yyparse();
-
-    printf("%-30.100s\n",ERROR_COMP ? "COMPILATION ERROR ENCOUNTERD" : "ALL FINE");
 
     Tables_print(ost,0);
     

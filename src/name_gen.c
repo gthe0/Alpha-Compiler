@@ -23,6 +23,7 @@ char *func_name_generator(void)
 
 	sprintf(func_number, "%d", unnamed_func_counter++);
 
+	/* Allocate memory in heap to pass resulted string wherever you want */
 	char *generated_name = malloc((strlen(name) + strlen(func_number)) * sizeof(char) + 1);
 	assert(generated_name);
 
@@ -40,6 +41,7 @@ char *new_temp_name(void)
 
 	sprintf(var_number, "%d", temp_counter++);
 
+	/* Allocate memory in heap to pass resulted string wherever you want */
 	char *generated_name = malloc((strlen(name) + strlen(var_number)) * sizeof(char) + 1);
 	assert(generated_name);
 
