@@ -12,10 +12,8 @@
 *  will be copied on top of the generated c file
 */
 %{
-    #include <assert.h>
     #include <stdio.h>
     #include <stdlib.h>
-	#include <string.h>
 
     #include <call.h>
     #include <stmt.h>
@@ -55,7 +53,6 @@
     unsigned int scope = 0;
 
     /* Flex variables */
-    extern FILE* 	yyin;
     extern char*	yytext;
     extern int 		yylineno;
     
@@ -476,85 +473,28 @@ returnstmt
 %%
 /* Same as lex */
 
+/*
+* Parser error function, evoked every time
+* there is a parsing error
+*/
 int yyerror(const char* s)
 {
     LOG_ERROR(PARSER,ERROR,"%s, line %d\n",s ,yylineno);
     return EXIT_FAILURE;
 }
 
-/* main */
-int main(int argc,char** argv)
+/* Initializes the stacks */
+void parser_stacks_init(void)
 {
-	int print_sym = 0;
-    FILE* ost = stdout;
- 
- 	/* If you want debuging make it 1 */
-	yydebug = 0;
+	oScopeStack = IntStack_init();
+	offsetStack = IntStack_init();
+	oloopStack	= IntStack_init();
+}
 
-	/* If there are too few or too many arguments then terminate the program */
-    if(argc == 1 || argc > 3)
-    {
-        LOG_ERROR(PARSER, USAGE,"%s [-s| output the symbol talbe] <INPUT_FILE>\n", argv[0]);
-        return EXIT_FAILURE;
-    }
-
-	if(argc == 2 && strcmp("-s",argv[1]) == 0)
-	{
-        LOG_ERROR(PARSER, USAGE,"%s [-s| output the symbol talbe] <INPUT_FILE>\n", argv[0]);
-        LOG_ERROR(PARSER, NOTE,"<INPUT_FILE> wasn't provided!\n");
-        return EXIT_FAILURE;
-	}
-
-    /* Open the input file. It is always the last argument */
-    if(!(yyin = fopen(argv[argc - 1],"r")))
-    {
-        LOG_ERROR(PARSER, ERROR, "Cannot read Input file %s\n", argv[argc - 1]);
-        return EXIT_FAILURE;
-    }
-    
-	/* If -s arg exists, make print_sym == 1 */
-	print_sym = strcmp("-s",argv[1]) == 0 ? 1 : 0 ;
-	
-	/* If the flag was passed, open a .txt file stream*/
-	if(print_sym)
-	{
-		if(!(ost = fopen("sym_table.txt","w")))
-		{
-			LOG_ERROR(PARSER, ERROR, "Cannot open Output file sym_table.txt\n");
-			ost = stdout;
-		}
-	}
-
-    /* Initializes tables and stack */
-    oScopeStack = IntStack_init();
-    offsetStack = IntStack_init();
-    oloopStack	= IntStack_init();
-
-    expand();
-
-	/* Emit a blank instruction for padding */
-    emit(blank_i,NULL , NULL, NULL, 0, 0);
-    
-	Tables_init();
-    
-	/* Call the Parser */
-    yyparse();
-
-	if(print_sym == 1)
-		Tables_print(ost,0);
-    
-    if(ERROR_COMP == 0)
-        write_quads();
-
-    /* Close streams and clean up */
-    Tables_free();
-
+/* Frees the stacks */
+void parser_stacks_free(void)
+{
     IntStack_free(oScopeStack);
     IntStack_free(offsetStack);
     IntStack_free(oloopStack);
-
-    fclose(ost);
-    fclose(yyin);
-    
-    return 0;
 }
