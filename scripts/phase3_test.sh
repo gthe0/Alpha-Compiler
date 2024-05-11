@@ -1,5 +1,9 @@
 #!/bin/bash
 
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+DEFAULT='\033[0m'
+
 # Define the parent directory containing 'working' and 'error'
 scriptDir="$(dirname $(readlink -f $0))"
 parentDir="$(dirname "$scriptDir")"
@@ -27,5 +31,12 @@ for input_file in "$parent_dir"/*; do
 	
 	# Run the program with the input file
 	$parentDir/bin/parser.out "$input_file" "$result_dir/SymTable/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
-	mv quads.txt $result_dir/Quads/$base_filename.quad
+
+	if [ -e quads.txt ]; then
+		echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"
+		mv quads.txt $result_dir/Quads/$base_filename.quad
+	else
+		echo -e "${RED}COMPILATION FAILED${DEFAULT}"
+	fi
+	
 done
