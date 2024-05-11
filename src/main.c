@@ -56,6 +56,13 @@ int main(int argc,char** argv)
         return EXIT_FAILURE;
 	}
 
+	/* If last argument/input file is -s terminate the program */
+	if(strcmp("-s",argv[argc - 1]) == 0)
+	{
+        LOG_ERROR(PARSER, USAGE,"%s [-s| output the symbol talbe] <INPUT_FILE>\n", argv[0]);
+        return EXIT_FAILURE;
+	}
+
     /* Open the input file. It is always the last argument */
     if(!(yyin = fopen(argv[argc - 1],"r")))
     {
