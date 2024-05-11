@@ -18,8 +18,8 @@ fi
 
 rm -rf $result_dir
 # Create the 'result' subdirectory if it doesn't exist
-mkdir -p "$result_dir/Working"
-mkdir -p "$result_dir/Errors"
+mkdir -p "$result_dir/Sym/Working"
+mkdir -p "$result_dir/Sym/Errors"
 mkdir -p "$result_dir/Logs"
 mkdir -p "$result_dir/Quads"
 
@@ -40,7 +40,10 @@ for subdir in "$parent_dir"/*/; do
 		i=$((i+1))
 
 		# Run the program with the input file
-       "$parentDir"/bin/parser.out "$input_file" "$result_dir/${base_dirname}/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
+       "$parentDir"/bin/parser.out "-s" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
+		
+		# Move the file with the symbol table entries into its corresponding folder
+		mv sym_table.txt $result_dir/Sym/$base_dirname/$base_filename.sym
 
 		if [ -e quads.txt ]; then
 			echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"

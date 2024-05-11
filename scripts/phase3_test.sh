@@ -23,14 +23,17 @@ mkdir -p "$result_dir/SymTable"
 mkdir -p "$result_dir/Quads"
 
 for input_file in "$parent_dir"/*; do
-# Extract the base filename (without extension)
+	# Extract the base filename (without extension)
 	base_filename=$(basename "$input_file" .asc)
 
 	printf "%-3d %-25.25s: " "$i" "$base_filename"
 	i=$((i+1))
 	
 	# Run the program with the input file
-	$parentDir/bin/parser.out "$input_file" "$result_dir/SymTable/test_${base_filename}" 2>"$result_dir/Logs/log_${base_filename}.out"
+    "$parentDir"/bin/parser.out "-s" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
+
+	# Move the file with the symbol table entries into its corresponding folder
+	mv sym_table.txt "$result_dir/SymTable/test_${base_filename}"
 
 	if [ -e quads.txt ]; then
 		echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"

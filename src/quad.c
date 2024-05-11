@@ -287,5 +287,7 @@ int write_quads(void)
 	for (unsigned i = 1; i < currQuad; i++)
 		quad_print(ost, i);
 
+	fclose(ost);
+	
 	return EXIT_SUCCESS;
 }

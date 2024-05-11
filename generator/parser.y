@@ -15,6 +15,7 @@
     #include <assert.h>
     #include <stdio.h>
     #include <stdlib.h>
+	#include <string.h>
 
     #include <call.h>
     #include <stmt.h>
@@ -484,33 +485,45 @@ int yyerror(const char* s)
 /* main */
 int main(int argc,char** argv)
 {
+	int print_sym = 0;
+    FILE* ost = stdout;
+ 
+ 	/* If you want debuging make it 1 */
+	yydebug = 0;
 
-	yydebug = 0; /* If you want debuging make it 1 */
-    FILE* ost;
-
-    if(argc == 1)
+	/* If there are too few or too many arguments then terminate the program */
+    if(argc == 1 || argc > 3)
     {
-        LOG_ERROR(PARSER, USAGE,"%s <INPUT_FILE>\n", argv[0]);
+        LOG_ERROR(PARSER, USAGE,"%s [-s| output the symbol talbe] <INPUT_FILE>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
-    /* Open the input file */
-    if(!(yyin = fopen(argv[1],"r")))
+	if(argc == 2 && strcmp("-s",argv[1]) == 0)
+	{
+        LOG_ERROR(PARSER, USAGE,"%s [-s| output the symbol talbe] <INPUT_FILE>\n", argv[0]);
+        LOG_ERROR(PARSER, NOTE,"<INPUT_FILE> wasn't provided!\n");
+        return EXIT_FAILURE;
+	}
+
+    /* Open the input file. It is always the last argument */
+    if(!(yyin = fopen(argv[argc - 1],"r")))
     {
-        LOG_ERROR(PARSER, ERROR, "Cannot read Input file %s\n", argv[1]);
+        LOG_ERROR(PARSER, ERROR, "Cannot read Input file %s\n", argv[argc - 1]);
         return EXIT_FAILURE;
     }
     
-    /* If the output file is not provided use ost */
-    if(argc > 2)
-    {
-        if(!(ost = fopen(argv[2],"w")))
-        {
-            LOG_ERROR(PARSER, ERROR, "Cannot write to specified file %s\n", argv[1]);
-            return EXIT_FAILURE;
-        }
-    }
-    else ost = stdout;
+	/* If -s arg exists, make print_sym == 1 */
+	print_sym = strcmp("-s",argv[1]) == 0 ? 1 : 0 ;
+	
+	/* If the flag was passed, open a .txt file stream*/
+	if(print_sym)
+	{
+		if(!(ost = fopen("sym_table.txt","w")))
+		{
+			LOG_ERROR(PARSER, ERROR, "Cannot open Output file sym_table.txt\n");
+			ost = stdout;
+		}
+	}
 
     /* Initializes tables and stack */
     oScopeStack = IntStack_init();
@@ -518,12 +531,17 @@ int main(int argc,char** argv)
     oloopStack	= IntStack_init();
 
     expand();
+
+	/* Emit a blank instruction for padding */
     emit(blank_i,NULL , NULL, NULL, 0, 0);
-    Tables_init();
-    /* Call the Parser */
+    
+	Tables_init();
+    
+	/* Call the Parser */
     yyparse();
 
-    Tables_print(ost,0);
+	if(print_sym == 1)
+		Tables_print(ost,0);
     
     if(ERROR_COMP == 0)
         write_quads();
