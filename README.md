@@ -29,7 +29,7 @@ To build the project, run the following command:
 To run the parser on an input file, use the following command:
 - ./bin/parser.out INPUT_FILE
 
-This will generate a file called quads.txt containing the IR if the compilation was successful. If any error was encountered during the IR generation, this file will not be produced at all.
+This will generate a file called quads.txt containing the IR. If any error was encountered during the IR generation, this file will not be produced at all.
 
 If you want to see the symbol table entries, run it with the flag -s e.g:
 - ./bin/parser.out -s INPUT_FILE
