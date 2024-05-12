@@ -1,8 +1,9 @@
-# HY340 - PHASE 1
+# HY340 - PHASE 3
 
 ## Overview
 
 This project is a simple implementation of a syntax analyzer using Flex and Bison/YACC.
+We also produce the Intermidiate Representation (IR) based on the specifications given to us.
 
 ## Contributors
 
@@ -23,21 +24,21 @@ This project is a simple implementation of a syntax analyzer using Flex and Biso
 ## Building and Running
 
 To build the project, run the following command:
-- make generate (This will generate the lexer code from `lex.l` and the yacc/bison code from `parser.y`)
-- make compile (This will compile all the `.c` files, and link them into an executable named `parser.out`.)
+- make all
 
 To run the parser on an input file, use the following command:
 - ./bin/parser.out INPUT_FILE
 
-INPUT_FILE: File containing the input (It's self explanatory). If no input file is specified, the program will terminate.
+This will generate a file called quads.txt containing the IR if the compilation was successful. If any error was encountered during the IR generation, this file will not be produced at all.
+
+If you want to see the symbol table entries, run it with the flag -s e.g:
+- ./bin/parser.out -s INPUT_FILE
+
+This will also generate a file called sym_table.txt
+
+INPUT_FILE: File containing the input (It's self explanatory).
 
 If no input file is specified, the program will halt its execution immediately !
-
-If you want to generate an output file, please use either command:
-- ./bin/parser.out INPUT_FILE OUT_FILE
-- ./bin/parser.out INPUT_FILE > OUT_FILE
-
-OUT_FILE: File where the output will be written
 
 ## Cleaning
 
