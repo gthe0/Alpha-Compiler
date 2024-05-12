@@ -3,7 +3,7 @@
 ## Overview
 
 This project is a simple implementation of a compiler using Flex and Bison/YACC for the Alpha programming language.
-We generate the Intermidiate Representation (IR) based on the specifications given to us and a Syntax-directed translation.
+We generate the Intermidiate Representation (IR) based on the specifications given to us and Syntax-directed translation.
 
 ## Contributors
 
