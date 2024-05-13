@@ -55,3 +55,15 @@ void reset_temp(void)
 {
 	temp_counter = 0;
 }
+
+/* Setter of temp counter value */
+void set_temp_counter(unsigned temp)
+{
+	temp_counter = temp;
+}
+
+/* Getter of temp_counter */
+unsigned get_temp_counter(void)
+{
+	return temp_counter;
+}

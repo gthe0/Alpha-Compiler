@@ -41,6 +41,7 @@
     static ScopeStack_T  	oScopeStack = NULL;
     static OffsetStack_T  	offsetStack = NULL;
     static LoopStack_T  	oloopStack	= NULL;
+    static IntStack_T  		tempStack	= NULL;
 
     /* If Compilation Error is
      encountered, it will be set to 1 */
@@ -350,6 +351,8 @@ funcstart: 										{
 													*/
 													IntStack_Push(&oloopStack,loop_counter);
 													loop_counter = 0;
+
+													IntStack_Push(&tempStack,get_temp_counter());
                                                 }
 
 func_name
@@ -404,6 +407,7 @@ funcdef
                                                     /* JUMP OUT OF FUNCTION SCOPE */
                                                     patchlabel($1,curr_quad_label());
 													loop_counter = IntStack_Pop(oloopStack);
+													set_temp_counter(IntStack_Pop(tempStack));
                                                 }
     ;
 
@@ -489,6 +493,7 @@ void parser_stacks_init(void)
 	oScopeStack = IntStack_init();
 	offsetStack = IntStack_init();
 	oloopStack	= IntStack_init();
+	tempStack	= IntStack_init();
 }
 
 /* Frees the stacks */
@@ -497,4 +502,5 @@ void parser_stacks_free(void)
     IntStack_free(oScopeStack);
     IntStack_free(offsetStack);
     IntStack_free(oloopStack);
+    IntStack_free(tempStack);
 }

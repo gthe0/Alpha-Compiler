@@ -28,4 +28,18 @@ char* new_temp_name(void);
 */
 void reset_temp(void);
 
+/**
+* @brief Sets temp_counter to temp
+* @param temp The value to set the temp_counter to 
+*/
+void set_temp_counter(unsigned temp);
+
+
+/**
+* @brief Gets temp_counter value
+*
+* @return temp_counter
+*/
+unsigned get_temp_counter(void);
+
 #endif /* Name Generation functions */
