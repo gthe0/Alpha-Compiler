@@ -13,6 +13,8 @@
 
 #include <expr.h>
 
+#define IGNORE_FLAG 1
+
 /* Type definitions to use */
 typedef struct quad quad, *Quad_T ;
 typedef enum iopcode iopcode;
@@ -55,6 +57,7 @@ struct quad{
 	expr*		arg2;
 	unsigned	label;
 	unsigned	line;
+	unsigned	ignore;
 };
 
 

@@ -11,6 +11,7 @@
 #include <quad.h>
 #include <expr.h>
 
+extern Quad_T quad_table;
 
 /*======================= UTILITIES ===========================*/
 
@@ -20,15 +21,30 @@
 
 void dead_code_elimination()
 {
+	int Current_temp = 0;
 
+	/* If quad table is not initialized, then return */
+	if(quad_table == NULL)
+		return ;
 
-
+	for (int i =  curr_quad_label() - 1 ; i > 0 ; i--)
+	{
+		if(is_temp_expr(quad_table[i].arg1))
+		{
+		}
+	}
+	
+	return ;
 }
 
 
 void const_propagation()
 {
+	/* If quad table is not initialized, then return */
+	if(quad_table == NULL)
+		return ;
 
+	return ;
 }
 
 /*

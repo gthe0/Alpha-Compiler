@@ -48,6 +48,7 @@ void emit(iopcode op, expr *arg1,
 	quad->arg2 = arg2;
 	quad->line = line;
 	quad->label = label;
+	quad->ignore = 0;
 
 	return;
 }
