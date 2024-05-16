@@ -32,9 +32,9 @@ void const_propagation()
 /*
 * Wrapper function for the various optimization level
 *
-* If O level == 1, do DCE 
-* If O level == 2, do Constant Propagation 
-* If O level == 3, do BOTH
+* If Optimization level == 1, do DCE 
+* If Optimization level == 2, do Constant Propagation 
+* If Optimization level == 3, do BOTH
 */
 void optimization_level(int opt)
 {
