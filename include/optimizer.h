@@ -10,8 +10,27 @@
 #ifndef __OPTIMIZER_H__
 #define __OPTIMIZER_H__
 
-#define _DEAD_CE		0x1
-#define _CONST_PROP		0x2
+#include <expr.h>
+
+/* typedefs of the various structs used */
+typedef struct const_expr_list_t const_expr_list_t, *ConstList_T; 
+
+/* list to store expression to use in const propagation */
+struct const_expr_list_t
+{
+	expr*  e ;
+
+	double numConst;
+    char *strConst;
+    unsigned char boolConst;
+
+	ConstList_T next;
+};
+
+/* Define the various optimization levels... */
+#define _DEAD_CE				0x1
+#define _CONST_PROP				0x2
+#define _ALL_OPTIMIZATIONS		( _DEAD_CE | _CONST_PROP )
 
 void dead_code_elimination();
 void const_propagation();

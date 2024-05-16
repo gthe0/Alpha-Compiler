@@ -7,6 +7,8 @@
 /*----------------------------------------------------------*/
 
 #include <optimizer.h>
+
+#include <quad.h>
 #include <expr.h>
 
 
