@@ -32,7 +32,14 @@ struct const_expr_list_t
 #define _CONST_PROP				0x2
 #define _ALL_OPTIMIZATIONS		( _DEAD_CE | _CONST_PROP )
 
-void dead_code_elimination();
+/**
+* @brief This function eliminates useless temp assignments
+*/
+void useless_temp_elimination();
+
+/**
+* @brief This function propagates const values in-between quads  
+*/
 void const_propagation();
 
 /**

@@ -19,7 +19,7 @@ extern Quad_T quad_table;
 /*===================== IMPLEMENTATION ========================*/
 
 
-void dead_code_elimination()
+void useless_temp_elimination()
 {
 	int Current_temp = 0;
 
@@ -58,7 +58,7 @@ void optimization_level(int opt)
 {
 
 	if(opt & _DEAD_CE)
-		dead_code_elimination();
+		useless_temp_elimination();
 
 	if(opt & _CONST_PROP)
 		const_propagation();
