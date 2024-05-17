@@ -26,11 +26,12 @@ extern Quad_T quad_table;
 static unsigned find_last_func_jump(unsigned list)
 {	
 	int c = 0;
+	int total_quads = curr_quad_label() ;
 
 	/* Iterate through funcstart jumps until the list ends */
 	while ( list &&
 			quad_table[list].op == jump_i	&&
-			list + 1 < curr_quad_label() 	&&
+			list + 1 < total_quads			&&
 			quad_table[list+1].op == funcstart_i)
 	{
 		c = 1;
