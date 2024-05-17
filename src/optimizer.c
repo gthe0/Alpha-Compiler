@@ -13,11 +13,6 @@
 
 extern Quad_T quad_table;
 
-/*======================= UTILITIES ===========================*/
-
-
-/*===================== IMPLEMENTATION ========================*/
-
 
 void useless_temp_elimination()
 {
@@ -31,7 +26,7 @@ void useless_temp_elimination()
 }
 
 
-void const_propagation()
+void funcjump_patchlist()
 {
 	/* If quad table is not initialized, then return */
 	if(quad_table == NULL)
@@ -43,15 +38,15 @@ void const_propagation()
 /*
 * Wrapper function for the various optimization level
 *
-* If Optimization level == 1, do DCE 
-* If Optimization level == 2, do Constant Propagation 
-* If Optimization level == 3, do BOTH
+* If Optimization level == 1, apply useless_temp_elimination 
+* If Optimization level == 2, apply funcjump_patchlist 
+* If Optimization level == 3, apply BOTH
 */
 void optimization_level(int opt)
 {
 
-	DO_OPTIMIZATION(opt,_DEAD_CE,useless_temp_elimination);
-	DO_OPTIMIZATION(opt,_CONST_PROP,const_propagation);
+	DO_OPTIMIZATION(opt,_USELESS_ASSIGN,useless_temp_elimination);
+	DO_OPTIMIZATION(opt,_FUNC_JUMP_PATCH,funcjump_patchlist);
 
 	return ;
 }

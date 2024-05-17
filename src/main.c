@@ -81,7 +81,7 @@ int main(int argc,char** argv)
                 Ovalue = atoi(optarg); /* Convert the argument to an integer */
 
 				/* Check if the Ovalue that was passed is correct, if not terminate */
-                if (Ovalue < _DEAD_CE  || Ovalue > _ALL_OPTIMIZATIONS )
+                if (Ovalue < _USELESS_ASSIGN  || Ovalue > _PEEP_HOLE_OPT )
 				{
                     LOG_ERROR(PARSER, ERROR, "Invalid value after -O flag. Please use 1, 2, or 3.\n");
 					LOG_ERROR(PARSER, NOTE, "If the value is 1, do dead code elimination\n"

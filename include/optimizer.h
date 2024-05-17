@@ -12,25 +12,10 @@
 
 #include <expr.h>
 
-/* typedefs of the various structs used */
-typedef struct const_expr_list_t const_expr_list_t, *ConstList_T; 
-
-/* list to store expression to use in const propagation */
-struct const_expr_list_t
-{
-	expr*  e ;
-
-	double numConst;
-    char *strConst;
-    unsigned char boolConst;
-
-	ConstList_T next;
-};
-
 /* Define the various optimization levels... */
-#define _DEAD_CE				0x1
-#define _CONST_PROP				0x2
-#define _ALL_OPTIMIZATIONS		( _DEAD_CE | _CONST_PROP )
+#define _USELESS_ASSIGN			0x1
+#define _FUNC_JUMP_PATCH		0x2
+#define _PEEP_HOLE_OPT			( _USELESS_ASSIGN | _FUNC_JUMP_PATCH )
 
 #define DO_OPTIMIZATION(a,b,c)	if(a & b) c() ;
 
@@ -42,12 +27,16 @@ void useless_temp_elimination();
 /**
 * @brief This function propagates const values in-between quads  
 */
-void const_propagation();
+void funcjump_patchlist();
 
 /**
 * @brief A wrapper function to apply optimizations based on opt var 
 * 
-* @param opt Optimization level opt 
+* @param opt Optimization level opt
+*
+* If Optimization level == 1, apply useless_temp_elimination 
+* If Optimization level == 2, apply funcjump_patchlist 
+* If Optimization level == 3, apply BOTH
 */
 void optimization_level(int opt);
 
