@@ -223,7 +223,8 @@ static void quad_print(FILE *ost, unsigned i)
 		fprintf(ost,"%-5s","");
 
 	/* Print the line */
-	fprintf(ost,"[line %u]\n",quad_table[i].line);
+	fprintf(ost,"[line %u]",quad_table[i].line);
+	fprintf(ost,"%s\n",quad_table[i].ignore ? " IGNORE QUAD" : "" );
 
 	return;
 }
