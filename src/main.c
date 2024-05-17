@@ -138,10 +138,13 @@ int main(int argc,char** argv)
 		Tables_print(ost,0);
     
     if(ERROR_COMP == 0)
-        write_quads();
+	{
+		/*Optimize Quads*/
+		optimization_level(Ovalue);
 
-	/*Optimize Quads*/
-	optimization_level(Ovalue);
+        write_quads();
+	}
+
 
     /* Close streams and clean up */
     Tables_free();
