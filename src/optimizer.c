@@ -27,13 +27,6 @@ void useless_temp_elimination()
 	if(quad_table == NULL)
 		return ;
 
-	for (int i =  curr_quad_label() - 1 ; i > 0 ; i--)
-	{
-		if(is_temp_expr(quad_table[i].arg1))
-		{
-		}
-	}
-	
 	return ;
 }
 
@@ -57,11 +50,8 @@ void const_propagation()
 void optimization_level(int opt)
 {
 
-	if(opt & _DEAD_CE)
-		useless_temp_elimination();
-
-	if(opt & _CONST_PROP)
-		const_propagation();
+	DO_OPTIMIZATION(opt,_DEAD_CE,useless_temp_elimination);
+	DO_OPTIMIZATION(opt,_CONST_PROP,const_propagation);
 
 	return ;
 }

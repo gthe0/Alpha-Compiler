@@ -32,6 +32,8 @@ struct const_expr_list_t
 #define _CONST_PROP				0x2
 #define _ALL_OPTIMIZATIONS		( _DEAD_CE | _CONST_PROP )
 
+#define DO_OPTIMIZATION(a,b,c)	if(a & b) c() ;
+
 /**
 * @brief This function eliminates useless temp assignments
 */
