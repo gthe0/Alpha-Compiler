@@ -22,7 +22,7 @@
 /**
 * @brief This function eliminates useless temp assignments
 */
-void useless_temp_elimination();
+void ignore_useless_quads();
 
 /**
 * @brief This function propagates const values in-between quads  
@@ -34,7 +34,7 @@ void funcjump_patchlist();
 * 
 * @param opt Optimization level opt
 *
-* If Optimization level == 1, apply useless_temp_elimination 
+* If Optimization level == 1, apply ignore_useless_quads 
 * If Optimization level == 2, apply funcjump_patchlist 
 * If Optimization level == 3, apply BOTH
 */

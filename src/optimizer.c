@@ -13,10 +13,20 @@
 
 extern Quad_T quad_table;
 
-/* Utility function to find the last jump of a funcstart jump list*/
+/* ========================= UTILS ========================= */
+
+
+/**
+* @brief This functions tries to find the last jump of multiple continuous func definitions
+*
+* @param list The jump list quad index that we pass as a parameter
+*
+* @return 0, if it fails, the label if it succeeds
+*/
 static unsigned find_last_func_jump(unsigned list)
 {	
 	int c = 0;
+
 	/* Iterate through funcstart jumps until the list ends */
 	while ( list &&
 			quad_table[list].op == jump_i	&&
@@ -27,23 +37,34 @@ static unsigned find_last_func_jump(unsigned list)
 		list = quad_table[list].label;
 	}
 
+	/*If we did not get inside the loop, return 0*/
 	return c == 0  ? c : list ;
 }
 
 
-/* Patches lists with the label */
+
+/**
+* @brief Patches the jump list of continuous function declaration with label
+*
+* @param list The jump list quad index that we pass as a parameter
+* @param label The label to patch the list
+*/
 static void funstart_patcher(int list, int label)
 {
+
 	while (list && list < label)
 	{
 		int next = quad_table[list].label;
 		quad_table[list].label = label;
 		list = next;
 	}
+
+	return ;
 }
 
+/* ========================= IMPLEMENTATION ========================= */
 
-void useless_temp_elimination()
+void ignore_useless_quads()
 {
 	int Current_temp = 0;
 
@@ -61,14 +82,12 @@ void funcjump_patchlist()
 	if(quad_table == NULL)
 		return ;
 
-	unsigned label = 0;
 	unsigned total_quads  =  curr_quad_label() ;
 
 	for (unsigned i = 1 ; i < total_quads; i++)
 	{
-		label = find_last_func_jump(i);
+		unsigned label = find_last_func_jump(i);
 		funstart_patcher(i,label);
-		label = 0;
 	}
 	
 	return ;
@@ -77,14 +96,14 @@ void funcjump_patchlist()
 /*
 * Wrapper function for the various optimization level
 *
-* If Optimization level == 1, apply useless_temp_elimination 
+* If Optimization level == 1, apply ignore_useless_quads 
 * If Optimization level == 2, apply funcjump_patchlist 
 * If Optimization level == 3, apply BOTH
 */
 void optimization_level(int opt)
 {
 
-	DO_OPTIMIZATION(opt,_USELESS_ASSIGN,useless_temp_elimination);
+	DO_OPTIMIZATION(opt,_USELESS_ASSIGN,ignore_useless_quads);
 	DO_OPTIMIZATION(opt,_FUNC_JUMP_PATCH,funcjump_patchlist);
 
 	return ;
