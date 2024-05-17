@@ -17,7 +17,7 @@
 #define _FUNC_JUMP_PATCH		0x2
 #define _PEEP_HOLE_OPT			( _USELESS_ASSIGN | _FUNC_JUMP_PATCH )
 
-#define DO_OPTIMIZATION(a,b,c)	if(a & b) c() ;
+#define APPLY_OPTIMIZATION(a,b,c)	if(a & b) c() ;
 
 /**
 * @brief This function eliminates useless temp assignments

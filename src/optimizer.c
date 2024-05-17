@@ -178,8 +178,8 @@ void funcjump_patchlist()
 void optimization_level(int opt)
 {
 
-	DO_OPTIMIZATION(opt,_USELESS_ASSIGN,ignore_useless_quads);
-	DO_OPTIMIZATION(opt,_FUNC_JUMP_PATCH,funcjump_patchlist);
+	APPLY_OPTIMIZATION(opt,_USELESS_ASSIGN,ignore_useless_quads);
+	APPLY_OPTIMIZATION(opt,_FUNC_JUMP_PATCH,funcjump_patchlist);
 
 	return ;
 }
