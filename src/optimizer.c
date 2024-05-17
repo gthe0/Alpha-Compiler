@@ -30,7 +30,6 @@ extern Quad_T quad_table;
 * @brief A Function used to Ignore useless assignments to temp variables
 *
 * @param k The index of the assignment instruction
-* @param sym The symbol of the result
 */
 static void ignore_assignments(unsigned k)
 {
@@ -69,6 +68,54 @@ static void ignore_assignments(unsigned k)
 		if(OP(i) == jump_i)	i = INSTRUCTION(i).label;
 		else i++;
 	}
+}
+
+
+/* Utility function used in ignore_branch, to set the ignore flag of continuous quads to 1*/
+static void ignore_to_label(unsigned i, unsigned label)
+{
+	if(i == 0) return;
+
+	while (i < label) {ignore_instruction(i++);}
+	return ;
+}
+
+
+/**
+* @brief A Function used to Ignore unreachable code within ifeq and if_not_eq quads
+*
+* @param i The index of the instruction
+*/
+static void ignore_branch(unsigned i)
+{
+	unsigned 		label = 0;
+	unsigned 		result = 0;
+	iopcode type = OP(i);
+
+	if(i >= curr_quad_label()) return;
+
+	/* Check if the type is correct and label not 0. These instructions are always followed by a jump*/
+	if ((type != if_eq_i && type != if_noteq_i )|| !INSTRUCTION(i).label || !(label = INSTRUCTION(i+1).label)) return ;
+	
+	/* Checks if both args are constbool_e (They always exist in these instructions)*/
+	if(!(ARG1(i)->type == constbool_e && ARG2(i)->type == constbool_e))	
+		return;
+
+	/*
+	 Check if they are both the same or not 
+	 If both are the same, the result will equal 1, 
+	 else it will equal 0
+	*/
+	result = (ARG1(i)->boolConst == ARG2(i)->boolConst) ;
+
+	/*
+	 If we have an eq check, then we want to skip it if the result is 0
+	 else if we have an unequality, then we want to skip it if the result is 1
+	*/
+	if ((!result && type == if_eq_i) || (result && type == if_noteq_i))	
+		ignore_to_label(INSTRUCTION(i).label, label);
+
+	return ;
 }
 
 
@@ -143,8 +190,7 @@ void ignore_useless_quads()
 			ignore_assignments(i);
 		
 		/* Ignore inaccessible branches */
-		if (OP(i) >= if_eq_i && OP(i) != jump_i);
-			//ignore_branch(i);
+		ignore_branch(i);
 	}
 	
 	return ;
