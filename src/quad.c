@@ -293,3 +293,16 @@ int write_quads(void)
 	
 	return EXIT_SUCCESS;
 }
+
+/* Function to activate ignore flag */
+void ignore_instruction(unsigned index){
+
+	if(	quad_table == NULL 	||
+		index < 0 			||
+		index >= curr_quad_label())
+			return ;	
+	
+	quad_table[index].ignore = IGNORE_FLAG ;
+
+	return;
+}

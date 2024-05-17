@@ -144,4 +144,11 @@ expr* make_call (expr* lv, expr* reversed_elist);
 */
 int write_quads(void);
 
+/**
+* @brief A function to activate the ignore flag of a quad
+* @param index The index of the quad to be ignored by the targt code generation
+*
+*/
+void ignore_instruction(unsigned index);
+
 #endif /* Quads module */
