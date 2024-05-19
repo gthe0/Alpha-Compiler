@@ -8,6 +8,9 @@
 /* the avm recognizes and executes							*/
 /*----------------------------------------------------------*/
 
+#ifndef __AVM_TYPES_H__
+#define __AVM_TYPES_H__
+
 #include <quad.h>
 
 /* typedefs of the various structs and enums used */
@@ -30,7 +33,7 @@ struct incomplete_jump_t
 
 /* The opcode of the vm Alpha-Byte code */
 enum vmopcode {
-	
+
     /* Assignment opcode */
 	assign_v,
     
@@ -111,3 +114,5 @@ struct userfunc {
     unsigned localSize;
     char* id;
 };
+
+#endif /* avm type definitions */
