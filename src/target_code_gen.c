@@ -85,6 +85,102 @@ static unsigned totalNamedLibfuncs = 0;
 /* The quad table */
 extern Quad_T quad_table;
 
+
+/* Add string s in the next available cell in stringConsts and return the index */
+static unsigned int consts_newstring(char *s)
+{
+	assert(s);
+
+	if (!stringConsts)
+	{
+		stringConsts = malloc(sizeof(char *));
+		stringConsts[0] = s;
+		return 0;
+	}
+
+	unsigned int i = 0;
+	while (stringConsts[i])
+		i++;
+
+	stringConsts = realloc(stringConsts, (i + 1) * sizeof(char *));
+	stringConsts[i] = s;
+
+	totalStringConsts++;
+	return i;
+}
+
+/* Add number n in the next available cell in numConsts and return the index */
+static unsigned int consts_newnumber(double n)
+{
+	if (!numConsts)
+	{
+		numConsts = malloc(sizeof(double));
+		numConsts[0] = n;
+		return 0;
+	}
+
+	unsigned int i = 0;
+	while (numConsts[i])
+		i++;
+
+	numConsts = realloc(numConsts, (i + 1) * sizeof(double));
+	numConsts[i] = n;
+
+	totalNumConsts++;
+	return i;
+}
+
+/* Add a new library function in the next available cell in libfuncs_newused and return the index */
+static unsigned int libfuncs_newused(char *s)
+{
+	assert(s);
+
+	if (!namedLibfuncs)
+	{
+		namedLibfuncs = malloc(sizeof(char *));
+		namedLibfuncs[0] = s;
+		return 0;
+	}
+
+	unsigned int i = 0;
+	while (namedLibfuncs[i])
+		i++;
+
+	namedLibfuncs = realloc(namedLibfuncs, (i + 1) * sizeof(char *));
+	namedLibfuncs[i] = s;
+
+	totalNamedLibfuncs++;
+	return i;
+}
+
+/* Add a new user function in the next available cell in userFuncs and return the index */
+static unsigned int userfuncs_newfunc(SymEntry_T sym)
+{
+	assert(sym);
+
+	if (!userFuncs)
+	{
+		userFuncs = malloc(sizeof(struct userfunc));
+		userFuncs[0].address = sym->type;
+		userFuncs[0].localSize = get_total_locals(sym);
+		userFuncs[0].id = getName(sym);
+		return 0;
+	}
+
+	unsigned int i = 0;
+	while (userFuncs[i].id)
+		i++;
+
+	userFuncs = realloc(userFuncs, (i + 1) * sizeof(struct userfunc));
+	userFuncs[i].address = get_t_address(sym);
+	userFuncs[i].localSize = get_total_locals(sym);
+	userFuncs[i].id = getName(sym);
+
+	totalUserFuncs++;
+	return i;
+}
+
+
 /* Generate arithmetic Instructions */
 void generate_ADD(Quad_T q) 			{ generate(add_v,q); }
 void generate_SUB(Quad_T q) 			{ generate(sub_v,q); }
