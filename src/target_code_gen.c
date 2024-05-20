@@ -155,9 +155,34 @@ void userfuncs_newfunc(SymEntry_T sym)
 	return ;
 }
 
+
+void emit_instr(instruction t)
+{
+	EXPAND_TABLE(instructions)
+
+	Instruction_T i = instructions + curr_instructions++;
+	*i = t;
+
+	return ;
+}
+
 /* Generic generate used for most of the instructions */
-void generate(vmopcode op, Quad_T q){}
-void generate_relational(vmopcode op, Quad_T q){}
+void generate(vmopcode op, Quad_T q)
+{
+	instruction t;
+
+	t.opcode = op; 
+
+
+
+	emit_instr(t);
+}
+
+
+void generate_relational(vmopcode op, Quad_T q)
+{
+
+}
 
 
 /* Generate arithmetic Instructions */

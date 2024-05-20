@@ -110,5 +110,11 @@ void consts_newnumber(double n);
 */
 void libfuncs_newused(char *s);
 
+/**
+* @brief Used to emit a new instruction in the instruction table 
+* 
+* @param t The instruction to be emitted and to be pushed back in the table
+*/
+void emit_instr(instruction t);
 
 #endif /* Target code generation lib*/
