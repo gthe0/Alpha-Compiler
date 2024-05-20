@@ -17,9 +17,10 @@
 /* typedefs of the various structs */
 typedef void (*generator_func_t)(Quad_T);
 
+
 /* Generic Generate functions */
-void generate(Quad_T q);
-void generate_relational(Quad_T q);
+void generate(vmopcode op, Quad_T q);
+void generate_relational(vmopcode op, Quad_T q);
 
 /* Generate arithmetic Instructions */
 void generate_ADD(Quad_T q);
@@ -42,7 +43,7 @@ void generate_IF_LESSEQ(Quad_T q);
 void generate_NOP();
 void generate_ASSIGN(Quad_T q);
 void generate_NEWTABLE(Quad_T q);
-void generate_TABLEGETELM(Quad_T q);
+void generate_TABLEGETELEM(Quad_T q);
 void generate_TABLESETELEM(Quad_T q);
 
 /* Generate call related Instructions */
@@ -59,43 +60,5 @@ void generate_FUNCEND(Quad_T q);
 void generate_OR(Quad_T q);
 void generate_AND(Quad_T q);
 void generate_NOT(Quad_T q);
-
-/*
- This function table here will call the appropriate
- function based on the quad's opcode, which is an enum !
-
- WARNING!!!! : If you want to reorder the functions,
- please also reorder the fields of the iopcode enum in quad.h
-*/
-generator_func_t generators[] = {
-	generate_ASSIGN,
-    generate_ADD,
-    generate_SUB,
-    generate_MUL,
-    generate_DIV,
-    generate_MOD,
-    generate_UMINUS,
-    generate_AND,
-    generate_OR,
-    generate_NOT,
-    generate_CALL,
-    generate_PARAM,
-    generate_RETURN,
-    generate_GETRETVAL,
-    generate_FUNCSTART,
-    generate_FUNCEND,
-    generate_NEWTABLE,
-    generate_TABLEGETELM,
-    generate_TABLESETELEM,
-    generate_IF_EQ,
-    generate_IF_NOTEQ,
-    generate_IF_LESSEQ,
-    generate_IF_GREATEREQ,
-    generate_IF_LESS,
-    generate_IF_GREATER,
-    generate_JUMP,
-	generate_NOP
-};
-
 
 #endif /* Target code generation lib*/

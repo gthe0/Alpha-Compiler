@@ -11,10 +11,7 @@
 #ifndef __AVM_TYPES_H__
 #define __AVM_TYPES_H__
 
-#include <quad.h>
-
 /* typedefs of the various structs and enums used */
-typedef struct incomplete_jump_t incomplete_jump_t, *IncompleteJump_T;
 typedef struct instruction instruction, *Instruction_T;
 
 typedef struct userfunc userfunc_t, *UserFunc_T;
@@ -23,13 +20,6 @@ typedef struct vmarg vmarg, *vmarg_T;
 typedef enum vmopcode vmopcode;
 typedef enum vmarg_t vmarg_t;
 
-/* Incomplete jump list */
-struct incomplete_jump_t
-{
-	unsigned 			instrNo;	/* Incstruction No. */
-	unsigned 			iaddress;	/* Address of jump/branch destionation */
-	IncompleteJump_T 	next;		/* Next Instruction in list */
-};
 
 /* The opcode of the vm Alpha-Byte code */
 enum vmopcode {
