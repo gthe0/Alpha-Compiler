@@ -8,6 +8,9 @@
 
 #include <func_stack.h>
 
+#include <assert.h>
+#include <stdlib.h>
+
 typedef struct funcStack_t funcStack_t, *FuncStack_T;
 
 /*

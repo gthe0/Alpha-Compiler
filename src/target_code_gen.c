@@ -12,7 +12,18 @@
 #include <func_stack.h>
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
+
+/* Used to Resize tables */
+#define EXPAND_SIZE 0x100
+#define CURR_SIZE(a) (total_##a * sizeof(a))
+#define NEW_SIZE(a) (EXPAND_SIZE * sizeof(a) + CURR_SIZE(a))
+
+#define EXPAND_TABLE(a)		if(curr_##a == total_##a){		\
+								a = realloc(a, NEW_SIZE(a));\
+								total_##a += EXPAND_SIZE;	\
+							}
 
 /*
  This function table here will call the appropriate
@@ -65,120 +76,88 @@ struct incomplete_jump_t
 /* Modules and Variables used  */
 static Instruction_T instructions = (Instruction_T)0;
 static unsigned total_instructions = 0;
+static unsigned curr_instructions = 0;
 
 static InCompleteJump_T ij_list = (InCompleteJump_T) 0;
 static unsigned ij_total = 0;
 
 static UserFunc_T userFuncs = (UserFunc_T)0;
-static unsigned totalUserFuncs = 0;
+static unsigned total_userFuncs = 0;
+static unsigned curr_userFuncs = 0;
 
 /* Arrays to store Const variable information */
 static double* numConsts;
-static unsigned totalNumConsts = 0;
+static unsigned total_numConsts = 0;
+static unsigned curr_numConsts = 0;
 
 static char ** stringConsts;
-static unsigned totalStringConsts = 0;
+static unsigned total_stringConsts = 0;
+static unsigned curr_stringConsts = 0;
 
 static char ** namedLibfuncs;
-static unsigned totalNamedLibfuncs = 0;
+static unsigned total_namedLibfuncs = 0;
+static unsigned curr_namedLibfuncs = 0;
 
 /* The quad table */
 extern Quad_T quad_table;
 
 
-/* Add string s in the next available cell in stringConsts and return the index */
-unsigned int consts_newstring(char *s)
+/* Add string s in the next available cell in stringConsts */
+void consts_newstring(char *s)
 {
 	assert(s);
 
-	if (!stringConsts)
-	{
-		stringConsts = malloc(sizeof(char *));
-		stringConsts[0] = s;
-		return 0;
-	}
+	EXPAND_TABLE(stringConsts);
+	
+	char** string = stringConsts + curr_stringConsts++;
+	*string = strdup(s);
 
-	unsigned int i = 0;
-	while (stringConsts[i])
-		i++;
-
-	stringConsts = realloc(stringConsts, (i + 1) * sizeof(char *));
-	stringConsts[i] = s;
-
-	totalStringConsts++;
-	return i;
+	return ;
 }
 
-/* Add number n in the next available cell in numConsts and return the index */
-unsigned int consts_newnumber(double n)
+/* Add number n in the next available cell in numConsts */
+void consts_newnumber(double n)
 {
-	if (!numConsts)
-	{
-		numConsts = malloc(sizeof(double));
-		numConsts[0] = n;
-		return 0;
-	}
+	EXPAND_TABLE(numConsts);
 
-	unsigned int i = 0;
-	while (numConsts[i])
-		i++;
+	double* num = numConsts + curr_numConsts++;
+	*num = n;
 
-	numConsts = realloc(numConsts, (i + 1) * sizeof(double));
-	numConsts[i] = n;
-
-	totalNumConsts++;
-	return i;
+	return;
 }
 
-/* Add a new library function in the next available cell in libfuncs_newused and return the index */
-unsigned int libfuncs_newused(char *s)
+/* Add a new library function in the next available cell in libfuncs_newused */
+void libfuncs_newused(char *s)
 {
 	assert(s);
 
-	if (!namedLibfuncs)
-	{
-		namedLibfuncs = malloc(sizeof(char *));
-		namedLibfuncs[0] = s;
-		return 0;
-	}
+	EXPAND_TABLE(namedLibfuncs);
+	
+	char** string = namedLibfuncs + curr_namedLibfuncs ++;
+	*string = strdup(s);
 
-	unsigned int i = 0;
-	while (namedLibfuncs[i])
-		i++;
-
-	namedLibfuncs = realloc(namedLibfuncs, (i + 1) * sizeof(char *));
-	namedLibfuncs[i] = s;
-
-	totalNamedLibfuncs++;
-	return i;
+	return ;
 }
 
-/* Add a new user function in the next available cell in userFuncs and return the index */
-unsigned int userfuncs_newfunc(SymEntry_T sym)
+/* Add a new user function in the next available cell in userFuncs */
+void userfuncs_newfunc(SymEntry_T sym)
 {
 	assert(sym);
 
-	if (!userFuncs)
-	{
-		userFuncs = malloc(sizeof(struct userfunc));
-		userFuncs[0].address = sym->type;
-		userFuncs[0].localSize = get_total_locals(sym);
-		userFuncs[0].id = getName(sym);
-		return 0;
-	}
+	EXPAND_TABLE(userFuncs);
 
-	unsigned int i = 0;
-	while (userFuncs[i].id)
-		i++;
+	UserFunc_T func = userFuncs + total_userFuncs++;
 
-	userFuncs = realloc(userFuncs, (i + 1) * sizeof(struct userfunc));
-	userFuncs[i].address = get_t_address(sym);
-	userFuncs[i].localSize = get_total_locals(sym);
-	userFuncs[i].id = getName(sym);
+	func->id = getName(sym);
+	func->address = get_i_address(sym);
+	func->localSize = get_total_locals(sym);
 
-	totalUserFuncs++;
-	return i;
+	return ;
 }
+
+/* Generic generate used for most of the instructions */
+void generate(vmopcode op, Quad_T q){}
+void generate_relational(vmopcode op, Quad_T q){}
 
 
 /* Generate arithmetic Instructions */
@@ -214,9 +193,9 @@ void generate_PARAM(Quad_T q)			{}
 void generate_GETRETVAL(Quad_T q)		{}
 
 /* Generate function definition related Instructions */
-void generate_FUNCSTART(Quad_T q);
-void generate_RETURN(Quad_T q);
-void generate_FUNCEND(Quad_T q);
+void generate_FUNCSTART(Quad_T q) {}
+void generate_RETURN(Quad_T q) {}
+void generate_FUNCEND(Quad_T q) {}
 
 /* 
  Generate Boolean Instructions

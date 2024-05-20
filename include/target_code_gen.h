@@ -84,7 +84,7 @@ void patch_incomplete_jumps(void);
 * 
 * @param sym The symbol holding the userfunc information
 */
-unsigned userfuncs_newfunc(SymEntry_T sym);
+void userfuncs_newfunc(SymEntry_T sym);
 
 
 /**
@@ -92,7 +92,7 @@ unsigned userfuncs_newfunc(SymEntry_T sym);
 * 
 * @param s String to be pushed back in the table
 */
-unsigned consts_newstring(char *s);
+void consts_newstring(char *s);
 
 
 /**
@@ -100,7 +100,7 @@ unsigned consts_newstring(char *s);
 * 
 * @param n The number to be pushed back in the table
 */
-unsigned consts_newnumber(double n);
+void consts_newnumber(double n);
 
 
 /**
@@ -108,7 +108,7 @@ unsigned consts_newnumber(double n);
 * 
 * @param s The name of the lib function to be pushed back in the table
 */
-unsigned libfuncs_newused(char *s);
+void libfuncs_newused(char *s);
 
 
 #endif /* Target code generation lib*/

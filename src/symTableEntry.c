@@ -195,7 +195,7 @@ void set_i_address(SymEntry_T oSymEntry, unsigned int iaddress)
 
 
 /* Setter of taddress */
-void set_i_address(SymEntry_T oSymEntry, unsigned int taddress)
+void set_t_address(SymEntry_T oSymEntry, unsigned int taddress)
 {
 	if(!oSymEntry || oSymEntry->type < USERFUNC)
 		return ;

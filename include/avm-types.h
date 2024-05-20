@@ -102,7 +102,7 @@ struct instruction {
 struct userfunc {
     unsigned address;
     unsigned localSize;
-    char* id;
+    const char* id;
 };
 
 #endif /* avm type definitions */
