@@ -60,6 +60,9 @@ void generate_OR(Quad_T q);
 void generate_AND(Quad_T q);
 void generate_NOT(Quad_T q);
 
+
+/* INCOMPLETE JUMP MODULE FUNCTIONS */
+
 /**
 * @brief Adds a node to the Incomplete Jump module (IJ Module)
 * 
@@ -72,6 +75,40 @@ void add_incomplete_jump(unsigned instrNo, unsigned iaddress);
 * @brief Patches all the incomplete jumps using the info stored in the IJ Module 
 */
 void patch_incomplete_jumps(void);
+
+
+/* VECOTR MANAGEMENT FUNCTIONS */
+
+/**
+* @brief Appends userfunc table with the info stored in sym 
+* 
+* @param sym The symbol holding the userfunc information
+*/
+unsigned userfuncs_newfunc(SymEntry_T sym);
+
+
+/**
+* @brief Appends const_string table with the string s 
+* 
+* @param s String to be pushed back in the table
+*/
+unsigned consts_newstring(char *s);
+
+
+/**
+* @brief Appends const_number table with the number n 
+* 
+* @param n The number to be pushed back in the table
+*/
+unsigned consts_newnumber(double n);
+
+
+/**
+* @brief Appends library function table with the name of the function 
+* 
+* @param s The name of the lib function to be pushed back in the table
+*/
+unsigned libfuncs_newused(char *s);
 
 
 #endif /* Target code generation lib*/

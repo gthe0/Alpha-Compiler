@@ -87,7 +87,7 @@ extern Quad_T quad_table;
 
 
 /* Add string s in the next available cell in stringConsts and return the index */
-static unsigned int consts_newstring(char *s)
+unsigned int consts_newstring(char *s)
 {
 	assert(s);
 
@@ -110,7 +110,7 @@ static unsigned int consts_newstring(char *s)
 }
 
 /* Add number n in the next available cell in numConsts and return the index */
-static unsigned int consts_newnumber(double n)
+unsigned int consts_newnumber(double n)
 {
 	if (!numConsts)
 	{
@@ -131,7 +131,7 @@ static unsigned int consts_newnumber(double n)
 }
 
 /* Add a new library function in the next available cell in libfuncs_newused and return the index */
-static unsigned int libfuncs_newused(char *s)
+unsigned int libfuncs_newused(char *s)
 {
 	assert(s);
 
@@ -154,7 +154,7 @@ static unsigned int libfuncs_newused(char *s)
 }
 
 /* Add a new user function in the next available cell in userFuncs and return the index */
-static unsigned int userfuncs_newfunc(SymEntry_T sym)
+unsigned int userfuncs_newfunc(SymEntry_T sym)
 {
 	assert(sym);
 
