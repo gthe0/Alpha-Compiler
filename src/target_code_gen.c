@@ -9,7 +9,9 @@
 
 #include <target_code_gen.h>
 #include <symTableEntry.h>
+#include <func_stack.h>
 
+#include <stdlib.h>
 #include <assert.h>
 
 /*
@@ -51,8 +53,6 @@ generator_func_t generators[] = {
 
 /* typedefs of the function Stack */
 typedef struct incomplete_jump_t incomplete_jump_t, *InCompleteJump_T;
-typedef struct funcStack_t funcStack_t, *FuncStack_T;
-
 
 /* Incomplete jump list */
 struct incomplete_jump_t
@@ -62,64 +62,28 @@ struct incomplete_jump_t
 	InCompleteJump_T 	next;		/* Next Instruction in list */
 };
 
-/*
- Stack Used to store Function Information.
- We will implement it as a module only in this file here.
-*/
-struct funcStack_t{
-	Function* top;
-	FuncStack_T	prev;	
-};
-
 /* Modules and Variables used  */
-static InCompleteJump_T ij_list = NULL;
-static FuncStack_T funcStack = NULL;
+static Instruction_T instructions = (Instruction_T)0;
+static unsigned total_instructions = 0;
 
+static InCompleteJump_T ij_list = (InCompleteJump_T) 0;
+static unsigned ij_total = 0;
 
-/**
-* @brief Utility function used to push things in the Stack module
-* 
-* @param sym The entry containing the Function struct
-*/
-static void FuncStack_push(SymEntry_T sym)
-{
-	FuncStack_T t = malloc(sizeof(funcStack_t));
-	
-	if (!sym || sym->type < USERFUNC)
-		return;
+static UserFunc_T userFuncs = (UserFunc_T)0;
+static unsigned totalUserFuncs = 0;
 
-	t->top = sym->value.funcVal;
-	t->prev = funcStack;
-	funcStack = t;
-}
+/* Arrays to store Const variable information */
+static double* numConsts;
+static unsigned totalNumConsts = 0;
 
-/**
-* @brief Utility function used to pop things out of the Stack module
-*
-* @return The top element of the stack 
-*/
-static Function* FuncStack_pop(void)
-{
-	/*
-	 If the funcStack is NULL, then that means
-	 that the quads or IR are Invalid and 
-	 we abort the target code generation
-	*/
-	assert(funcStack);
+static char ** stringConsts;
+static unsigned totalStringConsts = 0;
 
+static char ** namedLibfuncs;
+static unsigned totalNamedLibfuncs = 0;
 
-	FuncStack_T t = funcStack;
-	Function* top = t->top ;
-
-	funcStack = funcStack->prev;
-	free(t);
-
-	return top;
-}
-
-
-
-
+/* The quad table */
+extern Quad_T quad_table;
 
 /* Generate arithmetic Instructions */
 void generate_ADD(Quad_T q) 			{ generate(add_v,q); }
@@ -128,7 +92,8 @@ void generate_MUL(Quad_T q) 			{ generate(mul_v,q); }
 void generate_DIV(Quad_T q) 			{ generate(div_v,q); }
 void generate_MOD(Quad_T q) 			{ generate(mod_v,q); }
 
-void generate_UMINUS(Quad_T q)	{
+void generate_UMINUS(Quad_T q)
+{
 
 }
 
@@ -166,3 +131,34 @@ void generate_OR(Quad_T q) {}
 void generate_AND(Quad_T q) {}
 void generate_NOT(Quad_T q) {}
 
+
+/* Function used to add a node to the list */
+void add_incomplete_jump(unsigned instrNo, unsigned iaddress) 
+{
+	InCompleteJump_T ij = malloc(sizeof(incomplete_jump_t));
+
+	ij->instrNo = instrNo;
+	ij->iaddress = iaddress;
+	ij->next = ij_list;
+	ij_list = ij;
+	ij_total++;
+}
+
+/* 
+ This function patches the incomplete jump instructions stored
+ in the instructions table and whose info is stored in the ij_list
+*/
+void patch_incomplete_jumps(void) 
+{
+	InCompleteJump_T ij = ij_list;
+
+	while (ij) 
+	{
+		if (ij->iaddress == curr_quad_label()) {
+			instructions[ij->instrNo].result->val = total_instructions;
+		} else {
+			instructions[ij->instrNo].result->val = quad_table[ij->iaddress].taddress;
+		}
+		++ij;
+	}
+}

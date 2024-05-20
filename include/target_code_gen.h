@@ -17,7 +17,6 @@
 /* typedefs of the various structs */
 typedef void (*generator_func_t)(Quad_T);
 
-
 /* Generic Generate functions */
 void generate(vmopcode op, Quad_T q);
 void generate_relational(vmopcode op, Quad_T q);
@@ -60,5 +59,19 @@ void generate_FUNCEND(Quad_T q);
 void generate_OR(Quad_T q);
 void generate_AND(Quad_T q);
 void generate_NOT(Quad_T q);
+
+/**
+* @brief Adds a node to the Incomplete Jump module (IJ Module)
+* 
+* @param instrNo The instruction Number
+* @param iaddress The instruction address
+*/
+void add_incomplete_jump(unsigned instrNo, unsigned iaddress);
+
+/**
+* @brief Patches all the incomplete jumps using the info stored in the IJ Module 
+*/
+void patch_incomplete_jumps(void);
+
 
 #endif /* Target code generation lib*/
