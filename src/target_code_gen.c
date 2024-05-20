@@ -255,6 +255,6 @@ void patch_incomplete_jumps(void)
 		} else {
 			instructions[ij->instrNo].result->val = quad_table[ij->iaddress].taddress;
 		}
-		++ij;
+		ij = ij->next;
 	}
 }
