@@ -53,6 +53,7 @@ struct Function
 	unsigned int line;
 	unsigned int retlist;
 	unsigned int iaddress;
+	unsigned int taddress;
 	unsigned int total_locals;
 };
 
@@ -144,6 +145,16 @@ ScopeSpace getSpace_val(SymEntry_T oSymEntry);
 */
 unsigned int get_i_address(SymEntry_T oSymEntry);
 
+
+/**
+* @brief Getter of instruction address 
+*
+* @param oSymEntry Symbol Entry.
+*
+* @return function.address
+*/
+unsigned int get_t_address(SymEntry_T oSymEntry);
+
 /**
 * @brief Setter of instruction addresses 
 * 
@@ -152,6 +163,16 @@ unsigned int get_i_address(SymEntry_T oSymEntry);
 * 
 */
 void set_i_address(SymEntry_T oSymEntry,unsigned int iaddress);
+
+/**
+* @brief Setter of instruction addresses 
+* 
+* @param oSymEntry Symbol Entry.
+* @param taddress the Instruction address of the function
+* 
+*/
+void set_t_address(SymEntry_T oSymEntry,unsigned int taddress);
+
 
 /**
 * @brief Getter of return list 

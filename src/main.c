@@ -127,7 +127,7 @@ int main(int argc,char** argv)
     expand();
 
 	/* Emit a blank instruction for padding */
-    emit(blank_i,NULL , NULL, NULL, 0, 0);
+    emit(nop_i,NULL , NULL, NULL, 0, 0);
     
 	Tables_init();
     

@@ -54,6 +54,7 @@ static Function* setFunction(const char* name,
 	new->line = line;
 	new->scope = scope;
 	new->iaddress = 0;
+	new->taddress = 0;
 	new->retlist = newlist(curr_quad_label());
 
 	return (new);
@@ -165,7 +166,7 @@ ScopeSpace getSpace_val(SymEntry_T oSymEntry)
 }
 
 
-/* Getter of retlist */
+/* Getter of iaddress */
 unsigned int get_i_address(SymEntry_T oSymEntry)
 {
 	assert(oSymEntry && oSymEntry->type > FORMAL);
@@ -174,13 +175,32 @@ unsigned int get_i_address(SymEntry_T oSymEntry)
 }
 
 
-/* Setter of retlist */
+/* Getter of taddress */
+unsigned int get_t_address(SymEntry_T oSymEntry)
+{
+	assert(oSymEntry && oSymEntry->type > FORMAL);
+
+	return oSymEntry->value.funcVal->taddress;
+}
+
+
+/* Setter of iaddress */
 void set_i_address(SymEntry_T oSymEntry, unsigned int iaddress)
 {
 	if(!oSymEntry || oSymEntry->type < USERFUNC)
 		return ;
 
 	oSymEntry->value.funcVal->iaddress = iaddress ; 
+}
+
+
+/* Setter of taddress */
+void set_i_address(SymEntry_T oSymEntry, unsigned int taddress)
+{
+	if(!oSymEntry || oSymEntry->type < USERFUNC)
+		return ;
+
+	oSymEntry->value.funcVal->taddress = taddress; 
 }
 
 

@@ -46,7 +46,7 @@ enum iopcode{
     if_less_i,
     if_greater_i,
     jump_i,
-	blank_i
+	nop_i
 };
 
 
@@ -58,6 +58,7 @@ struct quad{
 	unsigned	label;
 	unsigned	line;
 	unsigned	ignore;
+	unsigned	taddress;
 };
 
 

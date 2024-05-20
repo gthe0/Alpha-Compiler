@@ -49,6 +49,7 @@ void emit(iopcode op, expr *arg1,
 	quad->line = line;
 	quad->label = label;
 	quad->ignore = 0;
+	quad->taddress = 0;
 
 	return;
 }
@@ -204,7 +205,7 @@ static void quad_print(FILE *ost, unsigned i)
 		case jump_i:
 			fprintf(ost,"%-16s","jump");
 			break;
-		case blank_i:
+		case nop_i:
 			break;
 		default:
 			fprintf(ost,"%-16s","unknown");
