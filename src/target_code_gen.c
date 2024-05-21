@@ -529,3 +529,16 @@ void patch_incomplete_jumps(void)
 		ij = ij->next;
 	}
 }
+
+/* Generates the target code */
+void generate_target_code(void)
+{
+	unsigned total = curr_quad_label();
+
+	for (curr_quad = 1 ; curr_quad < total ; curr_quad++)
+		(*generators[quad_table[curr_quad].op]) (quad_table + curr_quad);
+
+	patch_incomplete_jumps();
+
+	return;
+}

@@ -125,4 +125,9 @@ void emit_instr(instruction t);
 */
 void make_operand(expr* e, vmarg_T arg);
 
+/**
+* @brief Generates the target code in the instructions table
+*/
+void generate_target_code(void);
+
 #endif /* Target code generation lib*/
