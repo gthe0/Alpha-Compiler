@@ -57,4 +57,9 @@ Function* FuncStack_pop(void)
 	return top;
 }
 
-
+/* Get the top element of the stack */
+Function* FuncStack_top(void)
+{
+	assert(funcStack);
+	return funcStack->top;
+}

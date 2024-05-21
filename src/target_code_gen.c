@@ -371,14 +371,105 @@ void generate_IF_LESS(Quad_T q)			{ generate_relational(jlt_v,q);}
 void generate_IF_LESSEQ(Quad_T q)		{ generate_relational(jle_v,q);}
 
 /* Generate call related Instructions */
-void generate_CALL(Quad_T q)			{}
-void generate_PARAM(Quad_T q)			{}
-void generate_GETRETVAL(Quad_T q)		{}
+
+void generate_CALL(Quad_T q)
+{
+	instruction t = {0};
+
+	t.opcode = call_v;
+	q->taddress = curr_instructions;
+
+	make_operan(q->arg1, &t.arg1);
+
+	emit_instr(t);
+}
+
+void generate_PARAM(Quad_T q)
+{
+	instruction t = {0};
+
+	t.opcode = pusharg_v;
+	q->taddress = curr_instructions;
+
+	make_operan(q->arg1, &t.arg1);
+
+	emit_instr(t);
+}
+
+void generate_GETRETVAL(Quad_T q)
+{
+	instruction t = {0};
+
+	t.opcode = assign_v;
+	q->taddress = curr_instructions;
+
+	make_operan(q->arg1, &t.arg1);
+	make_retvaloperand(&t.arg1);
+
+	emit_instr(t);
+
+}
 
 /* Generate function definition related Instructions */
-void generate_FUNCSTART(Quad_T q) {}
-void generate_RETURN(Quad_T q) {}
-void generate_FUNCEND(Quad_T q) {}
+void generate_FUNCSTART(Quad_T q)
+{
+	Function* func = q->result->sym->value.funcVal;
+	
+	func->taddress = q->taddress = curr_instructions;
+	FuncStack_push(q->result->sym);
+
+	instruction t = {0};
+	
+	t.opcode = funcenter_v;
+	make_operand(q->result,&t.result);
+
+	emit_instr(t);
+	return;
+}
+
+void generate_RETURN(Quad_T q)
+{
+	q->taddress = curr_instructions;
+	
+	instruction t = {0};
+
+	t.opcode = assign_v;
+
+	make_retvaloperand(&t.result);
+	make_operand(q->arg1,&t.arg1);
+
+	emit_instr(t);
+
+	Function* func = FuncStack_top();
+	/* NEED TO ADD MERGE LIST */
+
+	t.opcode = jump_v;
+
+	t.arg1.val = 0;
+	t.arg2.val = 0;
+
+	t.result.type = label_a;
+
+	emit_inst(t);
+
+	return;
+}
+
+void generate_FUNCEND(Quad_T q)
+{
+	Function* func = FuncStack_pop();
+	/* NEED TO ADD BACK PATCH */
+
+	q->taddress = curr_instructions;
+	instruction t;
+
+	t.opcode = funcexit_v;
+
+	make_operand(q->result,&t.result);
+	emit_instr(t);
+
+	return;
+}
 
 /* 
  Generate Boolean Instructions

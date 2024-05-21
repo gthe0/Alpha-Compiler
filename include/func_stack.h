@@ -26,4 +26,12 @@ void FuncStack_push(SymEntry_T sym);
 */
 Function* FuncStack_pop(void);
 
+
+/**
+* @brief Get the Top element of the stack
+*
+* @return The top element of the Stack
+*/
+Function* FuncStack_top(void);
+
 #endif /* FuncStack module */
