@@ -177,9 +177,9 @@ void set_i_address(SymEntry_T oSymEntry,unsigned int iaddress);
 * 
 * @param oSymEntry Symbol Entry.
 *
-* @return function.retlist
+* @return function->retlist
 */
-unsigned int get_retlist(SymEntry_T oSymEntry);
+retlist_T get_retlist(SymEntry_T oSymEntry);
 
 /**
 * @brief Setter of instruction addresses 
@@ -188,7 +188,7 @@ unsigned int get_retlist(SymEntry_T oSymEntry);
 * @param retlist The Instruction address of the function
 * 
 */
-void set_retlist(SymEntry_T oSymEntry,unsigned int retlist);
+void set_retlist(SymEntry_T oSymEntry,retlist_T retlist);
 
 
 /**

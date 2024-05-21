@@ -195,7 +195,7 @@ void set_i_address(SymEntry_T oSymEntry, unsigned int iaddress)
 
 
 /* Getter of retlist */
-unsigned int get_retlist(SymEntry_T oSymEntry)
+retlist_T get_retlist(SymEntry_T oSymEntry)
 {
 	assert(oSymEntry && oSymEntry->type > FORMAL);
 
@@ -204,7 +204,7 @@ unsigned int get_retlist(SymEntry_T oSymEntry)
 
 
 /* Setter of retlist */
-void set_retlist(SymEntry_T oSymEntry,unsigned int retlist)
+void set_retlist(SymEntry_T oSymEntry,retlist_T retlist)
 {
 	if(!oSymEntry || oSymEntry->type < USERFUNC)
 		return ;

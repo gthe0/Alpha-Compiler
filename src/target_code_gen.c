@@ -201,7 +201,7 @@ void make_operand(expr* e, vmarg_T arg)
 			arg->val = curr_namedLibfuncs; 
 			arg->type = libfunc_a;
 		
-			libfuncs_newused(getName(e->sym));
+			libfuncs_newused((char*)getName(e->sym));
 
 			break;
 		
@@ -381,7 +381,7 @@ void generate_CALL(Quad_T q)
 
 	q->taddress = curr_instructions;
 
-	make_operan(q->arg1, &t.arg1);
+	make_operand(q->arg1, &t.arg1);
 
 	emit_instr(t);
 }
@@ -395,7 +395,7 @@ void generate_PARAM(Quad_T q)
 
 	q->taddress = curr_instructions;
 
-	make_operan(q->arg1, &t.arg1);
+	make_operand(q->arg1, &t.arg1);
 
 	emit_instr(t);
 }
@@ -409,7 +409,7 @@ void generate_GETRETVAL(Quad_T q)
 
 	q->taddress = curr_instructions;
 
-	make_operan(q->arg1, &t.arg1);
+	make_operand(q->arg1, &t.arg1);
 	make_retvaloperand(&t.arg1);
 
 	emit_instr(t);
@@ -459,7 +459,7 @@ void generate_RETURN(Quad_T q)
 
 	t.result.type = label_a;
 
-	emit_inst(t);
+	emit_instr(t);
 
 	return;
 }
