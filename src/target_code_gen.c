@@ -10,7 +10,9 @@
 #include <target_code_gen.h>
 #include <symTableEntry.h>
 #include <func_stack.h>
+#include <log.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -132,6 +134,14 @@ static void make_retvaloperand(vmarg_T arg)
 	arg->type = retval_a;
 
 	return ;
+}
+
+/*
+ Helper function that returns the current instruction No.
+*/
+static unsigned nextinstructionlabel()
+{
+	return curr_instructions;
 }
 
 /* This function produces the arguments */
@@ -317,9 +327,9 @@ void generate_relational(vmopcode op, Quad_T q)
 	t.result.type = label_a;
 
 	if (q->label < curr_quad) t.result.val = quad_table[q->label].taddress;
-	else add_incomplete_jump(curr_instructions, q->label );
+	else add_incomplete_jump(nextinstructionlabel(), q->label );
 	
-	q->taddress = curr_instructions;
+	q->taddress = nextinstructionlabel();
 
 	emit_instr(t);
 }
@@ -379,7 +389,7 @@ void generate_CALL(Quad_T q)
 	t.opcode = call_v;
 	t.srcLine = q->line;
 
-	q->taddress = curr_instructions;
+	q->taddress = nextinstructionlabel();
 
 	make_operand(q->arg1, &t.arg1);
 
@@ -393,7 +403,7 @@ void generate_PARAM(Quad_T q)
 	t.opcode = pusharg_v;
 	t.srcLine = q->line;
 
-	q->taddress = curr_instructions;
+	q->taddress = nextinstructionlabel();
 
 	make_operand(q->arg1, &t.arg1);
 
@@ -407,7 +417,7 @@ void generate_GETRETVAL(Quad_T q)
 	t.opcode = assign_v;
 	t.srcLine = q->line;
 
-	q->taddress = curr_instructions;
+	q->taddress = nextinstructionlabel();
 
 	make_operand(q->arg1, &t.arg1);
 	make_retvaloperand(&t.arg1);
@@ -421,7 +431,7 @@ void generate_FUNCSTART(Quad_T q)
 {
 	Function* func = q->result->sym->value.funcVal;
 	
-	func->taddress = q->taddress = curr_instructions;
+	func->taddress = q->taddress = nextinstructionlabel();
 	FuncStack_push(q->result->sym);
 
 	instruction t = {0};
@@ -437,7 +447,7 @@ void generate_FUNCSTART(Quad_T q)
 
 void generate_RETURN(Quad_T q)
 {
-	q->taddress = curr_instructions;
+	q->taddress = nextinstructionlabel();
 	
 	instruction t = {0};
 
@@ -450,7 +460,7 @@ void generate_RETURN(Quad_T q)
 	emit_instr(t);
 
 	Function* func = FuncStack_top();
-	RetList_insert(&func->retlist,curr_instructions);
+	RetList_insert(&func->retlist,nextinstructionlabel());
 
 	t.opcode = jump_v;
 
@@ -473,11 +483,11 @@ void generate_FUNCEND(Quad_T q)
 	while (list)
 	{
 		instructions[list->taddress].result.type = label_a;
-		instructions[list->taddress].result.val = curr_instructions;
+		instructions[list->taddress].result.val = nextinstructionlabel();
 		list=list->next;
 	}
 
-	q->taddress = curr_instructions;
+	q->taddress = nextinstructionlabel();
 	instruction t;
 
 	t.opcode = funcexit_v;
@@ -522,7 +532,7 @@ void patch_incomplete_jumps(void)
 	while (ij) 
 	{
 		if (ij->iaddress == curr_quad_label()) {
-			instructions[ij->instrNo].result.val = curr_instructions;
+			instructions[ij->instrNo].result.val = nextinstructionlabel();
 		} else {
 			instructions[ij->instrNo].result.val = quad_table[ij->iaddress].taddress;
 		}
@@ -541,4 +551,24 @@ void generate_target_code(void)
 	patch_incomplete_jumps();
 
 	return;
+}
+
+#define TCG_WRITE(a)	fwrite(&a,sizeof(a),1,ost)
+
+void createAVMBin(char* BinFileName)
+{
+	unsigned magicNum = 34020241334;
+	char* tcgFileName = BinFileName == NULL ? 
+						"a.abc" : BinFileName;
+
+	FILE* ost = NULL ;
+	
+	if(!( ost = fopen(tcgFileName,"wb")))
+	{
+		LOG_ERROR(TGC,ERROR,"Could not open file stream %s\n",tcgFileName);	
+		exit(EXIT_FAILURE);
+	}
+
+	fclose(ost);
+	return ;
 }
