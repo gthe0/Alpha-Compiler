@@ -165,16 +165,6 @@ unsigned int get_t_address(SymEntry_T oSymEntry);
 void set_i_address(SymEntry_T oSymEntry,unsigned int iaddress);
 
 /**
-* @brief Setter of instruction addresses 
-* 
-* @param oSymEntry Symbol Entry.
-* @param taddress the Instruction address of the function
-* 
-*/
-void set_t_address(SymEntry_T oSymEntry,unsigned int taddress);
-
-
-/**
 * @brief Getter of return list 
 * 
 * @param oSymEntry Symbol Entry.
