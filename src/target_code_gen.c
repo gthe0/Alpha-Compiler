@@ -353,6 +353,30 @@ void generate_UMINUS(Quad_T q)
 	 understandable by all, I won't implemenet 
 	 the second method yet. It may be done once the VM is ready.
 	*/
+
+	assert(q);
+
+	/*
+	 As you can see this is the code of generate
+	 but we swap the arg2 make_operand with make_numberoeprand
+	 to create a const num operand here
+	*/
+	instruction t = {0};
+	
+	t.opcode = mul_v;
+	t.srcLine = q->line;
+
+	make_operand(q->arg1,&t.arg1);
+	make_operand(q->result,&t.result); 
+
+	/* We make a multiplication with -1 */
+	make_numberoperand(&t.arg2,-1);
+
+	q->taddress = nextinstructionlabel();
+	
+	emit_instr(t);
+
+	return;
 }
 
 /* Generate Assign and Table Creation Instructions */
