@@ -55,7 +55,7 @@ static Function* setFunction(const char* name,
 	new->scope = scope;
 	new->iaddress = 0;
 	new->taddress = 0;
-	new->retlist = newlist(curr_quad_label());
+	new->retlist = NULL;
 
 	return (new);
 }
@@ -260,4 +260,17 @@ void SymEntry_print(SymEntry_T oSymEntry, FILE* ost)
 	}
 
 	return ;
+}
+
+/* Inserts a new node in the retlist (I am tired)*/
+void RetList_insert(retlist_T* head,unsigned i)
+{
+	retlist_T new = malloc(sizeof(retlist_t));
+	assert(new);
+
+	new->taddress = i ;
+	new->next = *head;
+	*head = new;
+
+	return;
 }

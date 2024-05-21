@@ -18,6 +18,7 @@
 typedef struct 	SymbolTableEntry SymEntry, *SymEntry_T;
 
 /* Type definitions */
+typedef struct 	retlist_t retlist_t, *retlist_T;
 typedef enum	SymbolType SymbolType;
 typedef struct 	Variable Variable;
 typedef struct 	Function Function;
@@ -33,6 +34,12 @@ enum SymbolType
 	FORMAL,
 	USERFUNC,
 	LIBFUNC
+};
+
+struct retlist_t
+{
+	unsigned taddress;
+	retlist_T next;
 };
 
 /* Struct storing Variable information*/
@@ -51,10 +58,11 @@ struct Function
 	const char *name;
 	unsigned int scope;
 	unsigned int line;
-	unsigned int retlist;
 	unsigned int iaddress;
 	unsigned int taddress;
 	unsigned int total_locals;
+
+	retlist_T retlist;
 };
 
 /* Struct used for the Symbol Table Entry*/
@@ -211,5 +219,12 @@ void set_total_locals(SymEntry_T oSymEntry, unsigned int total_locals);
 */
 void SymEntry_print(SymEntry_T oSymEntry, FILE* ost);
 
+/**
+* @brief Insert a new node in the insert list pointed by head.
+*
+* @param head pointer to the head of the list.
+* @param i The value to be added.
+*/
+void RetList_insert(retlist_T* head,unsigned i);
 
 #endif  /* Symbol Table Entry */

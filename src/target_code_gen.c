@@ -450,7 +450,7 @@ void generate_RETURN(Quad_T q)
 	emit_instr(t);
 
 	Function* func = FuncStack_top();
-	/* NEED TO ADD MERGE LIST */
+	RetList_insert(&func->retlist,curr_instructions);
 
 	t.opcode = jump_v;
 
@@ -467,7 +467,15 @@ void generate_RETURN(Quad_T q)
 void generate_FUNCEND(Quad_T q)
 {
 	Function* func = FuncStack_pop();
-	/* NEED TO ADD BACK PATCH */
+
+	retlist_T list = func->retlist;
+
+	while (list)
+	{
+		instructions[list->taddress].result.type = label_a;
+		instructions[list->taddress].result.val = curr_instructions;
+		list=list->next;
+	}
 
 	q->taddress = curr_instructions;
 	instruction t;
