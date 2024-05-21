@@ -377,6 +377,8 @@ void generate_CALL(Quad_T q)
 	instruction t = {0};
 
 	t.opcode = call_v;
+	t.srcLine = q->line;
+
 	q->taddress = curr_instructions;
 
 	make_operan(q->arg1, &t.arg1);
@@ -389,6 +391,8 @@ void generate_PARAM(Quad_T q)
 	instruction t = {0};
 
 	t.opcode = pusharg_v;
+	t.srcLine = q->line;
+
 	q->taddress = curr_instructions;
 
 	make_operan(q->arg1, &t.arg1);
@@ -401,6 +405,8 @@ void generate_GETRETVAL(Quad_T q)
 	instruction t = {0};
 
 	t.opcode = assign_v;
+	t.srcLine = q->line;
+
 	q->taddress = curr_instructions;
 
 	make_operan(q->arg1, &t.arg1);
@@ -421,6 +427,8 @@ void generate_FUNCSTART(Quad_T q)
 	instruction t = {0};
 	
 	t.opcode = funcenter_v;
+	t.srcLine = q->line;
+
 	make_operand(q->result,&t.result);
 
 	emit_instr(t);
@@ -434,6 +442,7 @@ void generate_RETURN(Quad_T q)
 	instruction t = {0};
 
 	t.opcode = assign_v;
+	t.srcLine = q->line;
 
 	make_retvaloperand(&t.result);
 	make_operand(q->arg1,&t.arg1);
@@ -464,6 +473,7 @@ void generate_FUNCEND(Quad_T q)
 	instruction t;
 
 	t.opcode = funcexit_v;
+	t.srcLine = q->line;
 
 	make_operand(q->result,&t.result);
 	emit_instr(t);
