@@ -127,9 +127,91 @@ static void make_booloperand( vmarg_T arg, unsigned val)
 	return ;
 }
 
-static void make_retvaloperand( vmarg_T arg)
+static void make_retvaloperand(vmarg_T arg)
 {
 	arg->type = retval_a;
+
+	return ;
+}
+
+/* This function produces the arguments */
+void make_operand(expr* e, vmarg_T arg)
+{
+	if(!e)	return;
+
+	switch (e->type)
+	{
+		case var_e:
+		case assignexpr_e:
+		case tableitem_e:
+		case arithexpr_e:
+		case boolexpr_e:
+		case newtable_e:
+
+			assert(e->sym);
+			arg->val = getOffset_val(e->sym);
+
+			switch (getSpace_val(e->sym))
+			{
+				case programvar: arg->type = global_a; break;
+				case functionlocal:	arg->type = local_a; break;
+				case formalarg:	arg->type = formal_a; break;
+
+				default: assert(0);
+			}
+
+			break;
+
+		case constbool_e:
+			
+			arg->val = e->boolConst;
+			arg->type = bool_a;
+
+			break;
+
+		case conststring_e:
+			
+			arg->val = curr_stringConsts;
+			arg->type = string_a;
+
+			consts_newstring(e->strConst);
+
+			break;
+
+		case constnum_e:
+
+			arg->val = curr_numConsts;
+			arg->type = number_a;
+			
+			consts_newnumber(e->numConst);
+			
+			break;
+
+		case programfunc_e:
+			
+			arg->val = curr_userFuncs; 
+			arg->type = userfunc_a;
+
+			userfuncs_newfunc(e->sym);
+
+			break;
+
+		case libraryfunc_e:
+
+			arg->val = curr_namedLibfuncs; 
+			arg->type = libfunc_a;
+		
+			libfuncs_newused(getName(e->sym));
+
+			break;
+		
+		case nil_e:
+
+			arg->type = nil_a;
+			break;
+
+		default: assert(0);
+	}
 
 	return ;
 }
