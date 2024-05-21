@@ -92,9 +92,9 @@ struct vmarg {
 /* The Instruction that the vm will execute */
 struct instruction {
     vmopcode		opcode;
-    vmarg_T			result;
-    vmarg_T			arg1;
-    vmarg_T			arg2;
+    vmarg			result;
+    vmarg			arg1;
+    vmarg			arg2;
     unsigned		srcLine;
 };
 

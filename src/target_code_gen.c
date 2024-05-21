@@ -98,8 +98,41 @@ static char ** namedLibfuncs;
 static unsigned total_namedLibfuncs = 0;
 static unsigned curr_namedLibfuncs = 0;
 
+/* The current quad that is processed */
+static unsigned curr_quad = 0;
+
 /* The quad table */
 extern Quad_T quad_table;
+
+/*
+ Helper functions to produce common arguments for
+ generated instructions, like 1, 0, "true", "false"
+ and function return value
+*/
+
+static void make_numberoperand( vmarg_T arg, unsigned val)
+{
+	arg->val = val;
+	arg->type = number_a;
+
+	return ;
+}
+
+
+static void make_booloperand( vmarg_T arg, unsigned val)
+{
+	arg->val = val;
+	arg->type = bool_a;
+
+	return ;
+}
+
+static void make_retvaloperand( vmarg_T arg)
+{
+	arg->type = retval_a;
+
+	return ;
+}
 
 
 /* Add string s in the next available cell in stringConsts */
@@ -155,7 +188,7 @@ void userfuncs_newfunc(SymEntry_T sym)
 	return ;
 }
 
-
+/* Used to emit instructions in the instructions table thorugh shallow copying*/
 void emit_instr(instruction t)
 {
 	EXPAND_TABLE(instructions)
@@ -169,19 +202,44 @@ void emit_instr(instruction t)
 /* Generic generate used for most of the instructions */
 void generate(vmopcode op, Quad_T q)
 {
-	instruction t;
+	assert(q);
 
-	t.opcode = op; 
+	instruction t = {0};
 
-
+	t.opcode = op;
+	t.srcLine= q->line;
+	
+	make_operand(q->arg1,&t.arg1); 
+	make_operand(q->arg2,&t.arg2); 
+	make_operand(q->result,&t.result); 
 
 	emit_instr(t);
 }
 
-
+/*
+ Generate function used for control transfer
+ instructions (e.g. jumps and branches)
+*/
 void generate_relational(vmopcode op, Quad_T q)
 {
+	assert(q);
 
+	instruction t = {0};
+
+	t.opcode = op;
+	t.srcLine= q->line;
+	
+	make_operand(q->arg1,&t.arg1); 
+	make_operand(q->arg2,&t.arg2); 
+
+	t.result.type = label_a;
+
+	if (q->label < curr_quad) t.result.val = quad_table[q->label].taddress;
+	else add_incomplete_jump(curr_instructions, q->label );
+	
+	q->taddress = curr_instructions;
+
+	emit_instr(t);
 }
 
 
@@ -194,7 +252,15 @@ void generate_MOD(Quad_T q) 			{ generate(mod_v,q); }
 
 void generate_UMINUS(Quad_T q)
 {
-
+	/* 
+	 Basically generate_UMINUS will produce a 
+	 multiplication of the argument with -1 
+	 or we could do something fancier like 
+	 xoring the bits and adding 1. But for
+	 the purposes of this program and for making it
+	 understandable by all, I won't implemenet 
+	 the second method yet. It may be done once the VM is ready.
+	*/
 }
 
 /* Generate Assign and Table Creation Instructions */
@@ -202,6 +268,16 @@ void generate_ASSIGN(Quad_T q)          { generate(assign_v,q); }
 void generate_NEWTABLE(Quad_T q)        { generate(newtable_v,q); }
 void generate_TABLEGETELEM(Quad_T q)    { generate(tablegetelem_v,q); }
 void generate_TABLESETELEM(Quad_T q)    { generate(tablesetelem_v,q); }
+
+void generate_NOP()
+{
+	instruction t = {0};
+	t.opcode = nop_v;
+
+	emit_instr(t);
+
+	return ;
+}
 
 /* Generate logic transfer Instructions */
 void generate_JUMP(Quad_T q)			{ generate_relational(jump_v,q);}
@@ -224,9 +300,9 @@ void generate_FUNCEND(Quad_T q) {}
 
 /* 
  Generate Boolean Instructions
- These are stub functions because we implemented short-circuiting
+ These are stub functions because 
+ we implemented short-circuiting
 */
-void generate_NOP() {  }
 void generate_OR(Quad_T q) {}
 void generate_AND(Quad_T q) {}
 void generate_NOT(Quad_T q) {}
@@ -255,9 +331,9 @@ void patch_incomplete_jumps(void)
 	while (ij) 
 	{
 		if (ij->iaddress == curr_quad_label()) {
-			instructions[ij->instrNo].result->val = total_instructions;
+			instructions[ij->instrNo].result.val = curr_instructions;
 		} else {
-			instructions[ij->instrNo].result->val = quad_table[ij->iaddress].taddress;
+			instructions[ij->instrNo].result.val = quad_table[ij->iaddress].taddress;
 		}
 		ij = ij->next;
 	}

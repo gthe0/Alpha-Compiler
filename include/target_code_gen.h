@@ -117,4 +117,12 @@ void libfuncs_newused(char *s);
 */
 void emit_instr(instruction t);
 
+/**
+* @brief Generates the needed vmarg from the expression e 
+*
+* @param e The expression of the quad
+* @param arg The address of the vmarg that will be produced
+*/
+void make_operand(expr* e, vmarg_T arg);
+
 #endif /* Target code generation lib*/
