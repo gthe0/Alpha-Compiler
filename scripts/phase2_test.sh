@@ -22,6 +22,7 @@ mkdir -p "$result_dir/Sym/Working"
 mkdir -p "$result_dir/Sym/Errors"
 mkdir -p "$result_dir/Logs"
 mkdir -p "$result_dir/Quads"
+mkdir -p "$result_dir/TCG"
 
 # Loop through all subdirectories within the parent directory
 for subdir in "$parent_dir"/*/; do
@@ -40,7 +41,7 @@ for subdir in "$parent_dir"/*/; do
 		i=$((i+1))
 
 		# Run the program with the input file
-       "$parentDir"/bin/parser.out "-s" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
+       "$parentDir"/bin/parser.out "-si" "-O3" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
 		
 		# Move the file with the symbol table entries into its corresponding folder
 		mv sym_table.txt $result_dir/Sym/$base_dirname/$base_filename.sym
@@ -48,6 +49,7 @@ for subdir in "$parent_dir"/*/; do
 		if [ -e quads.txt ]; then
 			echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"
 			mv quads.txt $result_dir/Quads/$base_filename.quad
+			mv tcg_instructions.txt $result_dir/TCG/$base_filename.instr
 		else
 			echo -e "${RED}COMPILATION FAILED${DEFAULT}"
 		fi

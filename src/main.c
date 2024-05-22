@@ -39,9 +39,11 @@ void parser_stacks_free(void);
 int main(int argc,char** argv)
 {
 	int print_sym = 0;
-    FILE* ost = stdout;
+    FILE* ost_sym = stdout;
+    FILE* ost_tcg = stdout;
     
 	int sflag = 0;
+	int iflag = 0;
     int Ovalue = 0; /* To store the value after -O flag */
     int c;
 
@@ -63,7 +65,7 @@ int main(int argc,char** argv)
 	}
 
 
-    while ((c = getopt(argc, argv, "sO:")) != -1) {
+    while ((c = getopt(argc, argv, "siO:")) != -1) {
         
 		switch (c) {
 
@@ -71,12 +73,22 @@ int main(int argc,char** argv)
 				
 				/* Do not reopen stream if it was already opened */
 				if(!sflag)
-					ost = fopen("sym_table.txt","w");
+					ost_sym = fopen("sym_table.txt","w");
 
                 sflag = 1;
 
                 break;
             
+			case 'i':
+				
+				/* Do not reopen stream if it was already opened */
+				if(!iflag)
+					ost_tcg = fopen("tcg_instructions.txt","w");
+
+                iflag = 1;
+
+                break;
+
 			case 'O':
 				
                 Ovalue = atoi(optarg); /* Convert the argument to an integer */
@@ -88,7 +100,8 @@ int main(int argc,char** argv)
 					LOG_ERROR(PARSER, NOTE, "If the value is 1, do dead code elimination\n"
 											"If the value is 2, do Constant Propagation\n"
 											"If the value is 3, do both\n");
-					fclose(ost);
+					fclose(ost_sym);
+					fclose(ost_tcg);
                     return 1;
                 }
 
@@ -113,7 +126,7 @@ int main(int argc,char** argv)
                     LOG_ERROR(PARSER,NOTE,"Unknown option character '\\x%x'.\n", optopt);
                 }
 
-				fclose(ost);
+				fclose(ost_sym);
                 return 1;
 
 			default:
@@ -136,7 +149,7 @@ int main(int argc,char** argv)
     yyparse();
 
 	if(sflag)
-		Tables_print(ost,0);
+		Tables_print(ost_sym,0);
     
     if(ERROR_COMP == 0)
 	{
@@ -145,7 +158,9 @@ int main(int argc,char** argv)
 
         write_quads();
 		generate_target_code();
-		print_tcg_arrays(stdout);
+
+		if (iflag)
+			print_tcg_arrays(ost_tcg);
 	}
 
 
@@ -153,7 +168,8 @@ int main(int argc,char** argv)
     Tables_free();
 	parser_stacks_free();
 
-    fclose(ost);
+    fclose(ost_sym);
+    fclose(ost_tcg);
     fclose(yyin);
     
     return 0;
