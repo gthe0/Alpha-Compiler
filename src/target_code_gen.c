@@ -18,17 +18,18 @@
 #include <string.h>
 #include <assert.h>
 
-
 /* Used to Resize tables */
 #define EXPAND_SIZE 0x100
-#define CURR_SIZE(a,b) (total_##a * sizeof(b))
-#define NEW_SIZE(a,b) (EXPAND_SIZE * sizeof(b) + CURR_SIZE(a,b))
+#define CURR_SIZE(a, b) (total_##a * sizeof(b))
+#define NEW_SIZE(a, b) (EXPAND_SIZE * sizeof(b) + CURR_SIZE(a, b))
 
-#define EXPAND_TABLE(a,b)		if(curr_##a >= total_##a){		\
-								a = realloc(a, NEW_SIZE(a,b));\
-								assert(a);\
-								total_##a += EXPAND_SIZE;	\
-								}
+#define EXPAND_TABLE(a, b)              \
+	if (curr_##a >= total_##a)          \
+	{                                   \
+		a = realloc(a, NEW_SIZE(a, b)); \
+		assert(a);                      \
+		total_##a += EXPAND_SIZE;       \
+	}
 
 /*
  This function table here will call the appropriate
@@ -39,33 +40,32 @@
 */
 generator_func_t generators[] = {
 	generate_ASSIGN,
-    generate_ADD,
-    generate_SUB,
-    generate_MUL,
-    generate_DIV,
-    generate_MOD,
-    generate_UMINUS,
-    generate_AND,
-    generate_OR,
-    generate_NOT,
-    generate_CALL,
-    generate_PARAM,
-    generate_RETURN,
-    generate_GETRETVAL,
-    generate_FUNCSTART,
-    generate_FUNCEND,
-    generate_NEWTABLE,
-    generate_TABLEGETELEM,
-    generate_TABLESETELEM,
-    generate_IF_EQ,
-    generate_IF_NOTEQ,
-    generate_IF_LESSEQ,
-    generate_IF_GREATEREQ,
-    generate_IF_LESS,
-    generate_IF_GREATER,
-    generate_JUMP,
-	generate_NOP
-};
+	generate_ADD,
+	generate_SUB,
+	generate_MUL,
+	generate_DIV,
+	generate_MOD,
+	generate_UMINUS,
+	generate_AND,
+	generate_OR,
+	generate_NOT,
+	generate_CALL,
+	generate_PARAM,
+	generate_RETURN,
+	generate_GETRETVAL,
+	generate_FUNCSTART,
+	generate_FUNCEND,
+	generate_NEWTABLE,
+	generate_TABLEGETELEM,
+	generate_TABLESETELEM,
+	generate_IF_EQ,
+	generate_IF_NOTEQ,
+	generate_IF_LESSEQ,
+	generate_IF_GREATEREQ,
+	generate_IF_LESS,
+	generate_IF_GREATER,
+	generate_JUMP,
+	generate_NOP};
 
 /* typedefs of the function Stack */
 typedef struct incomplete_jump_t incomplete_jump_t, *InCompleteJump_T;
@@ -73,9 +73,9 @@ typedef struct incomplete_jump_t incomplete_jump_t, *InCompleteJump_T;
 /* Incomplete jump list */
 struct incomplete_jump_t
 {
-	unsigned 			instrNo;	/* Incstruction No. */
-	unsigned 			iaddress;	/* Address of jump/branch destionation */
-	InCompleteJump_T 	next;		/* Next Instruction in list */
+	unsigned instrNo;	   /* Incstruction No. */
+	unsigned iaddress;	   /* Address of jump/branch destionation */
+	InCompleteJump_T next; /* Next Instruction in list */
 };
 
 /* Modules and Variables used  */
@@ -83,7 +83,7 @@ static Instruction_T instructions = (Instruction_T)0;
 static unsigned total_instructions = 0;
 static unsigned curr_instructions = 0;
 
-static InCompleteJump_T ij_list = (InCompleteJump_T) 0;
+static InCompleteJump_T ij_list = (InCompleteJump_T)0;
 static unsigned ij_total = 0;
 
 static UserFunc_T userFuncs = (UserFunc_T)0;
@@ -91,15 +91,15 @@ static unsigned total_userFuncs = 0;
 static unsigned curr_userFuncs = 0;
 
 /* Arrays to store Const variable information */
-static double* numConsts;
+static double *numConsts;
 static unsigned total_numConsts = 0;
 static unsigned curr_numConsts = 0;
 
-static char ** stringConsts;
+static char **stringConsts;
 static unsigned total_stringConsts = 0;
 static unsigned curr_stringConsts = 0;
 
-static char ** namedLibfuncs;
+static char **namedLibfuncs;
 static unsigned total_namedLibfuncs = 0;
 static unsigned curr_namedLibfuncs = 0;
 
@@ -115,28 +115,27 @@ extern Quad_T quad_table;
  and function return value
 */
 
-static void make_numberoperand( vmarg_T arg, unsigned val)
+static void make_numberoperand(vmarg_T arg, unsigned val)
 {
 	arg->val = val;
 	arg->type = number_a;
 
-	return ;
+	return;
 }
 
-
-static void make_booloperand( vmarg_T arg, unsigned val)
+static void make_booloperand(vmarg_T arg, unsigned val)
 {
 	arg->val = val;
 	arg->type = bool_a;
 
-	return ;
+	return;
 }
 
 static void make_retvaloperand(vmarg_T arg)
 {
 	arg->type = retval_a;
 
-	return ;
+	return;
 }
 
 /*
@@ -148,106 +147,114 @@ static unsigned nextinstructionlabel()
 }
 
 /* This function produces the arguments */
-void make_operand(expr* e, vmarg_T arg)
+void make_operand(expr *e, vmarg_T arg)
 {
-	if(!e)	return;
+	if (!e)
+		return;
 
 	switch (e->type)
 	{
-		case var_e:
-		case assignexpr_e:
-		case tableitem_e:
-		case arithexpr_e:
-		case boolexpr_e:
-		case newtable_e:
+	case var_e:
+	case assignexpr_e:
+	case tableitem_e:
+	case arithexpr_e:
+	case boolexpr_e:
+	case newtable_e:
 
-			assert(e->sym);
-			arg->val = getOffset_val(e->sym);
+		assert(e->sym);
+		arg->val = getOffset_val(e->sym);
 
-			switch (getSpace_val(e->sym))
-			{
-				case programvar: arg->type = global_a; break;
-				case functionlocal:	arg->type = local_a; break;
-				case formalarg:	arg->type = formal_a; break;
-
-				default: assert(0);
-			}
-
+		switch (getSpace_val(e->sym))
+		{
+		case programvar:
+			arg->type = global_a;
+			break;
+		case functionlocal:
+			arg->type = local_a;
+			break;
+		case formalarg:
+			arg->type = formal_a;
 			break;
 
-		case constbool_e:
-			
-			arg->val = e->boolConst;
-			arg->type = bool_a;
+		default:
+			assert(0);
+		}
 
-			break;
+		break;
 
-		case conststring_e:
-			
-			arg->val = curr_stringConsts;
-			arg->type = string_a;
+	case constbool_e:
 
-			consts_newstring(e->strConst);
+		arg->val = e->boolConst;
+		arg->type = bool_a;
 
-			break;
+		break;
 
-		case constnum_e:
+	case conststring_e:
 
-			arg->val = curr_numConsts;
-			arg->type = number_a;
-			
-			consts_newnumber(e->numConst);
-			
-			break;
+		arg->val = curr_stringConsts;
+		arg->type = string_a;
 
-		case programfunc_e:
-			
-			arg->val = curr_userFuncs; 
-			arg->type = userfunc_a;
+		consts_newstring(e->strConst);
 
-			userfuncs_newfunc(e->sym);
+		break;
 
-			break;
+	case constnum_e:
 
-		case libraryfunc_e:
+		arg->val = curr_numConsts;
+		arg->type = number_a;
 
-			arg->val = curr_namedLibfuncs; 
-			arg->type = libfunc_a;
-		
-			libfuncs_newused((char*)getName(e->sym));
+		consts_newnumber(e->numConst);
 
-			break;
-		
-		case nil_e:
+		break;
 
-			arg->type = nil_a;
-			break;
+	case programfunc_e:
 
-		default: assert(0);
+		arg->val = curr_userFuncs;
+		arg->type = userfunc_a;
+
+		userfuncs_newfunc(e->sym);
+
+		break;
+
+	case libraryfunc_e:
+
+		arg->val = curr_namedLibfuncs;
+		arg->type = libfunc_a;
+
+		libfuncs_newused((char *)getName(e->sym));
+
+		break;
+
+	case nil_e:
+
+		arg->type = nil_a;
+		break;
+
+	default:
+		assert(0);
 	}
 
-	return ;
+	return;
 }
-
 
 /* Add string s in the next available cell in stringConsts */
 void consts_newstring(char *s)
 {
 	assert(s);
 
-	EXPAND_TABLE(stringConsts,char*);
-	
+	EXPAND_TABLE(stringConsts, char *);
+
 	stringConsts[curr_stringConsts++] = strdup(s);
 
-	return ;
+	return;
 }
 
 /* Add number n in the next available cell in numConsts */
 void consts_newnumber(double n)
 {
-	EXPAND_TABLE(numConsts,double);
+	EXPAND_TABLE(numConsts, double);
 
-	numConsts[curr_numConsts++]= n;
+	numConsts[curr_numConsts++] = n;
 
 	return;
 }
@@ -260,15 +267,15 @@ void libfuncs_newused(char *s)
 	/* Prevent duplicate generation */
 	for (int i = 0; i < curr_namedLibfuncs; i++)
 	{
-		if(!strcmp(s,namedLibfuncs[i]))
+		if (!strcmp(s, namedLibfuncs[i]))
 			return;
 	}
 
-	EXPAND_TABLE(namedLibfuncs,char*);
-	
+	EXPAND_TABLE(namedLibfuncs, char *);
+
 	namedLibfuncs[curr_namedLibfuncs++] = strdup(s);
 
-	return ;
+	return;
 }
 
 /* Add a new user function in the next available cell in userFuncs */
@@ -276,12 +283,12 @@ void userfuncs_newfunc(SymEntry_T sym)
 {
 	assert(sym);
 
-	EXPAND_TABLE(userFuncs,userfunc_t);
+	EXPAND_TABLE(userFuncs, userfunc_t);
 
 	/* Prevent duplicate generation */
-	for (int i = 0; i < curr_userFuncs ; i++)
+	for (int i = 0; i < curr_userFuncs; i++)
 	{
-		if(!strcmp(getName(sym),userFuncs[i].id) && userFuncs[i].address == get_t_address(sym))
+		if (!strcmp(getName(sym), userFuncs[i].id) && userFuncs[i].address == get_t_address(sym))
 			return;
 	}
 
@@ -291,17 +298,17 @@ void userfuncs_newfunc(SymEntry_T sym)
 	func->address = get_t_address(sym);
 	func->localSize = get_total_locals(sym);
 
-	return ;
+	return;
 }
 
 /* Used to emit instructions in the instructions table thorugh shallow copying*/
 void emit_instr(instruction t)
 {
 
-	EXPAND_TABLE(instructions,instruction)
+	EXPAND_TABLE(instructions, instruction)
 
 	instructions[curr_instructions++] = t;
-	return ;
+	return;
 }
 
 /* Generic generate used for most of the instructions */
@@ -312,11 +319,11 @@ void generate(vmopcode op, Quad_T q)
 	instruction t = {0};
 
 	t.opcode = op;
-	t.srcLine= q->line;
-	
-	make_operand(q->arg1,&t.arg1); 
-	make_operand(q->arg2,&t.arg2); 
-	make_operand(q->result,&t.result); 
+	t.srcLine = q->line;
+
+	make_operand(q->arg1, &t.arg1);
+	make_operand(q->arg2, &t.arg2);
+	make_operand(q->result, &t.result);
 
 	emit_instr(t);
 }
@@ -332,38 +339,39 @@ void generate_relational(vmopcode op, Quad_T q)
 	instruction t = {0};
 
 	t.opcode = op;
-	t.srcLine= q->line;
-	
-	make_operand(q->arg1,&t.arg1); 
-	make_operand(q->arg2,&t.arg2); 
+	t.srcLine = q->line;
+
+	make_operand(q->arg1, &t.arg1);
+	make_operand(q->arg2, &t.arg2);
 
 	t.result.type = label_a;
 
-	if (q->label < curr_quad) t.result.val = quad_table[q->label].taddress;
-	else add_incomplete_jump(nextinstructionlabel(), q->label );
-	
+	if (q->label < curr_quad)
+		t.result.val = quad_table[q->label].taddress;
+	else
+		add_incomplete_jump(nextinstructionlabel(), q->label);
+
 	q->taddress = nextinstructionlabel();
 
 	emit_instr(t);
 }
 
-
 /* Generate arithmetic Instructions */
-void generate_ADD(Quad_T q) 			{ generate(add_v,q); }
-void generate_SUB(Quad_T q) 			{ generate(sub_v,q); }
-void generate_MUL(Quad_T q) 			{ generate(mul_v,q); }
-void generate_DIV(Quad_T q) 			{ generate(div_v,q); }
-void generate_MOD(Quad_T q) 			{ generate(mod_v,q); }
+void generate_ADD(Quad_T q) { generate(add_v, q); }
+void generate_SUB(Quad_T q) { generate(sub_v, q); }
+void generate_MUL(Quad_T q) { generate(mul_v, q); }
+void generate_DIV(Quad_T q) { generate(div_v, q); }
+void generate_MOD(Quad_T q) { generate(mod_v, q); }
 
 void generate_UMINUS(Quad_T q)
 {
-	/* 
-	 Basically generate_UMINUS will produce a 
-	 multiplication of the argument with -1 
-	 or we could do something fancier like 
+	/*
+	 Basically generate_UMINUS will produce a
+	 multiplication of the argument with -1
+	 or we could do something fancier like
 	 xoring the bits and adding 1. But for
 	 the purposes of this program and for making it
-	 understandable by all, I won't implemenet 
+	 understandable by all, I won't implemenet
 	 the second method yet. It may be done once the VM is ready.
 	*/
 
@@ -375,28 +383,28 @@ void generate_UMINUS(Quad_T q)
 	 to create a const num operand here
 	*/
 	instruction t = {0};
-	
+
 	t.opcode = mul_v;
 	t.srcLine = q->line;
 
-	make_operand(q->arg1,&t.arg1);
-	make_operand(q->result,&t.result); 
+	make_operand(q->arg1, &t.arg1);
+	make_operand(q->result, &t.result);
 
 	/* We make a multiplication with -1 */
-	make_numberoperand(&t.arg2,-1);
+	make_numberoperand(&t.arg2, -1);
 
 	q->taddress = nextinstructionlabel();
-	
+
 	emit_instr(t);
 
 	return;
 }
 
 /* Generate Assign and Table Creation Instructions */
-void generate_ASSIGN(Quad_T q)          { generate(assign_v,q); }
-void generate_NEWTABLE(Quad_T q)        { generate(newtable_v,q); }
-void generate_TABLEGETELEM(Quad_T q)    { generate(tablegetelem_v,q); }
-void generate_TABLESETELEM(Quad_T q)    { generate(tablesetelem_v,q); }
+void generate_ASSIGN(Quad_T q) { generate(assign_v, q); }
+void generate_NEWTABLE(Quad_T q) { generate(newtable_v, q); }
+void generate_TABLEGETELEM(Quad_T q) { generate(tablegetelem_v, q); }
+void generate_TABLESETELEM(Quad_T q) { generate(tablesetelem_v, q); }
 
 void generate_NOP()
 {
@@ -405,17 +413,17 @@ void generate_NOP()
 
 	emit_instr(t);
 
-	return ;
+	return;
 }
 
 /* Generate logic transfer Instructions */
-void generate_JUMP(Quad_T q)			{ generate_relational(jump_v,q);}
-void generate_IF_EQ(Quad_T q)			{ generate_relational(jeq_v,q);}
-void generate_IF_NOTEQ(Quad_T q)		{ generate_relational(jne_v,q);}
-void generate_IF_GREATER(Quad_T q)		{ generate_relational(jgt_v,q);}
-void generate_IF_GREATEREQ(Quad_T q)	{ generate_relational(jge_v,q);}
-void generate_IF_LESS(Quad_T q)			{ generate_relational(jlt_v,q);}
-void generate_IF_LESSEQ(Quad_T q)		{ generate_relational(jle_v,q);}
+void generate_JUMP(Quad_T q) { generate_relational(jump_v, q); }
+void generate_IF_EQ(Quad_T q) { generate_relational(jeq_v, q); }
+void generate_IF_NOTEQ(Quad_T q) { generate_relational(jne_v, q); }
+void generate_IF_GREATER(Quad_T q) { generate_relational(jgt_v, q); }
+void generate_IF_GREATEREQ(Quad_T q) { generate_relational(jge_v, q); }
+void generate_IF_LESS(Quad_T q) { generate_relational(jlt_v, q); }
+void generate_IF_LESSEQ(Quad_T q) { generate_relational(jle_v, q); }
 
 /* Generate call related Instructions */
 
@@ -460,23 +468,22 @@ void generate_GETRETVAL(Quad_T q)
 	make_retvaloperand(&t.arg1);
 
 	emit_instr(t);
-
 }
 
 /* Generate function definition related Instructions */
 void generate_FUNCSTART(Quad_T q)
 {
-	Function* func = q->arg1->sym->value.funcVal;
-	
+	Function *func = q->arg1->sym->value.funcVal;
+
 	func->taddress = q->taddress = nextinstructionlabel();
 	FuncStack_push(func);
 
 	instruction t = {0};
-	
+
 	t.opcode = funcenter_v;
 	t.srcLine = q->line;
 
-	make_operand(q->arg1,&t.result);
+	make_operand(q->arg1, &t.result);
 
 	emit_instr(t);
 	return;
@@ -485,19 +492,19 @@ void generate_FUNCSTART(Quad_T q)
 void generate_RETURN(Quad_T q)
 {
 	q->taddress = nextinstructionlabel();
-	
+
 	instruction t = {0};
 
 	t.opcode = assign_v;
 	t.srcLine = q->line;
 
 	make_retvaloperand(&t.result);
-	make_operand(q->result,&t.arg1);
+	make_operand(q->result, &t.arg1);
 
 	emit_instr(t);
 
-	Function* func = FuncStack_top();
-	RetList_insert(&func->retlist,nextinstructionlabel());
+	Function *func = FuncStack_top();
+	RetList_insert(&func->retlist, nextinstructionlabel());
 
 	t.opcode = jump_v;
 
@@ -513,7 +520,7 @@ void generate_RETURN(Quad_T q)
 
 void generate_FUNCEND(Quad_T q)
 {
-	Function* func = FuncStack_pop();
+	Function *func = FuncStack_pop();
 
 	retlist_T list = func->retlist;
 
@@ -522,7 +529,7 @@ void generate_FUNCEND(Quad_T q)
 	{
 		instructions[list->taddress].result.type = label_a;
 		instructions[list->taddress].result.val = nextinstructionlabel();
-		list=list->next;
+		list = list->next;
 	}
 
 	q->taddress = nextinstructionlabel();
@@ -531,24 +538,23 @@ void generate_FUNCEND(Quad_T q)
 	t.opcode = funcexit_v;
 	t.srcLine = q->line;
 
-	make_operand(q->arg1,&t.result);
+	make_operand(q->arg1, &t.result);
 	emit_instr(t);
 
 	return;
 }
 
-/* 
+/*
  Generate Boolean Instructions
- These are stub functions because 
+ These are stub functions because
  we implemented short-circuiting
 */
 void generate_OR(Quad_T q) {}
 void generate_AND(Quad_T q) {}
 void generate_NOT(Quad_T q) {}
 
-
 /* Function used to add a node to the list */
-void add_incomplete_jump(unsigned instrNo, unsigned iaddress) 
+void add_incomplete_jump(unsigned instrNo, unsigned iaddress)
 {
 	InCompleteJump_T ij = malloc(sizeof(incomplete_jump_t));
 	assert(ij);
@@ -560,19 +566,22 @@ void add_incomplete_jump(unsigned instrNo, unsigned iaddress)
 	ij_total++;
 }
 
-/* 
+/*
  This function patches the incomplete jump instructions stored
  in the instructions table and whose info is stored in the ij_list
 */
-void patch_incomplete_jumps(void) 
+void patch_incomplete_jumps(void)
 {
 	InCompleteJump_T ij = ij_list;
 
-	while (ij) 
+	while (ij)
 	{
-		if (ij->iaddress == curr_quad_label()) {
+		if (ij->iaddress == curr_quad_label())
+		{
 			instructions[ij->instrNo].result.val = nextinstructionlabel();
-		} else {
+		}
+		else
+		{
 			instructions[ij->instrNo].result.val = quad_table[ij->iaddress].taddress;
 		}
 		ij = ij->next;
@@ -584,8 +593,8 @@ void generate_target_code(void)
 {
 	unsigned total = curr_quad_label();
 
-	for (curr_quad = 1 ; curr_quad < total ; curr_quad++)
-		(*generators[quad_table[curr_quad].op]) (quad_table + curr_quad);
+	for (curr_quad = 1; curr_quad < total; curr_quad++)
+		(*generators[quad_table[curr_quad].op])(quad_table + curr_quad);
 
 	patch_incomplete_jumps();
 
@@ -593,92 +602,213 @@ void generate_target_code(void)
 }
 
 /* Number of OUTLINE_CHARs to be printend */
-#define OUTLINE_PRINT_NUM 50 
-#define OUTLINE_CHAR	"="
+#define OUTLINE_PRINT_NUM 50
+#define OUTLINE_CHAR "="
 
-#define OUTLINE_FUNC(a)\
-for (int i = 0; i < OUTLINE_PRINT_NUM ; i++){\
-		fprintf(ost,OUTLINE_CHAR);\
-		if (i == OUTLINE_PRINT_NUM/2)	fprintf(ost,a);\
-	}\
-	fprintf(ost,"\n");
-	
+#define OUTLINE_FUNC(a)                         \
+	for (int i = 0; i < OUTLINE_PRINT_NUM; i++) \
+	{                                           \
+		fprintf(ost, OUTLINE_CHAR);             \
+		if (i == OUTLINE_PRINT_NUM / 2)         \
+			fprintf(ost, a);                    \
+	}                                           \
+	fprintf(ost, "\n");
 
 /* Function used to prin the numConst array */
-static void print_numConsts(FILE* ost)
+static void print_numConsts(FILE *ost)
 {
 	/* Print a stylized outline for the array */
 	OUTLINE_FUNC(" CONSTANT NUMBERS ");
 
 	for (int i = 0; i < curr_numConsts; i++)
-		fprintf(ost,"#%-3u %s\n",i,double_to_string(numConsts[i]));
+		fprintf(ost, "#%-3u %s\n", i, double_to_string(numConsts[i]));
 
-	return ;
+	return;
 }
 
-static void print_stringConsts(FILE* ost)
+static void print_stringConsts(FILE *ost)
 {
 	/* Print a stylized outline for the array */
 	OUTLINE_FUNC(" CONSTANT STRINGS ");
 
 	for (int i = 0; i < curr_stringConsts; i++)
-		fprintf(ost,"#%-3u %s\n",i,add_quotes(stringConsts[i]));
+		fprintf(ost, "#%-3u %s\n", i, add_quotes(stringConsts[i]));
 
-	return ;
+	return;
 }
 
-static void print_namedLibfuncs(FILE* ost)
+static void print_namedLibfuncs(FILE *ost)
 {
 	/* Print a stylized outline for the array */
 	OUTLINE_FUNC(" LIBRARY FUNCTIONS ");
 
 	for (int i = 0; i < curr_namedLibfuncs; i++)
-		fprintf(ost,"#%-3u %s\n",i,add_quotes(namedLibfuncs[i]));
+		fprintf(ost, "#%-3u %s\n", i, add_quotes(namedLibfuncs[i]));
 
-	return ;
+	return;
 }
 
-static void print_userFuncs(FILE* ost)
+static void print_userFuncs(FILE *ost)
 {
 	OUTLINE_FUNC(" USER FUNCTIONS ");
 
 	for (int i = 0; i < curr_userFuncs; i++)
-		fprintf(ost,"#%-3u, address: %-3u, "
-					"total locals: %-3u, "
-					"id: %s\n",i,userFuncs[i].address,userFuncs[i].localSize,userFuncs[i].id);
+		fprintf(ost, "#%-3u, address: %-3u, "
+					 "total locals: %-3u, "
+					 "id: %s\n",
+				i, userFuncs[i].address, userFuncs[i].localSize, userFuncs[i].id);
 
+	return;
+}
 
-	return ;
+static void write_instr_i(FILE *ost, unsigned i)
+{
+
+	switch (instructions[i].opcode)
+	{
+		case assign_v:
+			fprintf(ost,"%-15s","assign");
+			break;
+		/* Airthmetic opcodes */
+		case add_v:
+			fprintf(ost,"%-15s","add");
+			break;
+		case sub_v:
+			fprintf(ost,"%-15s","sub");
+			break;
+		case mul_v:
+			fprintf(ost,"%-15s","mul");
+			break;
+		case div_v:
+			fprintf(ost,"%-15s","div");
+			break;
+		case mod_v:
+			fprintf(ost,"%-15s","mod");
+			break;
+		case uminus_v:
+			fprintf(ost,"%-15s","uminus");
+			break;
+	
+		/* Jump opcode */
+		case jump_v:
+			fprintf(ost,"%-15s","jump");
+			break;
+	
+		/* Branch opcodes */
+		case jeq_v:
+			fprintf(ost,"%-15s","jeq");
+			break;
+		case jne_v:
+			fprintf(ost,"%-15s","jne");
+			break;
+		case jgt_v:
+			fprintf(ost,"%-15s","jgt");
+			break;
+		case jge_v:
+			fprintf(ost,"%-15s","jge");
+			break;
+		case jlt_v:
+			fprintf(ost,"%-15s","jlt");
+			break;
+		case jle_v:
+			fprintf(ost,"%-15s","jle");
+			break;
+	
+		/* call related opcodes */
+		case call_v:
+			fprintf(ost,"%-15s","call");
+			break;
+		case pusharg_v:
+			fprintf(ost,"%-15s","pusharg");
+			break;
+	
+		/* function defintion related opcode */
+		case funcenter_v:
+			fprintf(ost,"%-15s","funcenter");
+			break;
+		case funcexit_v:
+			fprintf(ost,"%-15s","funcexit");
+			break;
+	
+		/* Boolean expression related opcode */
+		case or_v:
+			fprintf(ost,"%-15s","or");
+			break;
+		case and_v:
+			fprintf(ost,"%-15s","and");
+			break;
+		case not_v:
+			fprintf(ost,"%-15s","not");
+			break;
+	
+		/* Table related opcodes */
+		case newtable_v:
+			fprintf(ost,"%-15s","newtable");
+			break;
+		case tablegetelem_v:
+			fprintf(ost,"%-15s","tablegetelem");
+			break;
+		case tablesetelem_v:
+			fprintf(ost,"%-15s","tablesetelem");
+			break;
+	
+		/* NOP */
+		case nop_v:
+			fprintf(ost,"%-15s","nop");
+			break;
+	
+		default:
+			break;
+	}
+
+	
+}
+
+static void print_instructions(FILE *ost)
+{
+	OUTLINE_FUNC(" INSTRUCTIONS ");
+
+	for (int i = 0; i < curr_instructions; i++)
+	{
+		write_instr_i(ost,i);
+	}
+
+	
+	return;
 }
 
 /* Print all the tcg buffers */
-void print_tcg_arrays(FILE* ost)
+void print_tcg_arrays(FILE *ost)
 {
-	if (!ost) return;
+	if (!ost)
+		return;
 
 	print_numConsts(ost);
 	print_stringConsts(ost);
 	print_namedLibfuncs(ost);
 	print_userFuncs(ost);
+
+	fprintf(ost, "\n");
+
+	print_instructions(ost);
 }
 
-#define TCG_WRITE(a)	fwrite(&a,sizeof(a),1,ost)
+#define TCG_WRITE(a) fwrite(&a, sizeof(a), 1, ost)
 
 /* Function used to create binary file */
-void createAVMBin(char* BinFileName)
+void createAVMBin(char *BinFileName)
 {
 	unsigned magicNum = 3401334;
-	char* tcgFileName = BinFileName == NULL ? 
-						"a.abc" : BinFileName;
+	char *tcgFileName = BinFileName == NULL ? "a.abc" : BinFileName;
 
-	FILE* ost = NULL ;
-	
-	if(!( ost = fopen(tcgFileName,"wb")))
+	FILE *ost = NULL;
+
+	if (!(ost = fopen(tcgFileName, "wb")))
 	{
-		LOG_ERROR(TGC,ERROR,"Could not open file stream %s\n",tcgFileName);	
+		LOG_ERROR(TGC, ERROR, "Could not open file stream %s\n", tcgFileName);
 		exit(EXIT_FAILURE);
 	}
 
 	fclose(ost);
-	return ;
+	return;
 }
