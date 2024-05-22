@@ -14,9 +14,9 @@
 /**
 * @brief Pushes things in the Stack module
 * 
-* @param sym The entry containing the Function struct
+* @param func The Function information to be stored
 */
-void FuncStack_push(SymEntry_T sym);
+void FuncStack_push(Function* func);
 
 
 /**

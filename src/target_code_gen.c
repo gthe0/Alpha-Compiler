@@ -19,13 +19,13 @@
 
 /* Used to Resize tables */
 #define EXPAND_SIZE 0x100
-#define CURR_SIZE(a) (total_##a * sizeof(a))
-#define NEW_SIZE(a) (EXPAND_SIZE * sizeof(a) + CURR_SIZE(a))
+#define CURR_SIZE(a,b) (total_##a * sizeof(b))
+#define NEW_SIZE(a,b) (EXPAND_SIZE * sizeof(b) + CURR_SIZE(a,b))
 
-#define EXPAND_TABLE(a)		if(curr_##a == total_##a){		\
-								a = realloc(a, NEW_SIZE(a));\
+#define EXPAND_TABLE(a,b)		if(curr_##a >= total_##a){		\
+								a = realloc(a, NEW_SIZE(a,b));\
 								total_##a += EXPAND_SIZE;	\
-							}
+								}
 
 /*
  This function table here will call the appropriate
@@ -232,10 +232,9 @@ void consts_newstring(char *s)
 {
 	assert(s);
 
-	EXPAND_TABLE(stringConsts);
+	EXPAND_TABLE(stringConsts,char*);
 	
-	char** string = stringConsts + curr_stringConsts++;
-	*string = strdup(s);
+	stringConsts[curr_stringConsts++] = strdup(s);
 
 	return ;
 }
@@ -243,10 +242,9 @@ void consts_newstring(char *s)
 /* Add number n in the next available cell in numConsts */
 void consts_newnumber(double n)
 {
-	EXPAND_TABLE(numConsts);
+	EXPAND_TABLE(numConsts,double);
 
-	double* num = numConsts + curr_numConsts++;
-	*num = n;
+	numConsts[curr_numConsts++]= n;
 
 	return;
 }
@@ -256,10 +254,9 @@ void libfuncs_newused(char *s)
 {
 	assert(s);
 
-	EXPAND_TABLE(namedLibfuncs);
+	EXPAND_TABLE(namedLibfuncs,char*);
 	
-	char** string = namedLibfuncs + curr_namedLibfuncs ++;
-	*string = strdup(s);
+	namedLibfuncs[curr_namedLibfuncs++] = strdup(s);
 
 	return ;
 }
@@ -269,9 +266,9 @@ void userfuncs_newfunc(SymEntry_T sym)
 {
 	assert(sym);
 
-	EXPAND_TABLE(userFuncs);
+	EXPAND_TABLE(userFuncs,userfunc_t);
 
-	UserFunc_T func = userFuncs + total_userFuncs++;
+	UserFunc_T func = userFuncs + curr_userFuncs++;
 
 	func->id = getName(sym);
 	func->address = get_i_address(sym);
@@ -283,11 +280,10 @@ void userfuncs_newfunc(SymEntry_T sym)
 /* Used to emit instructions in the instructions table thorugh shallow copying*/
 void emit_instr(instruction t)
 {
-	EXPAND_TABLE(instructions)
 
-	Instruction_T i = instructions + curr_instructions++;
-	*i = t;
+	EXPAND_TABLE(instructions,instruction)
 
+	instructions[curr_instructions++] = t;
 	return ;
 }
 
@@ -453,17 +449,17 @@ void generate_GETRETVAL(Quad_T q)
 /* Generate function definition related Instructions */
 void generate_FUNCSTART(Quad_T q)
 {
-	Function* func = q->result->sym->value.funcVal;
+	Function* func = q->arg1->sym->value.funcVal;
 	
 	func->taddress = q->taddress = nextinstructionlabel();
-	FuncStack_push(q->result->sym);
+	FuncStack_push(func);
 
 	instruction t = {0};
 	
 	t.opcode = funcenter_v;
 	t.srcLine = q->line;
 
-	make_operand(q->result,&t.result);
+	make_operand(q->arg1,&t.result);
 
 	emit_instr(t);
 	return;
@@ -479,7 +475,7 @@ void generate_RETURN(Quad_T q)
 	t.srcLine = q->line;
 
 	make_retvaloperand(&t.result);
-	make_operand(q->arg1,&t.arg1);
+	make_operand(q->result,&t.arg1);
 
 	emit_instr(t);
 
@@ -517,7 +513,7 @@ void generate_FUNCEND(Quad_T q)
 	t.opcode = funcexit_v;
 	t.srcLine = q->line;
 
-	make_operand(q->result,&t.result);
+	make_operand(q->arg1,&t.result);
 	emit_instr(t);
 
 	return;
@@ -537,6 +533,7 @@ void generate_NOT(Quad_T q) {}
 void add_incomplete_jump(unsigned instrNo, unsigned iaddress) 
 {
 	InCompleteJump_T ij = malloc(sizeof(incomplete_jump_t));
+	assert(ij);
 
 	ij->instrNo = instrNo;
 	ij->iaddress = iaddress;
@@ -577,11 +574,14 @@ void generate_target_code(void)
 	return;
 }
 
+void printfffff()
+{}
+
 #define TCG_WRITE(a)	fwrite(&a,sizeof(a),1,ost)
 
 void createAVMBin(char* BinFileName)
 {
-	unsigned magicNum = 34020241334;
+	unsigned magicNum = 3401334;
 	char* tcgFileName = BinFileName == NULL ? 
 						"a.abc" : BinFileName;
 

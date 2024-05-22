@@ -25,6 +25,7 @@
 #include <tables.h>
 #include <optimizer.h>
 #include <IntegerStack.h>
+#include <target_code_gen.h>
 
 extern FILE* yyin;
 extern int yydebug;
@@ -143,6 +144,7 @@ int main(int argc,char** argv)
 		optimization_level(Ovalue);
 
         write_quads();
+		generate_target_code();
 	}
 
 

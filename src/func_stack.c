@@ -25,14 +25,13 @@ struct funcStack_t{
 static FuncStack_T funcStack = (FuncStack_T)0;
 
 /* Pushes things in funcStack */
-void FuncStack_push(SymEntry_T sym)
+void FuncStack_push(Function* func)
 {
-	FuncStack_T t = malloc(sizeof(funcStack_t));
-	
-	if (!sym || sym->type < USERFUNC)
-		return;
+	assert(func);
 
-	t->top = sym->value.funcVal;
+	FuncStack_T t = malloc(sizeof(funcStack_t));
+
+	t->top = func;
 	t->prev = funcStack;
 	funcStack = t;
 }
