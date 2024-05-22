@@ -145,6 +145,7 @@ int main(int argc,char** argv)
 
         write_quads();
 		generate_target_code();
+		print_tcg_arrays(stdout);
 	}
 
 

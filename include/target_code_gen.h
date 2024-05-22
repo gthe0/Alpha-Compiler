@@ -130,4 +130,11 @@ void make_operand(expr* e, vmarg_T arg);
 */
 void generate_target_code(void);
 
+/**
+* @brief Print the contents of the tcg buffers 
+*
+* @param ost The output stream
+*/
+void print_tcg_arrays(FILE* ost);
+
 #endif /* Target code generation lib*/

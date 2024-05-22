@@ -17,6 +17,7 @@
 #include <string.h>
 #include <assert.h>
 
+
 /* Used to Resize tables */
 #define EXPAND_SIZE 0x100
 #define CURR_SIZE(a,b) (total_##a * sizeof(b))
@@ -142,6 +143,47 @@ static void make_retvaloperand(vmarg_T arg)
 static unsigned nextinstructionlabel()
 {
 	return curr_instructions;
+}
+
+/**
+* @brief This function turns doubles into strings, removing trailing zeroes 
+* 
+* @param num The double to be turned to string 
+* 
+* @return The generated string 
+*/
+static char* double_to_string(double num)
+{
+	char string_num[20];
+	sprintf(string_num, "%lf", num);
+
+	int is_decimal = 0;
+	char* head = string_num;
+	
+	/* If it is a float remove trailing decimals */
+	while(*head != '\0')
+		if(*head++ == '.')
+			is_decimal = 1;
+	
+	/* Go inside the string */
+	head-- ;
+
+	/* Do not overextend */
+	while (is_decimal && *head == '0' && head != string_num)
+		head-- ;
+
+	if(is_decimal)
+		if(*head == '.')
+			*head = '\0';
+		else if(*head != '0' && head != string_num)
+			*++head = '\0';
+	
+	char *generated_string = malloc((strlen(string_num)) * sizeof(char) + 1);
+	assert(generated_string);
+
+	strcpy(generated_string, string_num);
+
+	return generated_string;
 }
 
 /* This function produces the arguments */
@@ -500,6 +542,7 @@ void generate_FUNCEND(Quad_T q)
 
 	retlist_T list = func->retlist;
 
+	/* Patch return list */
 	while (list)
 	{
 		instructions[list->taddress].result.type = label_a;
@@ -574,11 +617,65 @@ void generate_target_code(void)
 	return;
 }
 
-void printfffff()
-{}
+/* Number of OUTLINE_CHARs to be printend */
+#define OUTLINE_PRINT_NUM 50 
+#define OUTLINE_CHAR	"="
+
+#define OUTLINE_FUNC(a)\
+for (int i = 0; i < OUTLINE_PRINT_NUM ; i++){\
+		fprintf(ost,OUTLINE_CHAR);\
+		if (i == OUTLINE_PRINT_NUM/2)	fprintf(ost,a);\
+	}\
+	fprintf(ost,"\n");
+	
+
+/* Function used to prin the numConst array */
+void print_numConsts(FILE* ost)
+{
+	/* Print a stylized outline for the array */
+	OUTLINE_FUNC(" CONSTANT NUMBERS ");
+
+	for (int i = 0; i < curr_numConsts; i++)
+		fprintf(ost,"#%-3u %s\n",i,double_to_string(numConsts[i]));
+
+	return ;
+}
+
+void print_stringConsts(FILE* ost)
+{
+	/* Print a stylized outline for the array */
+	OUTLINE_FUNC(" CONSTANT STRINGS ");
+
+	for (int i = 0; i < curr_stringConsts; i++)
+		fprintf(ost,"#%-3u %s\n",i,stringConsts[i]);
+
+	return ;
+}
+
+void print_namedLibfuncs(FILE* ost)
+{
+	/* Print a stylized outline for the array */
+	OUTLINE_FUNC(" LIBRARY FUNCTIONS ");
+
+	for (int i = 0; i < curr_namedLibfuncs; i++)
+		fprintf(ost,"#%-3u %s\n",i,namedLibfuncs[i]);
+
+	return ;
+}
+
+/* Print all the tcg buffers */
+void print_tcg_arrays(FILE* ost)
+{
+	if (!ost) return;
+
+	print_numConsts(ost);
+	print_stringConsts(ost);
+	print_namedLibfuncs(ost);
+}
 
 #define TCG_WRITE(a)	fwrite(&a,sizeof(a),1,ost)
 
+/* Function used to create binary file */
 void createAVMBin(char* BinFileName)
 {
 	unsigned magicNum = 3401334;
