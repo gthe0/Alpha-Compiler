@@ -257,6 +257,13 @@ void libfuncs_newused(char *s)
 {
 	assert(s);
 
+	/* Prevent duplicate generation */
+	for (int i = 0; i < curr_namedLibfuncs; i++)
+	{
+		if(!strcmp(s,namedLibfuncs[i]))
+			return;
+	}
+
 	EXPAND_TABLE(namedLibfuncs,char*);
 	
 	namedLibfuncs[curr_namedLibfuncs++] = strdup(s);
@@ -271,10 +278,17 @@ void userfuncs_newfunc(SymEntry_T sym)
 
 	EXPAND_TABLE(userFuncs,userfunc_t);
 
+	/* Prevent duplicate generation */
+	for (int i = 0; i < curr_userFuncs ; i++)
+	{
+		if(!strcmp(getName(sym),userFuncs[i].id) && userFuncs[i].address == get_t_address(sym))
+			return;
+	}
+
 	UserFunc_T func = userFuncs + curr_userFuncs++;
 
 	func->id = getName(sym);
-	func->address = get_i_address(sym);
+	func->address = get_t_address(sym);
 	func->localSize = get_total_locals(sym);
 
 	return ;
@@ -591,7 +605,7 @@ for (int i = 0; i < OUTLINE_PRINT_NUM ; i++){\
 	
 
 /* Function used to prin the numConst array */
-void print_numConsts(FILE* ost)
+static void print_numConsts(FILE* ost)
 {
 	/* Print a stylized outline for the array */
 	OUTLINE_FUNC(" CONSTANT NUMBERS ");
@@ -602,7 +616,7 @@ void print_numConsts(FILE* ost)
 	return ;
 }
 
-void print_stringConsts(FILE* ost)
+static void print_stringConsts(FILE* ost)
 {
 	/* Print a stylized outline for the array */
 	OUTLINE_FUNC(" CONSTANT STRINGS ");
@@ -613,13 +627,26 @@ void print_stringConsts(FILE* ost)
 	return ;
 }
 
-void print_namedLibfuncs(FILE* ost)
+static void print_namedLibfuncs(FILE* ost)
 {
 	/* Print a stylized outline for the array */
 	OUTLINE_FUNC(" LIBRARY FUNCTIONS ");
 
 	for (int i = 0; i < curr_namedLibfuncs; i++)
 		fprintf(ost,"#%-3u %s\n",i,add_quotes(namedLibfuncs[i]));
+
+	return ;
+}
+
+static void print_userFuncs(FILE* ost)
+{
+	OUTLINE_FUNC(" USER FUNCTIONS ");
+
+	for (int i = 0; i < curr_userFuncs; i++)
+		fprintf(ost,"#%-3u, address: %-3u, "
+					"total locals: %-3u, "
+					"id: %s\n",i,userFuncs[i].address,userFuncs[i].localSize,userFuncs[i].id);
+
 
 	return ;
 }
@@ -632,6 +659,7 @@ void print_tcg_arrays(FILE* ost)
 	print_numConsts(ost);
 	print_stringConsts(ost);
 	print_namedLibfuncs(ost);
+	print_userFuncs(ost);
 }
 
 #define TCG_WRITE(a)	fwrite(&a,sizeof(a),1,ost)
