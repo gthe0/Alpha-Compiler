@@ -10,6 +10,7 @@
 #include <target_code_gen.h>
 #include <symTableEntry.h>
 #include <func_stack.h>
+#include <utils.h>
 #include <log.h>
 
 #include <stdio.h>
@@ -25,6 +26,7 @@
 
 #define EXPAND_TABLE(a,b)		if(curr_##a >= total_##a){		\
 								a = realloc(a, NEW_SIZE(a,b));\
+								assert(a);\
 								total_##a += EXPAND_SIZE;	\
 								}
 
@@ -143,47 +145,6 @@ static void make_retvaloperand(vmarg_T arg)
 static unsigned nextinstructionlabel()
 {
 	return curr_instructions;
-}
-
-/**
-* @brief This function turns doubles into strings, removing trailing zeroes 
-* 
-* @param num The double to be turned to string 
-* 
-* @return The generated string 
-*/
-static char* double_to_string(double num)
-{
-	char string_num[20];
-	sprintf(string_num, "%lf", num);
-
-	int is_decimal = 0;
-	char* head = string_num;
-	
-	/* If it is a float remove trailing decimals */
-	while(*head != '\0')
-		if(*head++ == '.')
-			is_decimal = 1;
-	
-	/* Go inside the string */
-	head-- ;
-
-	/* Do not overextend */
-	while (is_decimal && *head == '0' && head != string_num)
-		head-- ;
-
-	if(is_decimal)
-		if(*head == '.')
-			*head = '\0';
-		else if(*head != '0' && head != string_num)
-			*++head = '\0';
-	
-	char *generated_string = malloc((strlen(string_num)) * sizeof(char) + 1);
-	assert(generated_string);
-
-	strcpy(generated_string, string_num);
-
-	return generated_string;
 }
 
 /* This function produces the arguments */
@@ -647,7 +608,7 @@ void print_stringConsts(FILE* ost)
 	OUTLINE_FUNC(" CONSTANT STRINGS ");
 
 	for (int i = 0; i < curr_stringConsts; i++)
-		fprintf(ost,"#%-3u %s\n",i,stringConsts[i]);
+		fprintf(ost,"#%-3u %s\n",i,add_quotes(stringConsts[i]));
 
 	return ;
 }
@@ -658,7 +619,7 @@ void print_namedLibfuncs(FILE* ost)
 	OUTLINE_FUNC(" LIBRARY FUNCTIONS ");
 
 	for (int i = 0; i < curr_namedLibfuncs; i++)
-		fprintf(ost,"#%-3u %s\n",i,namedLibfuncs[i]);
+		fprintf(ost,"#%-3u %s\n",i,add_quotes(namedLibfuncs[i]));
 
 	return ;
 }

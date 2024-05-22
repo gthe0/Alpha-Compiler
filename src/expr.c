@@ -16,65 +16,8 @@
 #include <stmt.h>
 #include <quad.h>
 #include <log.h>
+#include <utils.h>
 #include <tables.h>
-
-#define MAX_DOUBLE_LENGTH 25
-
-/**
-* @brief This function turns doubles into strings, removing trailing zeroes 
-* 
-* @param num The double to be turned to string 
-* 
-* @return The generated string 
-*/
-static char* double_to_string(double num)
-{
-	char string_num[MAX_DOUBLE_LENGTH];
-	sprintf(string_num, "%lf", num);
-
-	int is_decimal = 0;
-	char* head = string_num;
-	
-	/* If it is a float remove trailing decimals */
-	while(*head != '\0')
-		if(*head++ == '.')
-			is_decimal = 1;
-	
-	/* Go inside the string */
-	head-- ;
-
-	/* Do not overextend */
-	while (is_decimal && *head == '0' && head != string_num)
-		head-- ;
-
-	if(is_decimal)
-		if(*head == '.')
-			*head = '\0';
-		else if(*head != '0' && head != string_num)
-			*++head = '\0';
-	
-	char *generated_string = malloc((strlen(string_num)) * sizeof(char) + 1);
-	assert(generated_string);
-
-	strcpy(generated_string, string_num);
-
-	return generated_string;
-}
-
-
-/**
-* @brief Gets strConst and adds ""
-* 
-* @param e The expression 
-* 
-* @return "strConst"
-*/
-static char* get_stringConst(expr* e)
-{
-	char* strConst = malloc(strlen(e->strConst)*sizeof(char)+3);
-	sprintf(strConst,"\"%s\"",e->strConst);
-	return strConst;
-}
 
 
 /* Creates a new expression */
@@ -277,7 +220,7 @@ const char* expr_decode(expr* e)
 		case constbool_e:
 			return e->boolConst ? strdup("true") : strdup("false");
 		case conststring_e:
-			return get_stringConst(e); 
+			return add_quotes(e->strConst); 
 		case nil_e:
 			return strdup("nil");
 		default:
