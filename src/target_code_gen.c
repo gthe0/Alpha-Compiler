@@ -508,7 +508,10 @@ void generate_RETURN(Quad_T q)
 
 	t.opcode = jump_v;
 
+	t.arg1.val = label_a;
 	t.arg1.val = 0;
+
+	t.arg2.val = label_a;
 	t.arg2.val = 0;
 
 	t.result.type = label_a;
@@ -661,6 +664,57 @@ static void print_userFuncs(FILE *ost)
 	return;
 }
 
+/* This function here is used to output an arg info*/
+static void write_arg(FILE* ost,vmarg arg)
+{
+	/* If the argument is a label == 0 with a 0 value, then do not print it*/
+	switch (arg.type)
+	{
+    	case label_a:
+		/* If the argument val is 0, then this argument is empty */
+			if(arg.val == 0)
+				return;
+
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(label),",arg.val);
+			break;
+    	case global_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(global),",arg.val);
+			break; 
+    	case formal_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(formal),",arg.val);
+			break;
+    	case local_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(local),",arg.val);
+			break;
+    	case number_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(num),",arg.val);
+			break;
+    	case string_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(string),",arg.val);
+			break;
+    	case bool_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(bool),",arg.val);
+			break;
+    	case nil_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(nil),",arg.val);
+			break;
+    	case userfunc_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(userfunc),",arg.val);
+			break;
+    	case libfunc_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(libfunc),",arg.val);
+			break;
+    	case retval_a:
+			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(retval),",arg.val);
+			break;	
+		default:
+			break;
+	}
+
+	
+	return ;
+}
+
 static void write_instr_i(FILE *ost, unsigned i)
 {
 
@@ -761,19 +815,26 @@ static void write_instr_i(FILE *ost, unsigned i)
 			break;
 	}
 
+	write_arg(ost,instructions[i].result);
+	write_arg(ost,instructions[i].arg1);
+	write_arg(ost,instructions[i].arg2);
 	
+	fprintf(ost,"\n");
+
+	return ;	
 }
 
 static void print_instructions(FILE *ost)
 {
 	OUTLINE_FUNC(" INSTRUCTIONS ");
+	fprintf(ost, "\n");
+
 
 	for (int i = 0; i < curr_instructions; i++)
 	{
 		write_instr_i(ost,i);
 	}
 
-	
 	return;
 }
 
