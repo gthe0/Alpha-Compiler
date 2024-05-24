@@ -664,7 +664,7 @@ static void print_userFuncs(FILE *ost)
 	return;
 }
 
-/* This function here is used to output an arg info*/
+/* This function here is used to output an arg's info*/
 static void write_arg(FILE* ost,vmarg arg)
 {
 	/* If the argument is a label == 0 with a 0 value, then do not print it*/
@@ -715,6 +715,7 @@ static void write_arg(FILE* ost,vmarg arg)
 	return ;
 }
 
+/* Helper function to write an instrucion to the ost stream */
 static void write_instr_i(FILE *ost, unsigned i)
 {
 	fprintf(ost,"#%-3u ",i);
@@ -816,6 +817,7 @@ static void write_instr_i(FILE *ost, unsigned i)
 			break;
 	}
 
+	/* Print the argument values */
 	write_arg(ost,instructions[i].result);
 	write_arg(ost,instructions[i].arg1);
 	write_arg(ost,instructions[i].arg2);
