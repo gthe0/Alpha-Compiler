@@ -464,7 +464,7 @@ void generate_GETRETVAL(Quad_T q)
 
 	q->taddress = nextinstructionlabel();
 
-	make_operand(q->arg1, &t.arg1);
+	make_operand(q->result, &t.result);
 	make_retvaloperand(&t.arg1);
 
 	emit_instr(t);
@@ -536,7 +536,7 @@ void generate_FUNCEND(Quad_T q)
 	}
 
 	q->taddress = nextinstructionlabel();
-	instruction t;
+	instruction t={0};
 
 	t.opcode = funcexit_v;
 	t.srcLine = q->line;
