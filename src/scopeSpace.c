@@ -45,7 +45,7 @@ unsigned curr_scope_offset(void)
 
 
 /* Inc current Scope Space offset */
-void incurr_scope_offset(void)
+void inccurr_scope_offset(void)
 {
     switch (curr_scope_space())
     {

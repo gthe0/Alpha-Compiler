@@ -34,6 +34,10 @@ static Variable* setVariable(const char* name,
 	new->scope = scope;
 	new->offset = curr_scope_offset(); 
 	new->space = curr_scope_space();
+
+	/* Increace current scope offset */
+	inccurr_scope_offset();
+
 	return (new);
 }
 

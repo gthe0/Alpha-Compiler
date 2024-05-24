@@ -717,6 +717,7 @@ static void write_arg(FILE* ost,vmarg arg)
 
 static void write_instr_i(FILE *ost, unsigned i)
 {
+	fprintf(ost,"#%-3u ",i);
 
 	switch (instructions[i].opcode)
 	{
