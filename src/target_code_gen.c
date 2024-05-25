@@ -209,10 +209,8 @@ void make_operand(expr *e, vmarg_T arg)
 
 	case programfunc_e:
 
-		arg->val = curr_userFuncs;
 		arg->type = userfunc_a;
-
-		userfuncs_newfunc(e->sym);
+		arg->val = userfuncs_newfunc(e->sym);
 
 		break;
 
@@ -235,6 +233,17 @@ void make_operand(expr *e, vmarg_T arg)
 	}
 
 	return;
+}
+
+static instruction init_instruction(void)
+{
+	instruction t = {0};
+
+	t.arg1.type = blank_a;
+	t.arg2.type = blank_a;
+	t.result.type = blank_a;
+
+	return t;
 }
 
 /* Add string s in the next available cell in stringConsts */
@@ -279,17 +288,19 @@ void libfuncs_newused(char *s)
 }
 
 /* Add a new user function in the next available cell in userFuncs */
-void userfuncs_newfunc(SymEntry_T sym)
+unsigned userfuncs_newfunc(SymEntry_T sym)
 {
+	unsigned i = 0;
+
 	assert(sym);
 
 	EXPAND_TABLE(userFuncs, userfunc_t);
 
 	/* Prevent duplicate generation */
-	for (int i = 0; i < curr_userFuncs; i++)
+	for (i = 0; i < curr_userFuncs; i++)
 	{
 		if (!strcmp(getName(sym), userFuncs[i].id) && userFuncs[i].address == get_t_address(sym))
-			return;
+			return	i;
 	}
 
 	UserFunc_T func = userFuncs + curr_userFuncs++;
@@ -298,7 +309,7 @@ void userfuncs_newfunc(SymEntry_T sym)
 	func->address = get_t_address(sym);
 	func->localSize = get_total_locals(sym);
 
-	return;
+	return i;
 }
 
 /* Used to emit instructions in the instructions table thorugh shallow copying*/
@@ -316,7 +327,7 @@ void generate(vmopcode op, Quad_T q)
 {
 	assert(q);
 
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = op;
 	t.srcLine = q->line;
@@ -336,7 +347,7 @@ void generate_relational(vmopcode op, Quad_T q)
 {
 	assert(q);
 
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = op;
 	t.srcLine = q->line;
@@ -382,7 +393,7 @@ void generate_UMINUS(Quad_T q)
 	 but we swap the arg2 make_operand with make_numberoeprand
 	 to create a const num operand here
 	*/
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = mul_v;
 	t.srcLine = q->line;
@@ -408,7 +419,8 @@ void generate_TABLESETELEM(Quad_T q) { generate(tablesetelem_v, q); }
 
 void generate_NOP()
 {
-	instruction t = {0};
+	instruction t = init_instruction();
+
 	t.opcode = nop_v;
 
 	emit_instr(t);
@@ -429,7 +441,7 @@ void generate_IF_LESSEQ(Quad_T q) { generate_relational(jle_v, q); }
 
 void generate_CALL(Quad_T q)
 {
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = call_v;
 	t.srcLine = q->line;
@@ -443,7 +455,7 @@ void generate_CALL(Quad_T q)
 
 void generate_PARAM(Quad_T q)
 {
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = pusharg_v;
 	t.srcLine = q->line;
@@ -457,7 +469,7 @@ void generate_PARAM(Quad_T q)
 
 void generate_GETRETVAL(Quad_T q)
 {
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = assign_v;
 	t.srcLine = q->line;
@@ -478,7 +490,7 @@ void generate_FUNCSTART(Quad_T q)
 	func->taddress = q->taddress = nextinstructionlabel();
 	FuncStack_push(func);
 
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = funcenter_v;
 	t.srcLine = q->line;
@@ -493,7 +505,7 @@ void generate_RETURN(Quad_T q)
 {
 	q->taddress = nextinstructionlabel();
 
-	instruction t = {0};
+	instruction t = init_instruction();
 
 	t.opcode = assign_v;
 	t.srcLine = q->line;
@@ -508,10 +520,10 @@ void generate_RETURN(Quad_T q)
 
 	t.opcode = jump_v;
 
-	t.arg1.val = label_a;
+	t.arg1.val = blank_a;
 	t.arg1.val = 0;
 
-	t.arg2.val = label_a;
+	t.arg2.val = blank_a;
 	t.arg2.val = 0;
 
 	t.result.type = label_a;
@@ -536,7 +548,7 @@ void generate_FUNCEND(Quad_T q)
 	}
 
 	q->taddress = nextinstructionlabel();
-	instruction t={0};
+	instruction t=init_instruction();
 
 	t.opcode = funcexit_v;
 	t.srcLine = q->line;
@@ -706,11 +718,10 @@ static void write_arg(FILE* ost,vmarg arg)
 			break;
     	case retval_a:
 			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(retval),",arg.val);
-			break;	
+			break;
 		default:
 			break;
 	}
-
 	
 	return ;
 }

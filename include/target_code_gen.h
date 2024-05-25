@@ -82,8 +82,9 @@ void patch_incomplete_jumps(void);
 * @brief Appends userfunc table with the info stored in sym 
 * 
 * @param sym The symbol holding the userfunc information
+* @return The index of the function in the userFunction table
 */
-void userfuncs_newfunc(SymEntry_T sym);
+unsigned userfuncs_newfunc(SymEntry_T sym);
 
 
 /**
