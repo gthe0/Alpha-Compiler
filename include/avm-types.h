@@ -81,7 +81,7 @@ enum vmarg_t {
     userfunc_a = 8,
     libfunc_a = 9,
     retval_a = 10,
-	blank_a = 11
+	undef_a = 11
 };
 
 /* The virtual machine argument */

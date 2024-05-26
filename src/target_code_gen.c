@@ -262,9 +262,9 @@ static instruction init_instruction(void)
 {
 	instruction t = {0};
 
-	t.arg1.type = blank_a;
-	t.arg2.type = blank_a;
-	t.result.type = blank_a;
+	t.arg1.type = undef_a;
+	t.arg2.type = undef_a;
+	t.result.type = undef_a;
 
 	return t;
 }
@@ -544,10 +544,10 @@ void generate_RETURN(Quad_T q)
 
 	t.opcode = jump_v;
 
-	t.arg1.val = blank_a;
+	t.arg1.val = undef_a;
 	t.arg1.val = 0;
 
-	t.arg2.val = blank_a;
+	t.arg2.val = undef_a;
 	t.arg2.val = 0;
 
 	t.result.type = label_a;
