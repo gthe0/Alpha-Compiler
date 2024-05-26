@@ -109,6 +109,29 @@ static unsigned curr_quad = 0;
 /* The quad table */
 extern Quad_T quad_table;
 
+
+/**
+* @brief This function is used to skip consecutive ignored quads if a logic tranfer instructions wants to jump there.
+* 
+* @param label The label at which the quad want to jump to.
+* @return The next quad which is not ignored
+*/
+static unsigned skip_ignored_quads(unsigned label)
+{
+
+	for ( label ; label < curr_quad_label() ; label++)
+	{
+		/*
+		 If we encounter a quad without an ignored flag,
+		 break and then return or return immediately...
+		*/
+		if (!quad_table[label].ignore)
+			break;
+	}
+
+	return label;
+}
+
 /*
  Helper functions to produce common arguments for
  generated instructions, like 1, 0, "true", "false"
@@ -336,6 +359,7 @@ void generate(vmopcode op, Quad_T q)
 	make_operand(q->arg2, &t.arg2);
 	make_operand(q->result, &t.result);
 
+	q->taddress = nextinstructionlabel();
 	emit_instr(t);
 }
 
@@ -360,7 +384,7 @@ void generate_relational(vmopcode op, Quad_T q)
 	if (q->label < curr_quad)
 		t.result.val = quad_table[q->label].taddress;
 	else
-		add_incomplete_jump(nextinstructionlabel(), q->label);
+		add_incomplete_jump(nextinstructionlabel(), skip_ignored_quads(q->label));
 
 	q->taddress = nextinstructionlabel();
 
@@ -609,7 +633,12 @@ void generate_target_code(void)
 	unsigned total = curr_quad_label();
 
 	for (curr_quad = 1; curr_quad < total; curr_quad++)
+	{
+		if(quad_table[curr_quad].ignore)
+			continue;
+
 		(*generators[quad_table[curr_quad].op])(quad_table + curr_quad);
+	}
 
 	patch_incomplete_jumps();
 
@@ -683,10 +712,6 @@ static void write_arg(FILE* ost,vmarg arg)
 	switch (arg.type)
 	{
     	case label_a:
-		/* If the argument val is 0, then this argument is empty */
-			if(arg.val == 0)
-				return;
-
 			fprintf(ost,"%u%-12s %-3u ",(unsigned)arg.type,"(label),",arg.val);
 			break;
     	case global_a:
