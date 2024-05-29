@@ -893,8 +893,6 @@ void print_tcg_arrays(FILE *ost)
 	print_instructions(ost);
 }
 
-#define TCG_WRITE(a) fwrite(&a, sizeof(a), 1, ost)
-
 /* Function used to create binary file */
 void createAVMBin(char *BinFileName)
 {
@@ -908,6 +906,18 @@ void createAVMBin(char *BinFileName)
 		LOG_ERROR(TGC, ERROR, "Could not open file stream %s\n", tcgFileName);
 		exit(EXIT_FAILURE);
 	}
+
+	/* NOT SURE ABOUT THESE */
+	/* Write the Magic Number */
+	fwrite(magicNum,sizeof(magicNum),1,ost);
+
+	/* Write numConsts array*/
+	fwrite(curr_numConsts,sizeof(curr_numConsts),1,ost);
+	fwrite(numConsts,sizeof(numConsts),curr_numConsts,ost);
+
+	/* Write userFuncs array*/
+	fwrite(curr_userFuncs,sizeof(curr_userFuncs),1,ost);
+	fwrite(userFuncs,sizeof(userFuncs),curr_userFuncs,ost);
 
 	fclose(ost);
 	return;
