@@ -903,7 +903,7 @@ void createAVMBin(char *BinFileName)
 
 	if (!(ost = fopen(tcgFileName, "wb")))
 	{
-		LOG_ERROR(TGC, ERROR, "Could not open file stream %s\n", tcgFileName);
+		LOG_ERROR(TCG, ERROR, "Could not open file stream %s\n", tcgFileName);
 		exit(EXIT_FAILURE);
 	}
 

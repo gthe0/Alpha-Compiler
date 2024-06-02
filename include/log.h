@@ -21,7 +21,7 @@ enum LOG_TYPE {
 
 /* Enums for Owner of the Log*/
 enum OWNER{
-	TGC,
+	TCG,
 	LEXER,
 	PARSER,
 	OTHER

@@ -44,7 +44,7 @@ void LOG_ERROR(OWNER owner,LOG_TYPE log_t ,const char* msg,...)
 		case OTHER: strcpy(o_name,"OTHER"); break;
 		case LEXER: strcpy(o_name,"LEXER"); break;
 		case PARSER: strcpy(o_name,"PARSER"); break;
-		case TGC: strcpy(o_name,"TGC"); break;
+		case TCG: strcpy(o_name,"TGC"); break;
 		default:;
 	}
 
