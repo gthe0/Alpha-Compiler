@@ -6,8 +6,8 @@
 /* A simple interface for an integer Stack ADT				*/
 /*----------------------------------------------------------*/
 
-#ifndef __INTEGER_STACK__
-#define __INTEGER_STACK__
+#ifndef INTEGER_STACK
+#define INTEGER_STACK
 
 typedef struct IntStack IntStack, *IntStack_T;
 typedef struct IntStack LoopStack, *LoopStack_T;

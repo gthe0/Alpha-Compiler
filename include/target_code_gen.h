@@ -8,8 +8,8 @@
 /* and run the program, live the JVM does with byte code	*/
 /*----------------------------------------------------------*/
 
-#ifndef __TARGET_CODE_GEN_H__
-#define __TARGET_CODE_GEN_H__
+#ifndef TARGET_CODE_GEN_H
+#define TARGET_CODE_GEN_H
 
 #include <quad.h>
 #include <avm-types.h>

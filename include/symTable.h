@@ -7,8 +7,8 @@
 /* used to store syntax analyzer token information			*/
 /*----------------------------------------------------------*/
 
-#ifndef __SYMBOL_TABLE__
-#define __SYMBOL_TABLE__ 
+#ifndef SYMBOL_TABLE
+#define SYMBOL_TABLE 
 
 #include <stdio.h>
 

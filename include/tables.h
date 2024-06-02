@@ -6,8 +6,8 @@
 /* Wrapper Functions/APIs for the scope and symbol tables	*/
 /*----------------------------------------------------------*/
 
-#ifndef __TABLES_H__
-#define __TABLES_H__
+#ifndef TABLES_H
+#define TABLES_H
 
 #include <symTableEntry.h>
 

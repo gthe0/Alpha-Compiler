@@ -6,8 +6,8 @@
 /* A library with utility functions used in parser.y		*/
 /*----------------------------------------------------------*/
 
-#ifndef __YACC_LIB_H__
-#define __YACC_LIB_H__
+#ifndef YACC_LIB_H
+#define YACC_LIB_H
 
 #include <tables.h>
 #include <stmt.h>

@@ -6,8 +6,8 @@
 /* A library with utility functions for name creation		*/
 /*----------------------------------------------------------*/
 
-#ifndef __NAME_GEN_H__
-#define	__NAME_GEN_H__
+#ifndef NAME_GEN_H
+#define	NAME_GEN_H
 
 /**
 * @brief This Functions generates a name for Functions with no name defined

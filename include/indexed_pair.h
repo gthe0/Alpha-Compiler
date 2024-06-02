@@ -7,8 +7,8 @@
 /* and the Pair list that are used in calls 				*/
 /*----------------------------------------------------------*/
 
-#ifndef __INDEXED_PAIR_H__
-#define __INDEXED_PAIR_H__
+#ifndef INDEXED_PAIR_H
+#define INDEXED_PAIR_H
 
 #include <expr.h>
 

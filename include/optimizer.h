@@ -7,8 +7,8 @@
 /* techniques (e.g DCE, constant propagation etc)			*/
 /*----------------------------------------------------------*/
 
-#ifndef __OPTIMIZER_H__
-#define __OPTIMIZER_H__
+#ifndef OPTIMIZER_H
+#define OPTIMIZER_H
 
 #include <expr.h>
 

@@ -39,7 +39,11 @@ for input_file in "$parent_dir"/*; do
 	if [ -e quads.txt ]; then
 		echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"
 		mv quads.txt $result_dir/Quads/$base_filename.quad
-		mv tcg_instructions.txt $result_dir/TCG/$base_filename.instr
+
+		if [ -e quads.txt ]; then
+			mv tcg_instructions.txt $result_dir/TCG/$base_filename.instr
+		fi
+		
 	else
 		echo -e "${RED}COMPILATION FAILED${DEFAULT}"
 	fi

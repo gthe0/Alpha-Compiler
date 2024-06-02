@@ -6,8 +6,8 @@
 /* An interface of a function to log err types				*/
 /*----------------------------------------------------------*/
 
-#ifndef __LOG__
-#define __LOG__
+#ifndef LOG
+#define LOG
 
 #define OWNER_SIZE 0x10
 

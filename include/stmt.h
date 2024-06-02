@@ -6,8 +6,8 @@
 /* Interface for break and continue lists					*/
 /*----------------------------------------------------------*/
 
-#ifndef __STMT_H__
-#define __STMT_H__
+#ifndef STMT_H
+#define STMT_H
 
 typedef struct stmt_t stmt_t, *stmt_T;
 

@@ -7,8 +7,8 @@
 /* encountered during parsing								*/
 /*----------------------------------------------------------*/
 
-#ifndef __EXPR_H__
-#define __EXPR_H__ 
+#ifndef EXPR_H
+#define EXPR_H 
 
 #include <symTableEntry.h>
 

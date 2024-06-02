@@ -6,8 +6,8 @@
 /* A simple interface for Scope Table module		        */
 /*----------------------------------------------------------*/
 
-#ifndef __SCOPE_TABLE__
-#define __SCOPE_TABLE__ 
+#ifndef SCOPE_TABLE
+#define SCOPE_TABLE 
 
 #include <stdio.h>
 

@@ -6,8 +6,8 @@
 /* An ADT used to store the for test/body entry point info	*/
 /*----------------------------------------------------------*/
 
-#ifndef __FORPREF__
-#define __FORPREF__
+#ifndef FORPREF
+#define FORPREF
 
 #include <expr.h>
 

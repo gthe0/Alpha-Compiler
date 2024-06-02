@@ -8,8 +8,8 @@
 /*----------------------------------------------------------*/
 
 
-#ifndef __QUADS_H__
-#define __QUADS_H__
+#ifndef QUADS_H
+#define QUADS_H
 
 #include <expr.h>
 

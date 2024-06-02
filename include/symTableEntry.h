@@ -6,8 +6,8 @@
 /* Type definitions and module for the Symbol Table Entries	*/
 /*----------------------------------------------------------*/
 
-#ifndef __SYMBOL_TABLE_ENTRY__
-#define __SYMBOL_TABLE_ENTRY__ 
+#ifndef SYMBOL_TABLE_ENTRY
+#define SYMBOL_TABLE_ENTRY 
 
 #include <scopeSpace.h>
 

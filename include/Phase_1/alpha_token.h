@@ -7,8 +7,8 @@
 /*  various tokens/leximes                                  */
 /*----------------------------------------------------------*/
 
-#ifndef __ALPHA_TOKEN__
-#define __ALPHA_TOKEN__
+#ifndef ALPHA_TOKEN
+#define ALPHA_TOKEN
 
 #include <stdio.h>
 

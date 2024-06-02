@@ -6,8 +6,8 @@
 /* A function that generates the wanted output				*/
 /*----------------------------------------------------------*/
 
-#ifndef __AL__
-#define __AL__
+#ifndef AL
+#define AL
 
 #include <alpha_token.h>
 

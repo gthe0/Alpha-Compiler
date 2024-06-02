@@ -8,8 +8,8 @@
 /* the avm recognizes and executes							*/
 /*----------------------------------------------------------*/
 
-#ifndef __AVM_TYPES_H__
-#define __AVM_TYPES_H__
+#ifndef AVM_TYPES_H
+#define AVM_TYPES_H
 
 /* typedefs of the various structs and enums used */
 typedef struct instruction instruction, *Instruction_T;

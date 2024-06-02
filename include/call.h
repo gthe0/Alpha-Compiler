@@ -7,8 +7,8 @@
 /* used to store call information							*/
 /*----------------------------------------------------------*/
 
-#ifndef __CALL_H__
-#define __CALL_H__
+#ifndef CALL_H
+#define CALL_H
 
 #include <expr.h>
 
