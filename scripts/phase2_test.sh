@@ -50,7 +50,7 @@ for subdir in "$parent_dir"/*/; do
 			echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"
 			mv quads.txt $result_dir/Quads/$base_filename.quad
 			
-			if [ -e quads.txt ]; then
+			if [ -e tcg_instructions.txt ]; then
 				mv tcg_instructions.txt $result_dir/TCG/$base_filename.instr
 			fi
 
