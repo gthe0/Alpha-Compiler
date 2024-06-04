@@ -12,6 +12,12 @@
 
 #include <avm-types.h>
 
+/* The extracted instructions... */
+extern Instruction_T code;
+extern unsigned codeSize;
+
+#define AVM_ENDING_PC codeSize
+
 /* Getters of array elements */
 userfunc_t get_UserFunc(unsigned int i);
 double get_numConst(unsigned int i);
