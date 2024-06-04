@@ -909,6 +909,56 @@ void createAVMBin(char *BinFileName)
 
 	/* NOT SURE ABOUT THESE */
 	/* Write the Magic Number */
+	fwrite(&magicNum,sizeof(magicNum),1,ost);
+
+	/* Write constant numbers */
+	fwrite(&curr_numConsts,sizeof(curr_numConsts),1,ost);
+	fwrite(numConsts,sizeof(double),curr_numConsts,ost);
+
+	/* Write constant Strings */
+	fwrite(&curr_stringConsts,sizeof(curr_stringConsts),1,ost);
+
+	for (int i = 0; i < curr_stringConsts ; i++)
+	{
+		/* Each string has a different size, so we write both*/
+		unsigned string_length = strlen(stringConsts[i]);
+		fwrite(&string_length, sizeof(string_length), 1, ost);
+		fwrite(stringConsts[i],string_length * sizeof(char) ,1,ost);
+	}
+
+	
+	/* Write library functions  */
+	fwrite(&curr_namedLibfuncs,sizeof(curr_namedLibfuncs),1,ost);
+	for (int i = 0; i < curr_namedLibfuncs ; i++)
+	{
+		/* Each string has a different size, so we write both*/
+		unsigned string_length = strlen(namedLibfuncs[i]);
+
+		fwrite(&string_length, sizeof(string_length), 1, ost);
+		fwrite(namedLibfuncs[i],string_length * sizeof(char) ,1,ost);
+	}
+	
+	/* Write user functions */
+	fwrite(&curr_userFuncs,sizeof(curr_userFuncs),1,ost);
+
+	for (int i = 0; i < curr_userFuncs; i++)
+	{
+		/* Due to the char* field we need to write the fields one by one... */
+		fwrite(&(userFuncs[i].address),sizeof(unsigned),1,ost);
+		fwrite(&(userFuncs[i].localSize),sizeof(unsigned),1,ost);
+
+		/* Write the annoying char* field... */
+		unsigned string_length = strlen(userFuncs[i].id);
+
+		/* Each string has its own size... */
+		fwrite(&string_length, sizeof(string_length), 1, ost);
+		fwrite(userFuncs[i].id,string_length * sizeof(char) ,1,ost);
+	}
+
+	/* Write instructions */
+	fwrite(&curr_instructions,sizeof(curr_instructions),1,ost);
+	fwrite(instructions,sizeof(instruction),curr_instructions,ost);
+
 	fclose(ost);
 	return;
 }

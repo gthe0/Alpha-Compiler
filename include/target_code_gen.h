@@ -137,4 +137,11 @@ void generate_target_code(void);
 */
 void print_tcg_arrays(FILE* ost);
 
+/**
+* @brief Creates the alpha binary file 
+*
+* @param BinFileName The binary file name
+*/
+void createAVMBin(char *BinFileName);
+
 #endif /* Target code generation lib*/

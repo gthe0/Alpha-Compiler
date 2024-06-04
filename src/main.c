@@ -161,6 +161,8 @@ int main(int argc,char** argv)
 
 		if (iflag)
 			print_tcg_arrays(ost_tcg);
+		
+		createAVMBin(NULL);
 	}
 
 

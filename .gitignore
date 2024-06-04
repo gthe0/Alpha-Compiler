@@ -8,6 +8,9 @@ build
 # Ignore text files
 *.txt
 
+# Ignore binary files
+*.abc
+
 # Ignore Generators output
 src/scanner.c
 src/parser.c
