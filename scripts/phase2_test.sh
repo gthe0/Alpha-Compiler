@@ -23,6 +23,7 @@ mkdir -p "$result_dir/Sym/Errors"
 mkdir -p "$result_dir/Logs"
 mkdir -p "$result_dir/Quads"
 mkdir -p "$result_dir/TCG"
+mkdir -p "$result_dir/Binary"
 
 # Loop through all subdirectories within the parent directory
 for subdir in "$parent_dir"/*/; do
@@ -56,6 +57,10 @@ for subdir in "$parent_dir"/*/; do
 
 		else
 			echo -e "${RED}COMPILATION FAILED${DEFAULT}"
+		fi
+
+		if [ -e a.abc ]; then
+			mv a.abc $result_dir/Binary/$base_filename.abc
 		fi
 
     done

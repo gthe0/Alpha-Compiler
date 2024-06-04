@@ -64,8 +64,8 @@ test: test2 test3
 
 # Clean up build artifacts
 clean:
-	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h output.txt *.abc\
-		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode quads.txt tcg_instructions.txt test_results
+	@rm -rf $(BUILD_DIR) $(BIN) $(SRC)/scanner.c $(INCLUDE)/scanner.h *.txt *.abc\
+		$(SRC)/parser.c $(INCLUDE)/parser.h parser.output .vscode test_results
 
 # Ensure that the build and bin directories exist
 $(BUILD_DIR):

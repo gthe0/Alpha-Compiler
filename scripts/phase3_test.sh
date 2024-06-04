@@ -22,6 +22,7 @@ mkdir -p "$result_dir/Logs"
 mkdir -p "$result_dir/SymTable"
 mkdir -p "$result_dir/Quads"
 mkdir -p "$result_dir/TCG"
+mkdir -p "$result_dir/Binary"
 
 for input_file in "$parent_dir"/*; do
 	# Extract the base filename (without extension)
@@ -42,6 +43,10 @@ for input_file in "$parent_dir"/*; do
 
 		if [ -e tcg_instructions.txt ]; then
 			mv tcg_instructions.txt $result_dir/TCG/$base_filename.instr
+		fi
+
+		if [ -e a.abc ]; then
+			mv a.abc $result_dir/Binary/$base_filename.abc
 		fi
 		
 	else
