@@ -48,6 +48,7 @@ int main(int argc,char** argv)
     int c;
 
     char *inputFile = NULL;
+    char *binaryFile = NULL;
     
 	opterr = 0; /* Disable getopt's error messages */
 
@@ -65,7 +66,7 @@ int main(int argc,char** argv)
 	}
 
 
-    while ((c = getopt(argc, argv, "siO:")) != -1) {
+    while ((c = getopt(argc, argv, "o:siO:")) != -1) {
         
 		switch (c) {
 
@@ -88,6 +89,11 @@ int main(int argc,char** argv)
                 iflag = 1;
 
                 break;
+			
+			case 'o':
+
+				binaryFile = optarg;
+				break;
 
 			case 'O':
 				
@@ -162,7 +168,7 @@ int main(int argc,char** argv)
 		if (iflag)
 			print_tcg_arrays(ost_tcg);
 		
-		createAVMBin(NULL);
+		createAVMBin(binaryFile);
 	}
 
 
