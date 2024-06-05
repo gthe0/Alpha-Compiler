@@ -108,7 +108,7 @@ void consts_newnumber(double n);
 * 
 * @param s The name of the lib function to be pushed back in the table
 */
-void libfuncs_newused(char *s);
+unsigned libfuncs_newused(char *s);
 
 /**
 * @brief Used to emit a new instruction in the instruction table 

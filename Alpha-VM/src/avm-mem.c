@@ -75,6 +75,10 @@ void avm_initstack(void)
 void avm_initialize (void)
 {
 	avm_initstack();
+	top = AVM_STACKSIZE - programVarOffset -1;
+	topsp = 0;
+	ax.type = bx.type = cx.type = retval.type = undef_m;
+
 	return ;
 }
 
@@ -176,7 +180,7 @@ void avm_assign(avm_memcell* lv, avm_memcell* rv)
 		 rv->type == table_m &&
 		 lv->data.tableVal == rv->data.tableVal)	
 		return;
-
+	
 	/* Clear the old cell to replace it with the rv*/
 	avm_mem_cell_clear(lv);		
 	memcpy(lv,rv,sizeof(avm_memcell));
@@ -197,7 +201,6 @@ void avm_assign(avm_memcell* lv, avm_memcell* rv)
 avm_memcell* avm_translate_operand(vmarg_T arg, avm_memcell* reg)
 {
 	assert(arg);
-
 	switch (arg->type)
 	{
 		case global_a:	return &stack[AVM_STACKSIZE-arg->val-1];
@@ -272,8 +275,8 @@ void avm_push_envvalue(unsigned val)
 void avm_call_saveenvironment(void)
 {
 	avm_push_envvalue(totalActuals);
-	avm_push_envvalue(pc+1);
-	avm_push_envvalue(top+totalActuals+2);
+	avm_push_envvalue(pc + 1);
+	avm_push_envvalue(top + totalActuals + 2);
 	avm_push_envvalue(topsp);
 
 	return ;
@@ -298,10 +301,31 @@ avm_memcell* avm_getactual(unsigned i)
 	return &stack[topsp + AVM_STACKENV_SIZE + 1 + i ];
 }
 
+#define HASH_MULTIPLIER 65599
+
+/* Number hash, used for table, boolean and number indexes*/
+static unsigned number_hash(unsigned num)
+{
+	return (num % AVM_TABLE_HASH_SIZE);
+}
+
+/* String hash, used for libfuncs, userfuncs and string*/
+static unsigned string_hash(char* name)
+{
+    unsigned int ui;
+    unsigned int uiHash = 0U;
+
+    for (ui = 0U; name[ui] != '\0'; ui++)
+        uiHash = uiHash * HASH_MULTIPLIER + name[ui];
+
+    return (uiHash % AVM_TABLE_HASH_SIZE);
+}
+
 avm_memcell* avm_tablegetelem (
 	avm_table* table,
 	avm_memcell* index)
 {
+	assert(table && index);
 	return NULL;
 }
 

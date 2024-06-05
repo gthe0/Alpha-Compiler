@@ -2,6 +2,7 @@
 #include <avm-reader.h>
 
 #include <assert.h>
+#include <stdio.h>
 
 /* Variables used for execution */
 unsigned pc = 0;
@@ -81,12 +82,13 @@ void execute_cycle (void) {
 		 
 		/* Check if the opcode is valid */
         assert(instr->opcode >= 0 && instr->opcode <= nop_v);
+		printf("intruction number %u\n",pc);
 
         if (instr->srcLine)
             currLine = instr->srcLine;
 
         unsigned oldPC = pc;
-
+		
         (*executeFuncs[instr->opcode])(instr);
 
         if (pc == oldPC)

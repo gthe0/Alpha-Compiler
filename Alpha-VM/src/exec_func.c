@@ -1,5 +1,6 @@
 #include <dispatcher.h>
 #include <avm-mem.h>
+#include <avm-lib.h>
 #include <avm-reader.h>
 #include <avm-log.h>
 
@@ -8,7 +9,7 @@
 /* Pushes arguments to the stack */
 void execute_pusharg(Instruction_T instr)
 {
-	avm_memcell* arg = avm_translate_operand(&instr->result,&ax);
+	avm_memcell* arg = avm_translate_operand(&(instr->arg1),&ax);
 
 	assert(arg && top < AVM_STACKSIZE);
 
@@ -27,11 +28,11 @@ void execute_funcenter(Instruction_T instr)
 	avm_memcell* func  = avm_translate_operand(&instr->result, &ax);
 
 	assert(func);
-	assert(pc == func->data.funcVal);
+	assert(pc == get_UserFunc(func->data.funcVal).address);
 
 	totalActuals = 0;
 
-	userfunc_t function = get_UserFunc(pc);
+	userfunc_t function = get_UserFunc(func->data.funcVal);
 
 	topsp = top;
 	top = top - function.localSize; 

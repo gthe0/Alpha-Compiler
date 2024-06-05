@@ -240,10 +240,8 @@ void make_operand(expr *e, vmarg_T arg)
 
 	case libraryfunc_e:
 
-		arg->val = curr_namedLibfuncs;
 		arg->type = libfunc_a;
-
-		libfuncs_newused((char *)getName(e->sym));
+		arg->val = libfuncs_newused((char *)getName(e->sym));
 
 		break;
 
@@ -293,22 +291,23 @@ void consts_newnumber(double n)
 }
 
 /* Add a new library function in the next available cell in libfuncs_newused */
-void libfuncs_newused(char *s)
+unsigned libfuncs_newused(char *s)
 {
 	assert(s);
+	unsigned i = 0;
 
 	/* Prevent duplicate generation */
-	for (int i = 0; i < curr_namedLibfuncs; i++)
+	for (i = 0; i < curr_namedLibfuncs; i++)
 	{
 		if (!strcmp(s, namedLibfuncs[i]))
-			return;
+			return i;
 	}
 
 	EXPAND_TABLE(namedLibfuncs, char *);
 
 	namedLibfuncs[curr_namedLibfuncs++] = strdup(s);
 
-	return;
+	return i;
 }
 
 /* Add a new user function in the next available cell in userFuncs */
