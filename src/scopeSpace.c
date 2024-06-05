@@ -63,6 +63,9 @@ void resetfunctionlocaloffset(void)
 void resetformalargoffset(void)
 {formalArgOffset 	= 0 ;}
 
+unsigned programVarOffset_getter(void)
+{return programVarOffset;}
+
 /* Restore the Scope offset to a previous state*/
 void restore_curr_scope_offset(unsigned int n)
 {
@@ -79,4 +82,3 @@ void restore_curr_scope_offset(unsigned int n)
 
 void enterscopespace(void) { ++scopeSpaceCounter; }
 void exitscopespace(void) {assert(scopeSpaceCounter > 1); --scopeSpaceCounter;}
-

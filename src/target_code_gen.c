@@ -9,6 +9,7 @@
 
 #include <target_code_gen.h>
 #include <symTableEntry.h>
+#include <scopeSpace.h>
 #include <func_stack.h>
 #include <utils.h>
 #include <log.h>
@@ -897,6 +898,7 @@ void print_tcg_arrays(FILE *ost)
 void createAVMBin(char *BinFileName)
 {
 	unsigned magicNum = 3401334;
+	unsigned programVarOffset = programVarOffset_getter();
 	char *tcgFileName = BinFileName == NULL ? "a.abc" : BinFileName;
 
 	FILE *ost = NULL;
@@ -910,6 +912,9 @@ void createAVMBin(char *BinFileName)
 	/* NOT SURE ABOUT THESE */
 	/* Write the Magic Number */
 	fwrite(&magicNum,sizeof(magicNum),1,ost);
+
+	/* Write the number of global vars */
+	fwrite(&programVarOffset,sizeof(programVarOffset),1,ost);
 
 	/* Write constant numbers */
 	fwrite(&curr_numConsts,sizeof(curr_numConsts),1,ost);

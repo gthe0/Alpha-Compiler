@@ -56,6 +56,12 @@ void resetfunctionlocaloffset(void);
 void restore_curr_scope_offset(unsigned int n);
 
 /**
+* @brief Getter of programVarOffset
+* @return programVarOffset 
+*/
+unsigned programVarOffset_getter(void);
+
+/**
 * @brief Increases the Scope Space counter
 */
 void enterscopespace(void);
