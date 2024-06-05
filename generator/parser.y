@@ -319,7 +319,7 @@ indexedelem
     | '{' expr error expr '}'					{ yyerrok;} 
     ;		
 
-NQ: 											{ $$ = curr_scope_offset(); };
+NQ: 											{ $$ = curr_scope_offset(); exitscopespace();};
 LQ: 											{ $$ = curr_quad_label(); };
 MQ:												{ 
                                                     $$ = curr_quad_label(); 
@@ -387,20 +387,19 @@ funcargs
 funcbody
     : block 									{
                                                     $$ = $1;
-                                                    exitscopespace();
                                                 }
     ;
 
 funcdef
-    : funcstart funcpref funcargs NQ funcbody	{
+    : funcstart funcpref funcargs funcbody NQ {
                                                     exitscopespace();
-                                                    set_total_locals($2,$4);
+                                                    set_total_locals($2,$5);
 
                                                     IntStack_Pop(oScopeStack);
                                                     restore_curr_scope_offset(IntStack_Pop(offsetStack));
                                                     $$ = $2;
 
-                                                    patchlist($5->retlist,curr_quad_label());
+                                                    patchlist($4->retlist,curr_quad_label());
 
                                                     emit(funcend_i, lvalue_expr($$) , NULL, NULL,yylineno,0);
 
