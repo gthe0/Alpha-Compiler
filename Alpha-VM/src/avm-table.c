@@ -256,10 +256,9 @@ static int number_bucket_set(
 		numIndexed = numIndexed->next;
 
 	/* If we reach the end, do not execute this block*/
-	if (numIndexed->key.data.numVal != index->data.numVal)
+	if (numIndexed->key.data.numVal == index->data.numVal)
 	{
 		numIndexed->value = *content;
-
 		if(content->type == string_m)
 			numIndexed->value.data.strVal = strdup(content->data.strVal);
 		
@@ -377,7 +376,7 @@ static int lib_bucket_set(
 		libIndexed = libIndexed->next;
 
 	/* If we reach the end, do not execute this block*/
-	if (libIndexed->key.data.libfuncVal != index->data.libfuncVal)
+	if (libIndexed->key.data.libfuncVal == index->data.libfuncVal)
 	{
 		libIndexed->value = *content;
 
@@ -436,7 +435,7 @@ static int userfunc_bucket_set(
 		userIndexed = userIndexed->next;
 
 	/* If we reach the end, do not execute this block*/
-	if (userIndexed->key.data.funcVal != index->data.funcVal)
+	if (userIndexed->key.data.funcVal == index->data.funcVal)
 	{
 		userIndexed->value = *content;
 
@@ -483,7 +482,7 @@ avm_memcell* avm_tablegetelem (
 
 	if(f) return (*f)(table,index);
 	else 
-		avm_log(ERROR,"%s cannot be used for indexing",typeString[index->type]);
+		avm_log(ERROR,"%s cannot be used for indexing\n",typeString[index->type]);
 
 	return NULL;
 }
@@ -515,7 +514,7 @@ void avm_tablesetelem (
 
 	if(f) t = (*f)(table,index,content);
 	else 
-		avm_log(ERROR,"%s cannot be used for indexing",typeString[index->type]);
+		avm_log(ERROR,"%s cannot be used for indexing\n",typeString[index->type]);
 
 	/*
 	 If t is zero, that means that 
