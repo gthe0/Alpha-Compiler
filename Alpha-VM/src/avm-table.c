@@ -16,10 +16,12 @@
 #include <string.h>
 
 #define HASH_MULTIPLIER 65599
+#define NO_NEW_MEM 0
+#define ADDED_MEM 1
 
 /* typedefinitions of setters and getters */
 typedef avm_memcell* (*table_getter_t)(avm_table*,avm_memcell*);
-typedef void (*table_setter_t)(avm_table*,avm_memcell*,avm_memcell*);
+typedef int (*table_setter_t)(avm_table*,avm_memcell*,avm_memcell*);
 
 
 /* Number hash, used for number and userfunc indexes*/
@@ -179,7 +181,7 @@ static table_getter_t table_get[] = {
 
 
 /* Used to set an element in the boolean bucket */
-static void bool_bucket_set(
+static int bool_bucket_set(
 	avm_table* table,
 	avm_memcell* index,
 	avm_memcell* content
@@ -200,29 +202,33 @@ static void bool_bucket_set(
 		if(content->type == string_m)
 			boolIndexed->value.data.strVal = strdup(content->data.strVal);
 
+		return NO_NEW_MEM;
 	}
 	else
 	{
 		table->boolIndexed[index->data.boolVal] = malloc(sizeof(avm_table_bucket));
 		table->boolIndexed[index->data.boolVal]->key = *index;
 		table->boolIndexed[index->data.boolVal]->value = *content;
+		table->boolIndexed[index->data.boolVal]->next = NULL;
 
 		if (content->type == string_m)
 			table->boolIndexed[index->data.boolVal]->value.data.strVal = strdup(content->data.strVal);	
+
+		return ADDED_MEM;
 	}	
 
-	return;
+	return NO_NEW_MEM;
 }
 
 
 /* Used to set an element in the number bucket */
-static void number_bucket_set(
+static int number_bucket_set(
 	avm_table* table,
 	avm_memcell* index,
 	avm_memcell* content
 )
 {
-	assert(index->type == number_m);	
+	assert(index->type == number_m);
 
 	int hash = number_hash(index->data.numVal);
 	avm_table_bucket	*numIndexed = table->numIndexed[hash];
@@ -233,11 +239,12 @@ static void number_bucket_set(
 		table->numIndexed[hash] = malloc(sizeof(avm_table_bucket));
 		table->numIndexed[hash]->key = *index;
 		table->numIndexed[hash]->value = *content;
+		table->numIndexed[hash]->next = NULL;
 
 		if (content->type == string_m)
 			table->numIndexed[hash]->value.data.strVal = strdup(content->data.strVal);	
 
-		return;
+		return ADDED_MEM;
 	}
 
 	/* Numbers may be in a list.
@@ -256,7 +263,7 @@ static void number_bucket_set(
 		if(content->type == string_m)
 			numIndexed->value.data.strVal = strdup(content->data.strVal);
 		
-		return;
+		return NO_NEW_MEM;
 	}
 
 	node = malloc(sizeof(avm_table_bucket));	
@@ -269,12 +276,12 @@ static void number_bucket_set(
 
 	numIndexed->next = node;
 
-	return;	
+	return ADDED_MEM;
 }
 
 
 /* Used to get an element from the string buckets */
-static void str_bucket_set(
+static int str_bucket_set(
 	avm_table* table,
 	avm_memcell* index,
 	avm_memcell* content
@@ -292,11 +299,12 @@ static void str_bucket_set(
 		table->strIndexed[hash]->key = *index;
 		table->strIndexed[hash]->key.data.strVal = strdup(index->data.strVal);
 		table->strIndexed[hash]->value = *content;
+		table->strIndexed[hash]->next = NULL;
 
 		if (content->type == string_m)
 			table->strIndexed[hash]->value.data.strVal = strdup(content->data.strVal);	
 
-		return;
+		return ADDED_MEM;
 	}
 	/* Numbers may be in a list.
 	*/
@@ -315,7 +323,7 @@ static void str_bucket_set(
 		if(content->type == string_m)
 			strIndexed->value.data.strVal = strdup(content->data.strVal);
 		
-		return;
+		return NO_NEW_MEM;
 	}
 
 	node = malloc(sizeof(avm_table_bucket));	
@@ -329,13 +337,13 @@ static void str_bucket_set(
 
 	strIndexed->next = node;
 
-	return;	
+	return ADDED_MEM;
 	
 }
 
 
 /* Used to get an element from the libfuncs buckets */
-static void lib_bucket_set(
+static int lib_bucket_set(
 	avm_table* table,
 	avm_memcell* index,
 	avm_memcell* content
@@ -352,11 +360,12 @@ static void lib_bucket_set(
 		table->libIndexed[hash] = malloc(sizeof(avm_table_bucket));
 		table->libIndexed[hash]->key = *index;
 		table->libIndexed[hash]->value = *content;
+		table->libIndexed[hash]->next = NULL;
 
 		if (content->type == string_m)
 			table->libIndexed[hash]->value.data.strVal = strdup(content->data.strVal);	
 
-		return;
+		 ADDED_MEM;
 	}
 
 	/* Numbers may be in a list.
@@ -375,7 +384,7 @@ static void lib_bucket_set(
 		if(content->type == string_m)
 			libIndexed->value.data.strVal = strdup(content->data.strVal);
 		
-		return;
+		return NO_NEW_MEM;
 	}
 
 	node = malloc(sizeof(avm_table_bucket));	
@@ -388,12 +397,12 @@ static void lib_bucket_set(
 
 	libIndexed->next = node;
 
-	return;	
+	return ADDED_MEM;	
 
 }
 
 /* Used to set an element from the userfuncs buckets */
-static void userfunc_bucket_set(
+static int userfunc_bucket_set(
 	avm_table* table,
 	avm_memcell* index,
 	avm_memcell* content
@@ -410,11 +419,12 @@ static void userfunc_bucket_set(
 		table->userIndexed[hash] = malloc(sizeof(avm_table_bucket));
 		table->userIndexed[hash]->key = *index;
 		table->userIndexed[hash]->value = *content;
+		table->userIndexed[hash]->next= NULL;
 
 		if (content->type == string_m)
 			table->userIndexed[hash]->value.data.strVal = strdup(content->data.strVal);	
 
-		return;
+		return ADDED_MEM;
 	}
 
 	/* Numbers may be in a list.
@@ -433,7 +443,7 @@ static void userfunc_bucket_set(
 		if(content->type == string_m)
 			userIndexed->value.data.strVal = strdup(content->data.strVal);
 		
-		return;
+		return NO_NEW_MEM;
 	}
 
 	node = malloc(sizeof(avm_table_bucket));	
@@ -446,7 +456,7 @@ static void userfunc_bucket_set(
 
 	userIndexed->next = node;
 
-	return;	
+	return ADDED_MEM;	
 }
 
 
@@ -486,14 +496,33 @@ void avm_tablesetelem (
 {
 	assert(table && index && content);
 
+	int t = 0;
 	table_setter_t f = table_set[index->type];
 
 	if(content->type == table_m)
-		avm_table_inc_refcounter(content->data.tableVal);
+	{
+		/* I define that it is illegal to recurcively 
+		set the table itself as its elements, is illegal */
+		if (content->data.tableVal == table)
+		{
+			avm_log(ERROR,"Setting the table itself as an element"
+						" of the table is illegal\n");
 
-	if(f) (*f)(table,index,content);
+			return ;
+		}
+		avm_table_inc_refcounter(content->data.tableVal);
+	}
+
+	if(f) t = (*f)(table,index,content);
 	else 
 		avm_log(ERROR,"%s cannot be used for indexing",typeString[index->type]);
+
+	/*
+	 If t is zero, that means that 
+	 we added an element to the table
+	*/
+	if(t)
+		table->total++ ;
 
 	return ;
 }
