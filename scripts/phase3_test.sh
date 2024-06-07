@@ -32,7 +32,7 @@ for input_file in "$parent_dir"/*; do
 	i=$((i+1))
 	
 	# Run the program with the input file
-    "$parentDir"/bin/parser.out "-si" "" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
+    "$parentDir"/bin/parser.out "-si" "-O3" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
 
 	# Move the file with the symbol table entries into its corresponding folder
 	mv sym_table.txt "$result_dir/SymTable/test_${base_filename}"

@@ -11,6 +11,7 @@
 #include <optimizer.h>
 #include <quad.h>
 #include <expr.h>
+#include <log.h>
 
 extern Quad_T quad_table;
 
@@ -224,7 +225,13 @@ void funcjump_patchlist()
 void optimization_level(int opt)
 {
 
-	APPLY_OPTIMIZATION(opt,_USELESS_ASSIGN,ignore_useless_quads);
+	LOG_ERROR(
+		OTHER,WARNING,"%s",
+		(opt && _USELESS_ASSIGN) ?
+		"Peephole and code transformation optimizations"
+		" were depricated due to lack of time!\n":""
+		);
+
 	APPLY_OPTIMIZATION(opt,_FUNC_JUMP_PATCH,funcjump_patchlist);
 
 	return ;
