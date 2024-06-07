@@ -32,21 +32,21 @@ for input_file in "$parent_dir"/*; do
 	i=$((i+1))
 	
 	# Run the program with the input file
-    "$parentDir"/bin/parser.out "-si" "-O3" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
+    "$parentDir"/bin/parser.out "-siq" "-O3" "$input_file" 2> "$result_dir/Logs/${base_filename}.log"
 
 	# Move the file with the symbol table entries into its corresponding folder
 	mv sym_table.txt "$result_dir/SymTable/test_${base_filename}"
 
-	if [ -e quads.txt ]; then
+	if [ -e a.abc ]; then
 		echo -e "${GREEN}COMPILATION SUCCESS${DEFAULT}"
-		mv quads.txt $result_dir/Quads/$base_filename.quad
+		mv a.abc $result_dir/Binary/$base_filename.abc
 
 		if [ -e tcg_instructions.txt ]; then
 			mv tcg_instructions.txt $result_dir/TCG/$base_filename.instr
 		fi
 
-		if [ -e a.abc ]; then
-			mv a.abc $result_dir/Binary/$base_filename.abc
+		if [ -e quads.txt ]; then
+			mv quads.txt $result_dir/Quads/$base_filename.quad
 		fi
 		
 	else

@@ -1,9 +1,9 @@
-# HY340 - PHASE 3
+# HY340 - PHASE 5
 
 ## Overview
 
 This project is a simple implementation of a compiler using Flex and Bison/YACC for the Alpha programming language.
-We generate the Intermidiate Representation (IR) based on the specifications given to us and Syntax-directed translation.
+Here, we generate the Alpha binary based on the IR generation.
 
 ## Contributors
 
@@ -29,14 +29,26 @@ To build the project, run the following command:
 To run the parser on an input file, use the following command:
 - ./bin/parser.out INPUT_FILE
 
-This will generate a file called quads.txt containing the IR. If any error was encountered during the IR generation, this file will not be produced at all.
+This will generate a file called a.abc containing the Alpha Binary which can be executed by the Alpha Virtual machine.
 
 If you want to see the symbol table entries, run it with the flag -s e.g:
 - ./bin/parser.out -s INPUT_FILE
 
-This will also generate a file called sym_table.txt
+It generate a file called sym_table.txt
 
-INPUT_FILE: File containing the input (It's self explanatory).
+if you want to see the quads produced (meaning the IR), pass the flag -q e.g:
+- ./bin/parser.out -q INPUT_FILE
+
+It generate a file called quads.txt
+
+If you want to see the tcg result, pass the flag -i like this:
+- ./bin/parser.out -i INPUT_FILE
+
+It generate a file called tcg_instructions.txt
+
+Lastly, you can pass the flag -o to change the name of the ouput binary file and you can also pass -Ox for various optimization levels(Note: O1 was deprecated due to lack of time. You can use O2 and O3. If you pass O3, you ll be warned that peephole and code transfromation optimizations were deprecated)
+
+In each case, the INPUT_FILE is the file containing the source code to be compiled (It's self explanatory).
 
 If no input file is specified, the program will halt its execution immediately !
 

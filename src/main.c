@@ -44,6 +44,7 @@ int main(int argc,char** argv)
     
 	int sflag = 0;
 	int iflag = 0;
+	int qflag = 0;
     int Ovalue = 0; /* To store the value after -O flag */
     int c;
 
@@ -66,7 +67,7 @@ int main(int argc,char** argv)
 	}
 
 
-    while ((c = getopt(argc, argv, "o:siO:")) != -1) {
+    while ((c = getopt(argc, argv, "o:qsiO:")) != -1) {
         
 		switch (c) {
 
@@ -89,6 +90,12 @@ int main(int argc,char** argv)
                 iflag = 1;
 
                 break;
+
+			case 'q':
+
+				qflag = 1;
+
+				break;
 			
 			case 'o':
 
@@ -162,7 +169,9 @@ int main(int argc,char** argv)
 		/*Optimize Quads*/
 		optimization_level(Ovalue);
 
-        write_quads();
+		if(qflag)
+		    write_quads();
+
 		generate_target_code();
 
 		if (iflag)
