@@ -56,7 +56,10 @@ test2: $(SCRIPTS)/phase2_test.sh
 test3: $(SCRIPTS)/phase3_test.sh
 	$(SCRIPTS)/phase3_test.sh
 
-test: test2 test3
+test45: $(SCRIPTS)/phase45_test.sh
+	$(SCRIPTS)/phase45_test.sh
+
+test: test2 test3 test45
 
 ##########################################################################################
 #	UTILITIES
