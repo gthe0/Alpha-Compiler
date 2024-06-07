@@ -139,18 +139,12 @@ static unsigned skip_ignored_quads(unsigned label)
  and function return value
 */
 
-static void make_numberoperand(vmarg_T arg, unsigned val)
+static void make_numberoperand(vmarg_T arg, double val)
 {
-	arg->val = val;
+	arg->val = curr_numConsts;
 	arg->type = number_a;
 
-	return;
-}
-
-static void make_booloperand(vmarg_T arg, unsigned val)
-{
-	arg->val = val;
-	arg->type = bool_a;
+	consts_newnumber(val);
 
 	return;
 }
