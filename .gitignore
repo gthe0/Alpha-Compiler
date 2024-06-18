@@ -1,0 +1,23 @@
+# Ignore compiled object files
+*.o
+
+# Ignore executables and objects
+bin
+build
+
+# Ignore text files
+*.txt
+
+# Ignore binary files
+*.abc
+
+# Ignore Generators output
+src/scanner.c
+src/parser.c
+include/parser.h
+parser.output
+
+*results*
+
+# Ignore vscode build settings
+.vscode
