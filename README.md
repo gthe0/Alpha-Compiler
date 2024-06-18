@@ -1,9 +1,9 @@
 # Alpha-Compiler
 Welcome to the Alpha-Compiler Project!
-This Repository contains the source code for a college assigned compiler of a language called Alpha!
+This Repository contains the source code for compiler of a language called Alpha!
 
 ## Overview
-Alpha-Compiler was written for a college assignment under fair use, specifically for educational purposes. It serves as a stepping stone for understanding the fundamental components that constitute a modern-day compiler and should not be regarded as a fully-fledged one.
+Alpha-Compiler was written specifically for educational purposes. It serves as a stepping stone for understanding the fundamental components that constitute a modern-day compiler and should not be regarded as a fully-fledged one.
 
 ## Introduction
 The Alpha-Compiler reads source files written in the Alpha programming language, and compiles them into Alpha-Binary files. The Alpha Language Specification (ALS) are defined by the Alpha Virtual Machine (AVM) used to run the binary files produced. You may find some example Alpha programs inside the tests folder.
